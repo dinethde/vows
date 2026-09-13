@@ -19,10 +19,10 @@ const MOTION_TOKENS = [
   "stagger-chrome",
   "stagger-tile",
   "lerp-pointer",
-  "lerp-scroll",
+  "lerp-pan",
   "depth-min",
   "depth-max",
-  "depth-scroll-factor",
+  "depth-pan-factor",
   "drift-amplitude",
   "drift-amplitude-compact",
   "hover-tile-scale",
@@ -35,6 +35,13 @@ const MOTION_TOKENS = [
   "chrome-reveal-y",
   "key-step",
   "key-page-ratio",
+  "drag-threshold",
+  "cull-margin",
+  "inertia-seconds",
+  "inertia-max",
+  "wheel-speed",
+  "audio-volume",
+  "audio-fade",
 ] as const;
 
 type MotionToken = (typeof MOTION_TOKENS)[number];

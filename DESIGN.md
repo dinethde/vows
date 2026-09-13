@@ -100,7 +100,14 @@ Figma specifies no easing or duration. These are chosen; they are the contract.
 | `--stagger-chrome` | `80ms` | navbar → bottom bar |
 | `--stagger-tile` | `36ms` | tile entrance, ordered by distance from viewport centre |
 | `--lerp-pointer` | `0.085` | per-frame smoothing of the pointer-parallax target |
-| `--lerp-scroll` | `0.12` | per-frame smoothing of the virtual scroll offset |
+| `--lerp-pan` | `0.12` | per-frame smoothing of the pan offset |
+| `--wheel-speed` | `1` | wheel delta → pan, unscaled |
+| `--drag-threshold` | `6` | px of travel that turns a press into a pan (§5.1) |
+| `--cull-margin` | `120` | px outside the viewport past which a cell's tiles stop updating |
+| `--inertia-seconds` | `0.28` | release velocity is thrown this far ahead |
+| `--inertia-max` | `1600` | px ceiling on a single throw |
+| `--eq-period` | `900ms` | equalizer bar cycle |
+| `--audio-fade` | `0.9` | seconds, volume ramp in and out |
 
 ---
 
@@ -164,15 +171,21 @@ tiles bleed past every edge, the bounding box is larger than the frame:
 | tablet | `-60 … 890` | `-50 … 1135` | `950 × 1185` |
 | mobile | `-50 … 423` | `-40 … 906` | `473 × 946` |
 
-**Infinite canvas.** The band is tiled on a lattice with period `(bandW, bandH)` in both
-axes. Because each copy is a pure translation of a non-self-intersecting set by exactly
-the bounding-box extent, copies can never overlap and there is never a gap — the canvas
-is seamless in both directions at any viewport size. The band origin is offset
-horizontally by `(viewportW − designW) / 2`, so at exactly the design width the visible
-region is pixel-identical to the Figma frame. Only the vertical axis is scrolled; the
-horizontal lattice exists to fill viewports wider (or narrower) than the design frame.
-Copies render only where they intersect the viewport plus one tile of margin — typically
-2 rows × 1 column (44 tiles) on desktop.
+**The canvas is a torus.** The band is tiled on a lattice with period `(bandW, bandH)`
+in both axes, and **both axes pan and wrap**. Because each copy is a pure translation of
+a non-self-intersecting set by exactly the bounding-box extent, copies can never overlap
+and there is never a gap — diagonal crossings included. The band origin is offset
+horizontally by `(viewportW − designW) / 2`, so at a pan of `(0, 0)` and exactly the
+design width the visible region is pixel-identical to the Figma frame.
+
+The tile field's dimensions — the wrap period on each axis — are the band extents in
+§3.2's table: **1860 × 1531** on desktop, **950 × 1185** on tablet, **473 × 946** on
+mobile. Pan past those and the same field returns.
+
+Cells render one further than strictly covers the viewport on each axis, so a cell only
+ever recycles while it is completely off screen. At 1440 × 1024 that is 2 rows × 2
+columns — 88 tiles — of which the ticker only updates the ones within a band's margin of
+the viewport.
 
 Photo assignment is identical in every copy: this is a **wrap**, not a shuffle. The
 canvas is one field the visitor keeps moving across, so "no first or last photograph"
@@ -339,17 +352,23 @@ State is a single boolean, `chromeRevealed`, latched once and never unset.
 
 | | State 1 — first load | State 2 — after first scroll |
 | --- | --- | --- |
-| gallery canvas | visible, drifting, cursor-reactive | unchanged, still scrolling infinitely |
+| gallery canvas | visible, drifting, cursor-reactive | unchanged, still panning infinitely |
 | hero block | visible, centred, still | **unchanged and unmoved** |
 | navbar | absent (`opacity: 0`, `visibility: hidden`, `inert`) | visible |
 | bottom bar | absent | visible |
 | mobile floating CTA | absent | visible |
+| music player | absent | visible, in whatever state §10 resolves to |
 | scroll indicator | none in either state | none |
 
-**Trigger:** the first scroll intent of the session — a wheel event, a touch drag, or a
-keyboard scroll key — that moves the virtual scroll offset by more than `8px`. The first
-`Tab` also counts: a keyboard-only visitor shows the same intent, and without it the skip
-link would lead into an inert navbar. Pointer movement alone does not trigger it.
+**Trigger:** the first **pan in any direction** — a wheel or trackpad gesture, a mouse
+drag, a touch drag, or a keyboard pan key — that moves the canvas more than `8px`. A
+purely horizontal first gesture counts, which is why the test is on the gesture's
+distance rather than on its vertical component. The first `Tab` also counts: a
+keyboard-only visitor shows the same intent, and without it the skip link would lead into
+an inert navbar. Pointer movement without a press does not trigger it.
+
+The same gesture starts the ambience track (§10) — it is the visitor's first interaction,
+and the only moment a browser will let audio begin.
 
 Both bars **fade in over** the canvas. They are `position: fixed` and do not participate
 in canvas layout, so no photograph moves at the moment they appear, and the hero stays
@@ -366,25 +385,63 @@ Driven by GSAP. `gsap.ticker` is the single rAF loop; only `transform` and `opac
 are written in hot paths. Tiles get `will-change: transform` only while a gesture or
 pointer interaction is live.
 
-### 5.1 Scroll
+### 5.1 Pan
 
-The canvas wraps, so there is no finite scroll distance for `ScrollTrigger` to scrub
-against and no document height that could represent it. Scrolling is therefore virtual:
-**`ScrollTrigger.observe()`** (ScrollTrigger's Observer API) captures `wheel`, `touch`
-and `pointer` input and integrates it into a single `scrollOffset`, which is smoothed
-toward its target with `--lerp-scroll` and applied to the stage as one
-`translate3d(0, -offset mod bandH, 0)`. Keyboard scrolling is handled alongside it
-(§6). The document itself does not scroll; `<body>` is `overflow: hidden`.
+The canvas wraps on both axes, so there is no finite distance for a scrollbar to
+represent and no document height that could stand in for one. Panning is therefore
+direct: `src/lib/pan.ts` owns a single 2D offset, input writes to `targetX`/`targetY`,
+and the ticker eases `x`/`y` toward it. The document itself never scrolls; `<body>` is
+`overflow: hidden`.
 
-`ScrollTrigger` proper is still registered and used for the chrome-reveal trigger and
-for the entrance batch.
+**There is no hidden scrollable proxy, and no ScrollTrigger.** The previous build drove
+the vertical-only canvas through `ScrollTrigger.observe()`. With two axes that stopped
+being a fit: Observer applied only the first `pointermove` of a mouse drag and never
+reported the press, so a drag travelled a few pixels and stopped. Pointer Events already
+unify mouse, touch and pen, so the input driver is ~150 lines of explicit handlers and
+the ScrollTrigger dependency is gone entirely.
+
+| Input | Mapping |
+| --- | --- |
+| wheel / trackpad | `deltaX → panX`, `deltaY → panY`, both applied every event, so a diagonal trackpad gesture pans diagonally. No axis locking. `deltaMode` of lines or pages is normalised to px first. |
+| shift + wheel | whatever the browser reports, unchanged — Chrome and Safari already move the delta onto `deltaX` |
+| mouse drag | `pointerdown` anywhere on the canvas; movement is applied inverted, so the field follows the cursor like a map. Inertia on release. |
+| touch drag | the same pointer path; one finger, both axes, same inertia |
+| keyboard | `←` `→` `↑` `↓` pan by `--key-step` (80px); `PageUp` / `PageDown` / `Space` / `Shift+Space` by `--key-page-ratio` (90 %) of viewport height; `Home` returns to `(0, 0)` |
 
 | | Value |
 | --- | --- |
-| wheel → offset | `1 : 1`, `wheelMultiplier: 1` |
-| touch → offset | `1 : 1` with GSAP's built-in momentum |
-| smoothing | `lerp(current, target, --lerp-scroll)` per tick |
-| wrap | `offset mod bandH`, lattice rows re-rendered only when the visible row index changes |
+| wheel → pan | `1 : 1` (`--wheel-speed`) |
+| drag → pan | `1 : 1` |
+| smoothing | `lerp(current, target, --lerp-pan)` per tick |
+| inertia | release velocity, sampled over the last `90ms`, thrown `--inertia-seconds` ahead and clamped to `--inertia-max` |
+| wrap | `cellOffset()` per axis, per cell; a cell recycles only while fully off screen |
+
+**Click versus drag.** A press that travels more than **`--drag-threshold` (6px)**
+cumulatively is a pan: a capture-phase `click` handler on the canvas cancels the click so
+the tile underneath is not activated. At or below 6px the press is a click and reaches
+the tile's link normally. 6px is large enough to absorb the tremor in a deliberate tap
+and small enough that an intentional drag never feels like it has to overcome anything.
+
+Two browser behaviours had to be suppressed for this to work at all:
+
+- **No `setPointerCapture`.** Capturing retargets the subsequent `click` to the capture
+  element, so tapping a photograph would land on the canvas and never reach its link.
+  The drag listens on `window` between press and release instead, which keeps a drag
+  alive past the element edge without touching event targeting.
+- **No native drag.** Every tile is a link wrapping an image and both are natively
+  draggable; left alone, a drag starting on a photograph becomes a browser link-drag that
+  cancels the pointer stream. `dragstart` is prevented on the canvas, the link is
+  `draggable={false}`, and `-webkit-user-drag: none` covers the rest.
+
+**Browser gestures.** The canvas sets `touch-action: none` and `overscroll-behavior:
+none`, `<html>`/`<body>` add `overscroll-behavior-x: none`, and `wheel` is a
+non-passive listener that calls `preventDefault()`. Together these stop pull-to-refresh,
+rubber-banding and horizontal swipe-back, so a pan can never navigate away.
+
+**Test seam.** The canvas element carries a live handle on its pan offset at
+`.vows-canvas.__vowsPan`. It is assigned once at setup — nothing is written per frame —
+and exists so the pan can be asserted directly rather than inferred from a wrapped
+transform.
 
 ### 5.2 Animation inventory
 
@@ -392,27 +449,31 @@ for the entrance batch.
 | --- | --- | --- | --- | --- | --- |
 | 1 | Tile entrance | first paint | `opacity 0→1`, `scale 0.96→1`, `y +24→0` | `--dur-entrance`, `--ease-out`, `--stagger-tile` by distance from centre | `opacity` only, `--dur-base`, no stagger |
 | 2 | Hero entrance | first paint | `opacity 0→1`, `y +10→0` | `--dur-entrance`, `--ease-out`, `120ms` delay | `opacity` only |
-| 3 | Chrome reveal | first scroll > 8px | navbar `opacity 0→1`, `y −8→0`; bottom bar `opacity 0→1`, `y +8→0` | `--dur-slow`, `--ease-out`, bottom bar delayed `--stagger-chrome` | `opacity` only, `--dur-base` |
+| 3 | Chrome reveal | first pan > 8px | navbar `opacity 0→1`, `y −8→0`; bottom bar `opacity 0→1`, `y +8→0` | `--dur-slow`, `--ease-out`, bottom bar delayed `--stagger-chrome` | `opacity` only, `--dur-base` |
 | 4 | Pointer parallax | `pointermove` (fine pointers only) | per-tile `translate3d` of `(pointer − centre) × depth`, `depth ∈ [0.010, 0.026]` scaled inversely with tile area | continuous, lerped at `--lerp-pointer` | **off** |
-| 5 | Scroll parallax | virtual scroll | per-tile extra `y` of `offset × (depth × 1.6)` | continuous, same lerp | **off** |
+| 5 | Pan parallax | pan on either axis | per-tile `x`/`y` offset of `(screen position − viewport centre) × depth × --depth-pan-factor`, clamped to one viewport | continuous, same lerp | **off** |
 | 6 | Idle drift | always | per-tile `x/y` sine, amplitude `±6px` (desktop) / `±4px` (mobile) | `--dur-drift` ± jitter, `sine.inOut`, random phase | **off** |
 | 7 | Tile hover | `pointerenter` | image `scale 1→1.03`; caption `opacity 0.8→1` | `--dur-base` / `--dur-fast`, `--ease-hover` | caption `opacity` only |
 | 8 | Tile focus | `:focus-visible` | focus ring on the wrapper | `--dur-instant` | same |
-| 9 | Mobile sheet | menu toggle | panel `x 100%→0`, backdrop `opacity 0→1` | `--dur-sheet`, `--ease-inout` | `opacity` only |
-| 10 | CTA / nav hover | `pointerenter` | `opacity 1→0.62` (links), pill `border-color` → `--color-ink` | `--dur-fast`, `--ease-hover` | same (non-transform, kept) |
+| 9 | Ambience fade | play / pause | `audio.volume` 0 ↔ `--audio-volume` | `--audio-fade` (0.9s), linear | unchanged — a fade is not motion |
+| 10 | Equalizer | while playing | bar `height` | `--eq-period`, `--ease-inout`, alternating, staggered per bar | **off** — bars hold at full height |
+| 11 | Mobile sheet | menu toggle | panel `x 100%→0`, backdrop `opacity 0→1` | `--dur-sheet`, `--ease-inout` | `opacity` only |
+| 12 | CTA / nav hover | `pointerenter` | `opacity 1→0.62` (links), pill `border-color` → `--color-ink` | `--dur-fast`, `--ease-hover` | same (non-transform, kept) |
 
 ### 5.3 Reduced motion
 
-`prefers-reduced-motion: reduce` disables animations 4, 5 and 6 entirely (the ticker
-loop is not started), and reduces 1, 2, 3 and 9 to opacity-only cross-fades. Scrolling
-still works and still wraps — it simply becomes a direct, unsmoothed offset
-(`--lerp-scroll: 1`). The page is fully usable and every photograph is still reachable.
+`prefers-reduced-motion: reduce` disables animations 4, 5, 6 and 10 entirely (the
+per-tile half of the ticker does not run), and reduces 1, 2, 3 and 11 to opacity-only
+cross-fades. **Inertia is not applied on release.** Panning still works and still wraps
+— it simply becomes direct, unsmoothed positioning (`lerp = 1`). The page is fully
+usable, every photograph is still reachable, and the ambience still plays and fades.
 
 ### 5.4 Why DOM, not WebGL
 
-The scatter canvas is at most 44 simultaneous tiles, each animated with a single
-composited `translate3d` + `scale` written once per tick from one `gsap.ticker`
-callback. There is no per-pixel effect in the design — no displacement, no distortion,
+The scatter canvas is at most 88 simultaneous tiles across four lattice cells — and the
+ticker only runs the per-tile maths for cells within a band's margin of the viewport, so
+the hot path is closer to 22. Each tile takes a single composited `translate3d` written
+once per tick from one `gsap.ticker` callback, and each cell one more. There is no per-pixel effect in the design — no displacement, no distortion,
 no blend beyond the bars' `backdrop-filter`. A WebGL renderer would add a texture
 upload path, a second scheduling loop and an accessibility problem (photographs inside
 a canvas are neither focusable nor linkable) in exchange for nothing the compositor
@@ -428,10 +489,12 @@ does not already do at 60 fps. **The canvas stays DOM + transforms.**
 - Only the **base lattice copy** is in the tab order; every repeated copy is
   `aria-hidden` with `tabindex="-1"`, so tab order is finite and matches the 22/17/13
   real photographs.
-- Focusing a tile scrolls the virtual canvas so the tile is fully in view.
-- Keyboard scrolling: `↑`/`↓` ± 80px, `PageUp`/`PageDown` ± 90 % of viewport height,
-  `Space` / `Shift+Space` likewise, `Home` returns to offset 0. Handled on the canvas
-  region, which has `tabindex="0"` and `role="region"` with an accessible name.
+- Focusing a tile pans the canvas on both axes so the tile is fully in view.
+- Keyboard panning covers **both** axes — it is the only way a keyboard-only visitor
+  reaches a photograph that is off to the side, so it is required, not a convenience.
+  `←`/`→` and `↑`/`↓` pan ± 80px, `PageUp`/`PageDown` and `Space`/`Shift+Space` pan
+  ± 90 % of viewport height, `Home` returns to `(0, 0)`. Handled on the canvas region,
+  which has `tabindex="0"` and `role="region"` with an accessible name.
 - A visually-hidden skip link jumps past the canvas to the navigation.
 - Focus ring: `2px` `--color-focus-ring` outline with a `2px` `--color-focus-halo`
   offset shadow so it reads on both the near-white canvas and dark photographs.
@@ -444,9 +507,9 @@ does not already do at 60 fps. **The canvas stays DOM + transforms.**
 
 | Component | Props | Variants |
 | --- | --- | --- |
-| `GalleryCanvas` | — | — (owns virtual scroll, lattice, ticker, reveal latch) |
-| `GalleryBand` | `tiles`, `col`, `row`, `primary: boolean` | primary (tabbable) / repeat (`aria-hidden`) |
-| `PhotoTile` | `tile: Tile`, `photo: Photo`, `index`, `primary`, `eager` | by `family` (drives size only) |
+| `GalleryCanvas` | `onFirstPan` | — (owns the pan, the lattice, the ticker and the reveal latch) |
+| `PhotoTile` | `tile: Tile`, `primary`, `eager` | by `family` (drives size only) |
+| `AmbiencePlayer` | `revealed`, `status`, `onToggle`, `track`, `audioRef` | by `status`: `paused` \| `playing` \| `blocked` |
 | `HeroTitle` | — | — |
 | `SiteHeader` | `revealed: boolean` | `desktop` \| `tablet` \| `mobile` (CSS, one DOM tree) |
 | `SiteFooterBar` | `revealed: boolean` | `desktop` \| `tablet` \| `mobile` |
@@ -456,11 +519,16 @@ does not already do at 60 fps. **The canvas stays DOM + transforms.**
 | `MenuButton` | `open`, `onClick` | — |
 | `SkipLink` | `href` | — |
 
-Hooks: `useBreakpoint()` → `'mobile' | 'tablet' | 'desktop'`;
-`usePrefersReducedMotion()` → `boolean`; `useChromeReveal()` → `{ revealed, markScrolled }`.
+Hooks: `useBreakpoint()` → `'mobile' | 'tablet' | 'desktop'`; `useReducedMotion()` →
+`boolean`; `useAmbience()` → `{ audioRef, status, toggle, start, track }`.
+
+Libraries: `src/lib/pan.ts` — the pan state, its easing, its inertia, the per-axis wrap
+and the whole input driver (§5.1). It holds no React and no DOM beyond the element it is
+handed, which is what makes the pan model testable on its own.
 
 Data: `src/data/tiles.ts` (the three tables of §3.4), `src/data/photos.ts` (the 22-photo
-pool with slug, alt text, orientation and credit), `src/data/copy.ts` (all page strings).
+pool with slug, alt text, orientation and credit), `src/data/audio.ts` (the track slot,
+§10), `src/data/copy.ts` (all page strings).
 
 shadcn/ui is scoped to **`button`** and **`sheet`** only. Nothing else from the registry
 is installed.
@@ -514,12 +582,21 @@ viewports are continuous, so the band is also repeated horizontally (§3.2) to f
 widths the frames do not describe. At exactly `1440 / 834 / 390` the visible region is
 the Figma frame.
 
-**D11 — The entrance animates only the base lattice row.** The repeat rows sit a full
-band above and below the viewport at load, so animating them in is invisible work. GSAP
-reads each target's computed style when it first touches it, and that read is what makes
-the entrance the page's one expensive moment; halving the target count halved the cost.
+**D11 — The entrance animates only the cells on screen.** The repeat cells sit a full
+band away at load, so animating them in is invisible work. GSAP reads each target's
+computed style when it first touches it, and that read is what makes the entrance the
+page's one expensive moment; skipping the off-screen cells is most of the saving.
 
-**D12 — Tile links point outside this page.** Each photograph links to
+**D12 — The canvas pans in two axes.** Figma draws one frame per breakpoint and the
+annotations describe vertical scrolling. The canvas now pans and wraps on both axes and
+reads as a map rather than a page. At a pan of `(0, 0)` the visible region is still
+exactly the Figma frame, so both documented states are unchanged.
+
+**D13 — Ambience player.** Figma contains no music widget; §10 is a deliberate addition,
+built from the existing tokens and type styles and revealed with the bars so State 1 is
+untouched.
+
+**D14 — Tile links point outside this page.** Each photograph links to
 `/portfolio/{couple-slug}` and the CTA to `/contact`. Those routes are not part of this
 build; the hrefs are real so the markup, tab order and hover targets are honest, but
 following one leaves the home page.
@@ -532,45 +609,141 @@ Every figure below came from `getBoundingClientRect` on the running page with th
 layer frozen (`transform: none`), compared against the Figma frame coordinates in §3.4
 and §3.7–3.9.
 
-**Tiles — exact.** All 22 desktop, 17 tablet and 13 mobile tiles match Figma to under
-`0.5px` in x, y, width and height, including the `5px`/`10px` caption gaps and the `15px`
-caption slot.
+**Tiles — exact, and unchanged by the move to two axes.** All 22 desktop, 17 tablet and
+13 mobile tiles match Figma to under `0.5px` in x, y, width and height at a pan of
+`(0, 0)`, including the `5px`/`10px` caption gaps and the `15px` caption slot.
 
-**Chrome — the residue.**
+**Chrome — the residue.** The same set as before; nothing new.
 
 | Element | Breakpoint | Δ | Why |
 | --- | --- | --- | --- |
 | navbar height | tablet | `+1px` | D5 — Figma's frame is `47px`, its children sum to `48px` |
 | wordmark | all | `−0.4px` wide | Mate renders marginally narrower in Chrome than in Figma |
 | nav link group | desktop | `−0.9px` x | knock-on from the wordmark width, via `justify-between` |
-| CTA pill | all | `−1.3px` x, `+1.3px` wide | "Chat with Dinuka" sets 1.3px wider in Chrome |
-| CTA pill | all | `+0.2px` tall | `--cta-pad-y` tuned to Figma's `31px` instance |
-| bottom-bar wordmark | all | `−0.4px` wide | as above |
+| CTA pill | desktop, tablet | `−1.3px` x, `+1.3px` wide, `+0.2px` tall | "Chat with Dinuka" sets 1.3px wider in Chrome |
 | bottom-bar blurb box | tablet | `−6px` y, `+12px` tall | Figma's wrapper is `64px` around `60px` of text; ours is `76px` around the same `60px`. The rendered text lands on the identical baseline — only the invisible wrapper differs |
-| bottom-bar blurb box | mobile | `+3.4px` y, `+2.3px` tall | Figma sets 3 lines of `11px` at ~`13px` leading; the token is `1.25` (`13.75px`) |
 | navbar wordmark / hamburger | mobile | `−4px` y | D6 — both are vertically centred in the `40px` bar rather than sitting at Figma's `8px`/`12px` |
 | hero block | all | `≤0.8px` on any edge | Mate and Inter metrics |
 
-Nothing else diverges. The photographs differ by design (D8).
+The music player (§10) has no Figma counterpart. It measures `181 × 32` and sits at
+`(64, 900)` on desktop, `(24, 1058)` on tablet and `(16, 633)` on mobile — asserted
+against the navbar, bottom bar, hamburger and floating CTA at every breakpoint, with no
+intersection.
 
-**Behaviour, at 1440 / 834 / 390.** First load shows canvas and hero only; the first
-wheel, touch, scroll key or `Tab` fades both bars in without moving a photograph; the
-canvas wraps indefinitely with unbroken viewport coverage after 24,000px of scrolling;
-tile hover scales the image to `1.03` and lifts the caption to full opacity; the mobile
-sheet opens, traps focus, closes on `Esc`, on its own control and on the backdrop, and
-hands focus back to the hamburger; `↑ ↓ PageUp PageDown Space Home` all move the canvas;
-exactly 22 / 17 / 13 tile links are tabbable, one per real photograph.
+**Pan behaviour, at 1440 / 834 / 390.**
+
+| Check | Result |
+| --- | --- |
+| wheel / trackpad, diagonal | both axes move together, no axis locking |
+| mouse drag, diagonal | target tracks the cursor `1 : 1` — a 216 × 144 px drag moves the pan exactly 216 × 144 |
+| inertia on release | a flick adds ~230 × 153 px beyond the drag and eases to rest; `0` under reduced motion |
+| cursor | `grab` at rest, `grabbing` while held, back to `grab` on release |
+| touch, one finger | both axes, same inertia |
+| keyboard | `←`/`→` ± 80, `↑`/`↓` ± 80, `PageUp`/`PageDown` ± 90 % of viewport height, `Home` → `(0, 0)` |
+| chrome reveal on a purely horizontal first drag | fires at all three breakpoints, with `panY` still `0` |
+| click vs drag | 0 / 4 / 5 px presses activate the tile's link; 12 / 40 px presses pan and fire no click |
+
+**Seamless wrap.** The pan was walked through seven diagonal wrap boundaries per
+breakpoint in 4px steps — 147 positions — and at each one a 25 × 25 grid of viewport
+points was tested for coverage by some lattice cell. **Zero gaps** across roughly 88,000
+probes, at all three breakpoints. A separate 220-step diagonal wheel sweep also found
+zero gaps.
+
+**Player.** Paused at load with volume `0`, `preload="auto"`, `loop`, `readyState 4`;
+plays on the first pan and fades `0 → 0.06 → 0.18`; `currentTime` advances; pause fades
+`0.18 → 0.12 → 0` and then stops, with `currentTime` frozen — a real pause, not a mute.
+`localStorage` records `playing`/`paused`, and a persisted `paused` survives a reload:
+the next first pan does **not** start it. With `play()` stubbed to reject, the widget
+stays paused, the equalizer stays still and the live region reads "could not start
+automatically". The toggle is reachable by `Tab` and operable by `Enter`.
+
+**Regression fence.** Tile hover still scales the image to `1.03` and lifts the caption
+to full opacity; the tab order is 22 tile links plus the chrome and the one new player
+toggle (31 in total, skip link first); the mobile sheet still opens, traps focus, closes
+on `Esc` and returns focus; and keyboard panning is suppressed while it is open.
 
 **Performance** (production build, Chrome).
 
-| | Desktop 1440 | Mobile 390, 4× CPU, Slow 4G |
-| --- | --- | --- |
-| LCP | 512 ms | 673 ms |
-| CLS | 0.00 | 0.00 |
-| frames > 16.7 ms while scrolling and tracking the pointer | 0 / 146 | 1 / 116 |
-| console at load and after interaction | clean | clean |
+| | Result |
+| --- | --- |
+| CLS, 22s of hard diagonal panning across ~41,000 × ~70,000 px | `0.00` |
+| long tasks during panning | none |
+| forced reflow / layout thrash during panning | none reported |
+| console at load, and after panning and playback | clean |
+| network | 32 requests, all `200`, including `audio/ambience.m4a` |
 
-One cost remains and is accepted: GSAP reads each target's computed style the first time
-it touches it, which produces a single ~39 ms forced reflow (155 ms at 4× throttling)
-during the entrance. It is one-time, does not touch LCP or CLS, and does not appear in
-the steady-state frame budget.
+Frame pacing could not be measured meaningfully in this environment: **a blank page in
+the same browser also runs at a 33.3 ms median**, so the host is presenting at 30 Hz and
+every reading is pinned to that cadence. What the numbers do establish is headroom — at
+**6× CPU throttling** the median moves only from 33.3 ms to 33.5 ms and no long task
+appears, which it could not do if the pan loop were anywhere near the frame budget. The
+loop writes two transforms per cell and two per tile, and skips the per-tile maths
+entirely for cells more than `--cull-margin` outside the viewport, so at rest it updates
+one cell of 22 tiles rather than all four cells of 88.
+
+---
+
+## 10. Ambience player
+
+Not in Figma. Built from the tokens in §1 and the type styles in §2 so it reads as part
+of the same set.
+
+### 10.1 Why it does not autoplay
+
+Chrome, Safari and Firefox all reject audible playback that is not tied to a user
+gesture, so no attempt is made on load and there is no workaround. Instead:
+
+1. On load the `<audio>` element renders with `preload="auto"` and `loop`, volume `0`,
+   and the widget shows its **paused** state with a play control.
+2. The visitor's **first pan** — the same gesture that reveals the chrome (§4) — calls
+   `play()`.
+3. If `play()` rejects, or the element errors, the status becomes `blocked`: the widget
+   stays paused and says so in its live region. It never shows a playing state with no
+   sound.
+4. The choice is persisted in `localStorage` under `vows:ambience`. If the visitor
+   paused it, the first pan on their next visit does **not** start it. A `blocked`
+   result writes nothing, so a manual play still works and still persists.
+
+Volume fades over `--audio-fade` in both directions and settles at `--audio-volume`
+(`0.18`) — ambience under photographs, not a foreground track. Pause fades to zero and
+then calls `audio.pause()`, so playback genuinely stops rather than being muted.
+
+### 10.2 The track slot
+
+| | |
+| --- | --- |
+| File | `public/audio/ambience.m4a` — AAC-LC, 64 kbps, mono, 1.36 MB |
+| Track | *Night on the Docks* — Kevin MacLeod |
+| Source | <https://incompetech.com/music/royalty-free/> |
+| Licence | **CC BY 4.0** — attribution is required, and is carried in `public/audio/CREDITS.md` |
+| Manifest | `scripts/audio.manifest.json` |
+| Rebuild | `node scripts/prepare-audio.mjs --force` |
+
+This is a **placeholder**, chosen to be slow, warm and saxophone-led. It is deliberately
+not a cover of a copyrighted composition: "A Thousand Years", "All of Me" and
+"Hallelujah" all need clearance of the underlying work, and a cover does not avoid that.
+
+**To swap it** for the studio's licensed recording, edit the manifest — `source` (a URL
+or a local path), `title`, `artist`, `licence`, `attribution` — and run the script. It
+downloads, re-encodes, rewrites `public/audio/CREDITS.md` and regenerates
+`src/data/audio.ts`. No component, style or string names the track, so nothing under
+`src/components/` changes.
+
+### 10.3 Widget
+
+Play/pause toggle, a four-bar equalizer that animates only while playing, and the track
+title. The toggle is a real `<button>` with `aria-pressed` and an `aria-label` that
+flips between "Play background music" and "Pause background music"; the widget is a
+`role="group"` labelled "Background music"; and a polite live region announces playing,
+paused or blocked.
+
+**Placement** — pinned to the bottom-left, clear of every other fixed element:
+
+| Breakpoint | Inset from left | Offset from bottom | Clears |
+| --- | --- | --- | --- |
+| desktop | `--spacing-4xl` (64) | `--bar-bottom-h + 16` = 92 | bottom bar starts at 948; widget ends at 932 |
+| tablet | `--spacing-2xl` (24) | `--bar-bottom-h + 16` = 104 | bottom bar starts at 1106 |
+| mobile | `--spacing-lg` (16) | `--bar-bottom-h + 16 + --pill-h + 12` = 179 | sits one row **above** the floating "Chat with Dinuka" pill, which occupies 136–167 |
+
+It is chrome: `inert` and invisible until the first pan, then it fades in with the bars.
+That keeps State 1 exactly as Figma draws it — canvas and title block, nothing else.

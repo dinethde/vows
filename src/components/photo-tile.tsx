@@ -5,8 +5,6 @@ import { cn } from "~/lib/utils";
 
 type PhotoTileProps = {
   tile: Tile;
-  /** Which lattice row this copy belongs to; the ticker reads it back. */
-  slot: number;
   /** Only the primary lattice copy is in the tab order (DESIGN.md §6). */
   primary: boolean;
   /** Tiles inside the first viewport load eagerly; the rest are lazy. */
@@ -18,7 +16,7 @@ type PhotoTileProps = {
  * ticker's target — only it is written to on a frame. The frame inside carries
  * the entrance and hover transforms, so the two never fight.
  */
-export function PhotoTile({ tile, slot, primary, eager }: PhotoTileProps) {
+export function PhotoTile({ tile, primary, eager }: PhotoTileProps) {
     const photo = photos[tile.photo as keyof typeof photos];
     const base = `/photos/${tile.photo}`;
 
@@ -26,7 +24,6 @@ export function PhotoTile({ tile, slot, primary, eager }: PhotoTileProps) {
       <div
         className="vows-tile absolute"
         data-tile={tile.index}
-        data-row-slot={slot}
         style={{
           left: `${tile.x}px`,
           top: `${tile.y}px`,
@@ -39,6 +36,7 @@ export function PhotoTile({ tile, slot, primary, eager }: PhotoTileProps) {
             !primary && "pointer-events-none",
           )}
           href={`/portfolio/${tileSlug(tile)}`}
+          draggable={false}
           aria-label={copy.a11y.photoAlt(tile.couple)}
           tabIndex={primary ? undefined : -1}
         >

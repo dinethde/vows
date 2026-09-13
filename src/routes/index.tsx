@@ -1,12 +1,14 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import gsap from "gsap";
 
+import { AmbiencePlayer } from "~/components/ambience-player";
 import { GalleryCanvas } from "~/components/gallery-canvas";
 import { HeroTitle } from "~/components/hero-title";
 import { SiteHeader } from "~/components/site-header";
 import { SiteFooterBar } from "~/components/site-footer-bar";
 import { SkipLink } from "~/components/skip-link";
+import { useAmbience } from "~/hooks/use-ambience";
 import { useReducedMotion } from "~/hooks/use-reduced-motion";
 import { readMotion } from "~/lib/motion";
 import { copy } from "~/data/copy";
@@ -17,7 +19,20 @@ function Home() {
   const reducedMotion = useReducedMotion();
   const [revealed, setRevealed] = useState(false);
 
-  const onFirstScroll = useCallback(() => setRevealed(true), []);
+  const ambience = useAmbience();
+
+  // `start` changes identity whenever playback state does, so it is reached
+  // through a ref: onFirstPan has to stay stable or the canvas rebuilds its
+  // input handlers in the middle of the very gesture that called it.
+  const startRef = useRef(ambience.start);
+  startRef.current = ambience.start;
+
+  // The first pan is the visitor's first gesture, which is both the chrome's
+  // reveal trigger and the only moment a browser will let audio start.
+  const onFirstPan = useCallback(() => {
+    setRevealed(true);
+    startRef.current();
+  }, []);
 
   // ---- hero entrance (DESIGN.md §5.2 #2) --------------------------------
   // Targets are selected rather than wrapped in a ref'd div: both the hero and
@@ -98,10 +113,17 @@ function Home() {
   return (
     <>
       <SkipLink />
-      <GalleryCanvas onFirstScroll={onFirstScroll} />
+      <GalleryCanvas onFirstPan={onFirstPan} />
       <HeroTitle />
       <SiteHeader revealed={revealed} />
       <SiteFooterBar revealed={revealed} />
+      <AmbiencePlayer
+        revealed={revealed}
+        status={ambience.status}
+        onToggle={ambience.toggle}
+        track={ambience.track}
+        audioRef={ambience.audioRef}
+      />
 
       <p aria-live="polite" className="sr-only-focusable">
         {revealed ? copy.a11y.chromeRevealed : ""}

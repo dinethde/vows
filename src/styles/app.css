@@ -15,6 +15,7 @@
     margin: 0;
     overflow: hidden;
     overscroll-behavior: none;
+    overscroll-behavior-x: none;
   }
 
   body {
@@ -77,6 +78,75 @@
 }
 
 @layer components {
+  /* The canvas is a map: grab to move it, and never let the browser claim the
+     gesture for scrolling, pull-to-refresh or swipe-back (DESIGN.md §5.1). */
+  .vows-canvas {
+    cursor: grab;
+    touch-action: none;
+    overscroll-behavior: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  .vows-canvas[data-panning="true"] {
+    cursor: grabbing;
+  }
+
+  .vows-canvas[data-panning="true"] .vows-tile-link {
+    cursor: grabbing;
+  }
+
+  /* Play / pause glyph — a triangle that becomes two bars. */
+  .vows-player-glyph {
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: var(--spacing-2xs) solid transparent;
+    border-bottom: var(--spacing-2xs) solid transparent;
+    border-left: var(--spacing-sm) solid var(--color-ink);
+    transition: border-left-color var(--duration-fast) var(--ease-hover);
+  }
+
+  .vows-player-glyph[data-playing="true"] {
+    width: var(--spacing-sm);
+    height: var(--spacing-md);
+    border: 0;
+    border-left: var(--eq-bar-w) solid var(--color-ink);
+    border-right: var(--eq-bar-w) solid var(--color-ink);
+  }
+
+  /* Running-state indicator: animates only while playing. */
+  .vows-player-eq {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--eq-gap);
+    height: var(--eq-h);
+  }
+
+  .vows-player-eq i {
+    display: block;
+    width: var(--eq-bar-w);
+    height: var(--eq-bar-min);
+    background-color: var(--color-ink-muted);
+    transform-origin: bottom;
+  }
+
+  .vows-player-eq[data-playing="true"] i {
+    animation: vows-eq var(--eq-period) var(--ease-inout) infinite alternate;
+  }
+
+  .vows-player-eq i:nth-child(2) { animation-delay: calc(var(--eq-period) * -0.25); }
+  .vows-player-eq i:nth-child(3) { animation-delay: calc(var(--eq-period) * -0.6); }
+  .vows-player-eq i:nth-child(4) { animation-delay: calc(var(--eq-period) * -0.4); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vows-player-eq[data-playing="true"] i {
+      animation: none;
+      height: var(--eq-h);
+    }
+  }
+
   .vows-menu-rule {
     position: absolute;
     left: var(--menu-rule-x);
@@ -136,6 +206,11 @@
   .vows-chrome[data-revealed="true"] {
     visibility: visible;
   }
+}
+
+@keyframes vows-eq {
+  from { height: var(--eq-bar-min); }
+  to { height: var(--eq-h); }
 }
 
 @keyframes vows-fade-in {

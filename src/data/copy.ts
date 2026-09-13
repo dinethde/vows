@@ -27,11 +27,21 @@ export const copy = {
     skipToNav: "Skip to navigation",
     canvasLabel: "Wedding gallery — an endless canvas of photographs",
     canvasHint:
-      "Scroll, or use the arrow and page keys, to move through the gallery. Tab moves between photographs.",
+      "Drag, scroll, or use the arrow and page keys to move around the gallery in any direction. Tab moves between photographs.",
     menuOpen: "Open menu",
     menuClose: "Close menu",
     menuTitle: "Menu",
     chromeRevealed: "Navigation revealed.",
+    player: {
+      region: "Background music",
+      play: "Play background music",
+      pause: "Pause background music",
+      playing: "Background music is playing.",
+      paused: "Background music is paused.",
+      blocked: "Background music could not start automatically.",
+      nowPlaying: (title: string, artist: string) =>
+        `${title} by ${artist}`,
+    },
     photoAlt: (couple: string) => `${couple} — wedding photograph`,
   },
 } as const;

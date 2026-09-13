@@ -113,11 +113,18 @@
   --stagger-tile: 0.036;
 
   --lerp-pointer: 0.085;
-  --lerp-scroll: 0.12;
+  --lerp-pan: 0.12;
 
   --depth-min: 0.01;
   --depth-max: 0.026;
-  --depth-scroll-factor: 1.6;
+  --depth-pan-factor: 1.6;
+
+  /* Pan gesture (DESIGN.md §5.1) */
+  --drag-threshold: 6;
+  --cull-margin: 120;
+  --inertia-seconds: 0.28;
+  --inertia-max: 1600;
+  --wheel-speed: 1;
 
   --drift-amplitude: 6;
   --drift-amplitude-compact: 4;
@@ -166,9 +173,24 @@
   --sheet-w: min(84vw, 320px);
   --floating-cta-offset: var(--spacing-lg);
 
-  /* ---- Keyboard scroll steps ------------------------------------ */
+  /* ---- Keyboard pan steps --------------------------------------- */
   --key-step: 80;
   --key-page-ratio: 0.9;
+
+  /* ---- Music player (DESIGN.md §10) ------------------------------ */
+  --audio-volume: 0.18;
+  --audio-fade: 0.9;
+  --pill-h: 31px;
+  --player-inset: var(--gutter-bottom);
+  --player-bottom: calc(
+    var(--bar-bottom-h) + var(--floating-cta-offset) + var(--pill-h) +
+      var(--spacing-md)
+  );
+  --eq-bar-w: 2px;
+  --eq-gap: 2px;
+  --eq-h: 12px;
+  --eq-bar-min: 3px;
+  --eq-period: 900ms;
 }
 
 @media (min-width: 768px) {
@@ -178,6 +200,7 @@
     --gutter-top: var(--spacing-2xl);
     --gutter-bottom: var(--spacing-2xl);
     --bar-blurb-w: 480px;
+    --player-bottom: calc(var(--bar-bottom-h) + var(--floating-cta-offset));
   }
 }
 
@@ -188,6 +211,7 @@
     --gutter-top: var(--spacing-3xl);
     --gutter-bottom: var(--spacing-4xl);
     --bar-blurb-w: 632px;
+    --player-bottom: calc(var(--bar-bottom-h) + var(--floating-cta-offset));
   }
 }
 
