@@ -1,0 +1,16 @@
+/* Self-hosted so no third-party request is made and no chrome text reflows. */
+@font-face {
+  font-family: "Mate";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/mate-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url("/fonts/inter-var.woff2") format("woff2");
+}

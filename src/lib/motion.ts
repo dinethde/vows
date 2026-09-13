@@ -1,0 +1,76 @@
+/**
+ * Motion values live in src/styles/tokens.css like every other design value.
+ * GSAP needs numbers, so this reads them back off the document element once
+ * and caches them. Nothing here re-types a timing — a missing token throws,
+ * which is how token drift surfaces instead of silently animating at NaN.
+ *
+ * Client-only: every caller runs inside an effect.
+ */
+
+const MOTION_TOKENS = [
+  "motion-instant",
+  "motion-fast",
+  "motion-base",
+  "motion-sheet",
+  "motion-slow",
+  "motion-entrance",
+  "motion-drift",
+  "motion-drift-jitter",
+  "stagger-chrome",
+  "stagger-tile",
+  "lerp-pointer",
+  "lerp-scroll",
+  "depth-min",
+  "depth-max",
+  "depth-scroll-factor",
+  "drift-amplitude",
+  "drift-amplitude-compact",
+  "hover-tile-scale",
+  "hover-link-opacity",
+  "caption-rest-opacity",
+  "reveal-threshold",
+  "entrance-y",
+  "entrance-scale",
+  "hero-entrance-y",
+  "chrome-reveal-y",
+  "key-step",
+  "key-page-ratio",
+] as const;
+
+type MotionToken = (typeof MOTION_TOKENS)[number];
+export type Motion = Record<MotionToken, number>;
+
+let cache: Motion | null = null;
+
+export function readMotion(): Motion {
+  if (cache) return cache;
+
+  const styles = getComputedStyle(document.documentElement);
+  const values = {} as Motion;
+
+  for (const token of MOTION_TOKENS) {
+    const raw = styles.getPropertyValue(`--${token}`).trim();
+    const value = Number.parseFloat(raw);
+    if (!Number.isFinite(value)) {
+      throw new Error(
+        `Missing or non-numeric design token --${token}. Define it in src/styles/tokens.css.`,
+      );
+    }
+    values[token] = value;
+  }
+
+  cache = values;
+  return values;
+}
+
+/** Test seam — lets a re-render after a token change pick up new values. */
+export function resetMotionCache() {
+  cache = null;
+}
+
+export function prefersReducedMotion(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+}

@@ -1,0 +1,183 @@
+/*
+ * Vows Weddings — the single source of design values.
+ *
+ * This is the ONLY file in the repository permitted to contain colour literals,
+ * raw type sizes, spacing literals, radii or motion timings. Everything else
+ * consumes them as semantic Tailwind classes or var(--token).
+ *
+ * Enforced by eslint-rules/no-design-literals.js (see eslint.config.js).
+ * Every token records the Figma variable or raw value it resolves from.
+ */
+
+@theme {
+  /* ---- Colour ------------------------------------------------- *
+   * canvas  -> Figma variable Color/gray/100
+   * ink-muted -> Figma variable Color/gray/1500
+   * the rest are raw values read off the Homepage frames, or derived
+   * values marked as such in DESIGN.md §1.1.                       */
+  --color-canvas: #f8f8f9;
+  --color-ink: #000000;
+  --color-ink-muted: #535051;
+  --color-caption: rgb(0 0 0 / 0.8);
+  --color-surface: #ffffff;
+  --color-chrome: rgb(255 255 255 / 0.2);
+  --color-border-subtle: #dddddd;
+  --color-scrim: rgb(248 248 249 / 0.94);
+  --color-backdrop: rgb(0 0 0 / 0.28);
+  --color-tile-ground: #e9e9eb;
+  --color-focus-ring: #000000;
+  --color-focus-halo: #ffffff;
+
+  /* ---- Typography ---------------------------------------------- *
+   * Mate  -> Figma variable "Primary Font"
+   * Inter -> literal family on hero subheading + tile captions      */
+  --font-serif: "Mate", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --text-display: 32px;
+  --text-display--line-height: 1.2;
+  --text-h5: 20px;               /* Figma text style H5 */
+  --text-h5--line-height: 1.2;
+  --text-body: 16px;             /* Figma text style Regular_text */
+  --text-body--line-height: 1.5;
+  --text-cta: 16px;
+  --text-cta--line-height: 1.2;
+  --text-bar: 16px;
+  --text-bar--line-height: 1.35;
+  --text-bar-sm: 11px;
+  --text-bar-sm--line-height: 1.35;
+  --text-subhead: 14px;
+  --text-subhead--line-height: 1;
+  --text-caption: 12px;
+  --text-caption--line-height: 1.25;
+
+  /* ---- Spacing -------------------------------------------------- */
+  --spacing-3xs: 4px;
+  --spacing-2xs: 5px;
+  --spacing-xs: 8px;
+  --spacing-sm: 10px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+  --spacing-2xl: 24px;
+  --spacing-3xl: 62px;
+  --spacing-4xl: 64px;
+
+  /* ---- Breakpoints (also drive Tailwind's md: / xl: variants) ---- */
+  --breakpoint-md: 768px;
+  --breakpoint-xl: 1200px;
+
+  /* ---- Structural sizes ------------------------------------------ */
+  --size-hairline: 1px;
+  --size-ring: 2px;
+  --size-ring-halo: 4px;
+  --size-pixel: 1px;
+
+  /* ---- Radius --------------------------------------------------- */
+  --radius-pill: 15px;
+  --radius-tile: 0px;
+
+  /* ---- Blur ----------------------------------------------------- */
+  --blur-chrome-top: 10px;
+  --blur-chrome-bottom: 5px;
+  --blur-sheet: 16px;
+
+  /* ---- Motion --------------------------------------------------- */
+  --duration-instant: 120ms;
+  --duration-fast: 180ms;
+  --duration-base: 320ms;
+  --duration-sheet: 380ms;
+  --duration-slow: 640ms;
+  --duration-entrance: 800ms;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-hover: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+:root {
+  /* ---- Motion values consumed by GSAP (seconds / unitless) ------- *
+   * GSAP takes numbers, not CSS durations, so the same values are
+   * mirrored here as plain numbers. Read via readMotion() in
+   * src/lib/motion.ts — never re-typed at a call site.              */
+  --motion-instant: 0.12;
+  --motion-fast: 0.18;
+  --motion-base: 0.32;
+  --motion-sheet: 0.38;
+  --motion-slow: 0.64;
+  --motion-entrance: 0.8;
+  --motion-drift: 11;
+  --motion-drift-jitter: 3;
+
+  --stagger-chrome: 0.08;
+  --stagger-tile: 0.036;
+
+  --lerp-pointer: 0.085;
+  --lerp-scroll: 0.12;
+
+  --depth-min: 0.01;
+  --depth-max: 0.026;
+  --depth-scroll-factor: 1.6;
+
+  --drift-amplitude: 6;
+  --drift-amplitude-compact: 4;
+
+  --hover-tile-scale: 1.03;
+  --hover-link-opacity: 0.62;
+  --caption-rest-opacity: 0.8;
+
+  --reveal-threshold: 8;
+  --entrance-y: 24;
+  --entrance-scale: 0.96;
+  --hero-entrance-y: 10;
+  --chrome-reveal-y: 8;
+
+  /* ---- Chrome geometry (DESIGN.md §3.7 / §3.8) ------------------ */
+  --bar-top-h: 40px;
+  --bar-bottom-h: 120px;
+  --gutter: var(--spacing-lg);
+
+  /* ---- Tile caption slot (DESIGN.md §3.2, D3) ------------------- */
+  --caption-h: 15px;
+  --caption-min-w: 93px;
+  --tile-gap: var(--spacing-2xs);
+
+  /* ---- Layer order (DESIGN.md §1.5) ----------------------------- */
+  --z-canvas: 0;
+  --z-hero: 10;
+  --z-chrome: 20;
+  --z-overlay: 30;
+
+  /* ---- Mobile menu ---------------------------------------------- */
+  --sheet-w: min(84vw, 320px);
+  --floating-cta-offset: var(--spacing-lg);
+
+  /* ---- Keyboard scroll steps ------------------------------------ */
+  --key-step: 80;
+  --key-page-ratio: 0.9;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --bar-top-h: 48px;
+    --bar-bottom-h: 88px;
+    --gutter: var(--spacing-2xl);
+  }
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --bar-top-h: 48px;
+    --bar-bottom-h: 76px;
+    --gutter: var(--spacing-3xl);
+  }
+}
+
+/* ---- Named viewport variants ------------------------------------- *
+ * Declared here rather than in app.css so that app.css contains no
+ * dimension literals of its own.                                      */
+@custom-variant compact (@media (width < 768px));
+@custom-variant mid (@media (768px <= width < 1200px));
+@custom-variant wide (@media (width >= 1200px));
+@custom-variant reduced (@media (prefers-reduced-motion: reduce));
+@custom-variant fine-pointer (@media (hover: hover) and (pointer: fine));
