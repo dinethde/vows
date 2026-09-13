@@ -8,3 +8,4 @@ src/routeTree.gen.ts
 *.log
 .DS_Store
 .lint-fixture
+.playwright-mcp

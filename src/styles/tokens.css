@@ -18,7 +18,7 @@
   --color-canvas: #f8f8f9;
   --color-ink: #000000;
   --color-ink-muted: #535051;
-  --color-caption: rgb(0 0 0 / 0.8);
+  --color-caption-ink: rgb(0 0 0 / 0.8);
   --color-surface: #ffffff;
   --color-chrome: rgb(255 255 255 / 0.2);
   --color-border-subtle: #dddddd;
@@ -43,9 +43,9 @@
   --text-cta: 16px;
   --text-cta--line-height: 1.2;
   --text-bar: 16px;
-  --text-bar--line-height: 1.35;
+  --text-bar--line-height: 1.25;
   --text-bar-sm: 11px;
-  --text-bar-sm--line-height: 1.35;
+  --text-bar-sm--line-height: 1.25;
   --text-subhead: 14px;
   --text-subhead--line-height: 1;
   --text-caption: 12px;
@@ -135,7 +135,9 @@
   /* ---- Chrome geometry (DESIGN.md §3.7 / §3.8) ------------------ */
   --bar-top-h: 40px;
   --bar-bottom-h: 120px;
-  --gutter: var(--spacing-lg);
+  --gutter-top: var(--spacing-xl);
+  --gutter-bottom: var(--spacing-lg);
+  --bar-blurb-w: 100%;
 
   /* ---- Tile caption slot (DESIGN.md §3.2, D3) ------------------- */
   --caption-h: 15px;
@@ -147,6 +149,18 @@
   --z-hero: 10;
   --z-chrome: 20;
   --z-overlay: 30;
+
+  /* ---- Hamburger rules (Figma menu_icon, 24x24) ------------------ */
+  --menu-rule-w: 20px;
+  --menu-rule-h: 1.5px;
+  --menu-rule-x: 2px;
+  --menu-rule-y1: 5px;
+  --menu-rule-y2: 11.25px;
+  --menu-rule-y3: 17.5px;
+
+  /* ---- Nav link slot widths (Figma) ------------------------------ */
+  --nav-link-w: 76px;
+  --cta-pad-y: 5px;
 
   /* ---- Mobile menu ---------------------------------------------- */
   --sheet-w: min(84vw, 320px);
@@ -161,7 +175,9 @@
   :root {
     --bar-top-h: 48px;
     --bar-bottom-h: 88px;
-    --gutter: var(--spacing-2xl);
+    --gutter-top: var(--spacing-2xl);
+    --gutter-bottom: var(--spacing-2xl);
+    --bar-blurb-w: 480px;
   }
 }
 
@@ -169,7 +185,9 @@
   :root {
     --bar-top-h: 48px;
     --bar-bottom-h: 76px;
-    --gutter: var(--spacing-3xl);
+    --gutter-top: var(--spacing-3xl);
+    --gutter-bottom: var(--spacing-4xl);
+    --bar-blurb-w: 632px;
   }
 }
 

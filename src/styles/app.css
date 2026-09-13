@@ -48,7 +48,7 @@
   position: fixed;
   left: 0;
   right: 0;
-  z-index: 20;
+  z-index: var(--z-chrome);
 }
 
 @utility sr-only-focusable {
@@ -72,7 +72,69 @@
     padding: var(--spacing-xs) var(--spacing-md);
     background-color: var(--color-surface);
     border-radius: var(--radius-pill);
-    z-index: 30;
+    z-index: var(--z-overlay);
+  }
+}
+
+@layer components {
+  .vows-menu-rule {
+    position: absolute;
+    left: var(--menu-rule-x);
+    width: var(--menu-rule-w);
+    height: var(--menu-rule-h);
+    background-color: var(--color-ink-muted);
+    transition:
+      transform var(--duration-base) var(--ease-hover),
+      opacity var(--duration-fast) var(--ease-hover);
+  }
+
+  .vows-menu-rule-1 { top: var(--menu-rule-y1); }
+  .vows-menu-rule-2 { top: var(--menu-rule-y2); }
+  .vows-menu-rule-3 { top: var(--menu-rule-y3); }
+
+  [aria-expanded="true"] > .vows-menu-rule-1 {
+    transform: translateY(calc(var(--menu-rule-y2) - var(--menu-rule-y1))) rotate(45deg);
+  }
+  [aria-expanded="true"] > .vows-menu-rule-2 { opacity: 0; }
+  [aria-expanded="true"] > .vows-menu-rule-3 {
+    transform: translateY(calc(var(--menu-rule-y2) - var(--menu-rule-y3))) rotate(-45deg);
+  }
+
+  /* Hover is on the image alone so the caption slot never moves. */
+  .vows-tile-img {
+    transition: transform var(--duration-base) var(--ease-hover);
+  }
+
+  .vows-tile-caption {
+    opacity: var(--caption-rest-opacity);
+    transition: opacity var(--duration-fast) var(--ease-hover);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .vows-tile-link:hover .vows-tile-img,
+    .vows-tile-link:focus-visible .vows-tile-img {
+      transform: scale(var(--hover-tile-scale));
+    }
+
+    .vows-tile-link:hover .vows-tile-caption,
+    .vows-tile-link:focus-visible .vows-tile-caption {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vows-tile-img { transition: none; }
+    .vows-tile-link:hover .vows-tile-img { transform: none; }
+  }
+
+  /* Chrome starts hidden; GSAP reveals it on the first scroll (§5.2 #3). */
+  .vows-chrome {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .vows-chrome[data-revealed="true"] {
+    visibility: visible;
   }
 }
 

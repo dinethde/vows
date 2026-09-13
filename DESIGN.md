@@ -28,7 +28,7 @@ px size for type, a spacing literal, a radius or a motion duration. `eslint-plug
 | `--color-canvas` | `#f8f8f9` | variable `Color/gray/100` (frame fill) |
 | `--color-ink` | `#000000` | raw `black` — wordmark, nav links, hero title, bar text |
 | `--color-ink-muted` | `#535051` | variable `Color/gray/1500` — hero subheading, hamburger rules |
-| `--color-caption` | `rgb(0 0 0 / 0.8)` | raw `rgba(0,0,0,0.8)` — tile captions |
+| `--color-caption-ink` | `rgb(0 0 0 / 0.8)` | raw `rgba(0,0,0,0.8)` — tile captions |
 | `--color-surface` | `#ffffff` | raw `white` — CTA pill fill |
 | `--color-chrome` | `rgb(255 255 255 / 0.2)` | raw `rgba(255,255,255,0.2)` — both bars |
 | `--color-border-subtle` | `#dddddd` | raw `#ddd` — CTA pill border |
@@ -115,8 +115,8 @@ Figma on exactly two elements and is kept for fidelity (see §8, divergence D1).
 | `--text-h5` | Mate | `20px` | 400 | `1.2` | `Vows` wordmark (navbar + bottom bar) — Figma style `H5` |
 | `--text-body` | Mate | `16px` | 400 | `1.5` | nav links Portfolio / About / Contact — Figma style `Regular_text` |
 | `--text-cta` | Mate | `16px` | 400 | `1.2` | `Chat with Dinuka` pill |
-| `--text-bar` | Mate | `16px` | 400 | `1.35` | bottom-bar paragraph, `Since 2013` |
-| `--text-bar-sm` | Mate | `11px` | 400 | `1.35` | bottom-bar paragraph, mobile only |
+| `--text-bar` | Mate | `16px` | 400 | `1.25` | bottom-bar paragraph, `Since 2013` |
+| `--text-bar-sm` | Mate | `11px` | 400 | `1.25` | bottom-bar paragraph, mobile only |
 | `--text-subhead` | Inter | `14px` | 400 | `1` | hero subheading |
 | `--text-caption` | Inter | `12px` | 500 | `1.25` | tile captions |
 
@@ -293,7 +293,7 @@ Full-bleed, fixed to the top. Fill `--color-chrome`, `backdrop-filter: blur(var(
 | CTA | `Chat with Dinuka` pill, right | same | not in the bar — floats above the bottom bar |
 
 CTA pill: `--color-surface` fill, `1px` `--color-border-subtle` border,
-`--radius-pill`, padding `6px --space-md`, `--text-cta`.
+`--radius-pill`, padding `5px --space-md` (`--cta-pad-y`), `--text-cta`. Figma’s codegen reports `6px`, but the instance measures `31px` tall, which `5px` reproduces.
 
 Hamburger: `24 × 24` box, three `20 × 1.5px` rules in `--color-ink-muted` at
 `y = 5 / 11.25 / 17.5`.

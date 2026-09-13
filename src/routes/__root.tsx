@@ -21,14 +21,14 @@ export const Route = createRootRoute({
       { rel: "stylesheet", href: appCss },
       {
         rel: "preload",
-        href: "/fonts/mate-400.woff2",
+        href: "/fonts/mate-latin.woff2",
         as: "font",
         type: "font/woff2",
         crossOrigin: "anonymous",
       },
       {
         rel: "preload",
-        href: "/fonts/inter-var.woff2",
+        href: "/fonts/inter-latin.woff2",
         as: "font",
         type: "font/woff2",
         crossOrigin: "anonymous",

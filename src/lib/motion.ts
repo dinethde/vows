@@ -74,3 +74,19 @@ export function prefersReducedMotion(): boolean {
     window.matchMedia("(prefers-reduced-motion: reduce)").matches
   );
 }
+
+/**
+ * Reads a length token (e.g. a breakpoint) back off the document element, so
+ * media queries in TypeScript resolve from the same definition the CSS uses.
+ */
+export function readLengthToken(name: string): string {
+  const value = getComputedStyle(document.documentElement)
+    .getPropertyValue(`--${name}`)
+    .trim();
+  if (!value) {
+    throw new Error(
+      `Missing design token --${name}. Define it in src/styles/tokens.css.`,
+    );
+  }
+  return value;
+}
