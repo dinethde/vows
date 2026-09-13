@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite dev --port 3000",
     "build": "npm run lint && vite build",
-    "start": "node .output/server/index.mjs",
+    "start": "node scripts/serve.mjs",
     "lint": "eslint . && node scripts/verify-lint-rule.mjs",
     "typecheck": "tsc --noEmit"
   },

@@ -1,19 +1,23 @@
+import { forwardRef } from "react";
+import type * as React from "react";
+
 import { copy } from "~/data/copy";
 import { cn } from "~/lib/utils";
 
 /** The three-rule hamburger drawn in the mobile frames (DESIGN.md §3.7). */
-export function MenuButton({
-  open,
-  onClick,
-  className,
-}: {
+type MenuButtonProps = {
   open: boolean;
   onClick: () => void;
   className?: string;
-}) {
+} & Omit<React.ComponentProps<"button">, "onClick">;
+
+export const MenuButton = forwardRef<HTMLButtonElement, MenuButtonProps>(
+  function MenuButton({ open, onClick, className, ...props }, ref) {
   return (
     <button
+      ref={ref}
       type="button"
+      {...props}
       className={cn(
         "vows-menu-button relative size-2xl shrink-0",
         className,
@@ -27,4 +31,4 @@ export function MenuButton({
       <span className="vows-menu-rule vows-menu-rule-3" />
     </button>
   );
-}
+});

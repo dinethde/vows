@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { ChatCta } from "~/components/chat-cta";
 import { MenuButton } from "~/components/menu-button";
@@ -13,6 +13,9 @@ import { copy } from "~/data/copy";
  */
 export function SiteHeader({ revealed }: { revealed: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  const onOpenChange = useCallback((open: boolean) => setMenuOpen(open), []);
 
     return (
       <>
@@ -48,13 +51,18 @@ export function SiteHeader({ revealed }: { revealed: boolean }) {
           <ChatCta className="hidden py-[var(--cta-pad-y)] md:inline-flex" />
 
           <MenuButton
+            ref={triggerRef}
             className="md:hidden"
             open={menuOpen}
-            onClick={() => setMenuOpen((open) => !open)}
+            onClick={() => onOpenChange(!menuOpen)}
           />
         </header>
 
-        <MobileMenu open={menuOpen} onOpenChange={setMenuOpen} />
+        <MobileMenu
+          open={menuOpen}
+          onOpenChange={onOpenChange}
+          returnFocusTo={triggerRef}
+        />
       </>
     );
 }

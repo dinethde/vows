@@ -109,12 +109,47 @@ export function GalleryCanvas({ onFirstScroll }: GalleryCanvasProps) {
   useEffect(() => {
     const viewport = viewportRef.current;
     if (!viewport) return;
-    const frames = Array.from(
-      viewport.querySelectorAll<HTMLElement>(".vows-tile-frame"),
+
+    // Only the base lattice row is on screen at load — the repeats sit a full
+    // band above and below it — so only that row is worth animating in. It
+    // halves the number of elements GSAP has to parse, and GSAP's per-target
+    // style reads are what make the entrance the page's one costly moment.
+    const tiles = Array.from(
+      viewport.querySelectorAll<HTMLElement>('.vows-tile[data-row-slot="0"]'),
     );
-    if (!frames.length) return;
+    if (!tiles.length) return;
 
     const motion = readMotion();
+
+    // Stagger order is computed from the tile table, never measured. GSAP's
+    // `grid: "auto"` would read 44 bounding boxes between writes, which costs
+    // a ~50ms forced reflow on a mid-range phone for no visual gain.
+    const tileById = new Map(band.tiles.map((tile) => [tile.index, tile]));
+    const span = lattice.rows * band.height;
+    const centreX = window.innerWidth / 2;
+    const centreY = window.innerHeight / 2;
+
+    const frames: HTMLElement[] = [];
+    const ranks: number[] = [];
+
+    for (const node of tiles) {
+      const frame = node.querySelector<HTMLElement>(".vows-tile-frame");
+      const spec = tileById.get(Number(node.dataset.tile));
+      if (!frame || !spec) continue;
+      const slot = Number(node.dataset.rowSlot);
+      const rowY = rowPosition(slot, 0, band.height, span);
+      const dx =
+        lattice.originX - band.minX + spec.x + spec.w / 2 - centreX;
+      const dy = rowY + spec.y + spec.h / 2 - centreY;
+      frames.push(frame);
+      ranks.push(Math.hypot(dx, dy));
+    }
+    if (!frames.length) return;
+
+    const furthest = Math.max(...ranks, 1);
+    const longest = motion["stagger-tile"] * band.tiles.length;
+    const delays = ranks.map((rank) => (rank / furthest) * longest);
+
     const context = gsap.context(() => {
       if (reducedMotion) {
         gsap.fromTo(
@@ -133,13 +168,13 @@ export function GalleryCanvas({ onFirstScroll }: GalleryCanvasProps) {
           scale: 1,
           duration: motion["motion-entrance"],
           ease: "power4.out",
-          stagger: { each: motion["stagger-tile"], from: "center", grid: "auto" },
+          stagger: (index) => delays[index] ?? 0,
         },
       );
     }, viewport);
 
     return () => context.revert();
-  }, [breakpoint, reducedMotion, lattice]);
+  }, [band, breakpoint, reducedMotion, lattice]);
 
   // ---- virtual scroll, parallax and drift -------------------------------
   useEffect(() => {
@@ -198,8 +233,20 @@ export function GalleryCanvas({ onFirstScroll }: GalleryCanvasProps) {
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null;
-      if (target?.closest("[data-menu-panel]")) return;
+      // The mobile menu owns the keyboard while it is open.
+      if (document.querySelector("[data-menu-panel]")) return;
+
+      const node = event.target;
+      const target =
+        node instanceof HTMLElement ? node : null;
+
+      // Tabbing is intent too: without this the chrome would stay hidden for
+      // a keyboard-only visitor, and the skip link would lead into an inert
+      // navbar (DESIGN.md §4).
+      if (event.key === "Tab") {
+        notifyScroll();
+        return;
+      }
 
       const page = window.innerHeight * motion["key-page-ratio"];
       const step = motion["key-step"];
@@ -219,7 +266,10 @@ export function GalleryCanvas({ onFirstScroll }: GalleryCanvasProps) {
           delta = -page;
           break;
         case " ":
-          if (target && /^(BUTTON|A|INPUT|TEXTAREA|SELECT)$/.test(target.tagName))
+          if (
+            target &&
+            /^(BUTTON|A|INPUT|TEXTAREA|SELECT)$/.test(target.tagName)
+          )
             return;
           delta = event.shiftKey ? -page : page;
           break;
@@ -260,6 +310,15 @@ export function GalleryCanvas({ onFirstScroll }: GalleryCanvasProps) {
     // ---- frame ----------------------------------------------------------
     const start = performance.now();
     const positions = new Map<number, number>();
+
+    // Hydration assumes motion is allowed, so a tick or two of drift can land
+    // before the media query corrects. Clear it, or tiles sit a few px off.
+    if (reducedMotion) {
+      for (const tile of tiles) {
+        tile.setX(0);
+        tile.setY(0);
+      }
+    }
 
     const tick = () => {
       const state = scroll.current;
