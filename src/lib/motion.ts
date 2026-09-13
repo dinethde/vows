@@ -42,6 +42,18 @@ const MOTION_TOKENS = [
   "wheel-speed",
   "audio-volume",
   "audio-fade",
+  "loader-appear",
+  "loader-fade-in",
+  "loader-rate",
+  "loader-cycle",
+  "loader-scramble-edge",
+  "loader-floor",
+  "loader-hold-min",
+  "loader-ceiling",
+  "loader-erase",
+  "loader-blank",
+  "loader-handoff",
+  "loader-rest-opacity",
 ] as const;
 
 type MotionToken = (typeof MOTION_TOKENS)[number];

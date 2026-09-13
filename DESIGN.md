@@ -35,10 +35,13 @@ px size for type, a spacing literal, a radius or a motion duration. `eslint-plug
 | `--color-scrim` | `rgb(248 248 249 / 0.94)` | derived from `--color-canvas` — mobile menu sheet |
 | `--color-backdrop` | `rgb(0 0 0 / 0.28)` | derived — mobile menu backdrop |
 | `--color-tile-ground` | `#e9e9eb` | derived — image placeholder before decode |
+| `--color-accent-practice` | `#ff7513` | raw — loader's left dot |
+| `--color-accent-place` | `#1389ff` | raw — loader's right dot |
 | `--color-focus-ring` | `#000000` | derived — focus outline (= ink) |
 | `--color-focus-halo` | `#ffffff` | derived — outer focus halo, keeps the ring legible on dark photos |
 
-No accent colour exists anywhere. The photography supplies all colour and contrast.
+The two loader dots (§11) are the only hues in the design. Everywhere else the
+photography supplies all the colour and contrast.
 
 ### 1.2 Blur / elevation
 
@@ -80,6 +83,7 @@ Only the values the design actually uses.
 | `--z-hero` | `10` | centred title block |
 | `--z-chrome` | `20` | navbar, bottom bar, floating mobile CTA |
 | `--z-overlay` | `30` | mobile menu sheet + backdrop |
+| `--z-loader` | `40` | loading screen — above everything, including the sheet |
 
 ### 1.6 Motion
 
@@ -126,6 +130,7 @@ Figma on exactly two elements and is kept for fidelity (see §8, divergence D1).
 | `--text-bar-sm` | Mate | `11px` | 400 | `1.25` | bottom-bar paragraph, mobile only |
 | `--text-subhead` | Inter | `14px` | 400 | `1` | hero subheading |
 | `--text-caption` | Inter | `12px` | 500 | `1.25` | tile captions |
+| `--text-meta` | Inter | `16px` | 400 | `1.2` | loader side labels (§11) |
 
 Font families: `--font-serif: 'Mate', 'Iowan Old Style', Georgia, serif`,
 `--font-sans: 'Inter', system-ui, -apple-system, sans-serif`. Both are self-hosted
@@ -458,7 +463,8 @@ transform.
 | 9 | Ambience fade | play / pause | `audio.volume` 0 ↔ `--audio-volume` | `--audio-fade` (0.9s), linear | unchanged — a fade is not motion |
 | 10 | Equalizer | while playing | bar `height` | `--eq-period`, `--ease-inout`, alternating, staggered per bar | **off** — bars hold at full height |
 | 11 | Mobile sheet | menu toggle | panel `x 100%→0`, backdrop `opacity 0→1` | `--dur-sheet`, `--ease-inout` | `opacity` only |
-| 12 | CTA / nav hover | `pointerenter` | `opacity 1→0.62` (links), pill `border-color` → `--color-ink` | `--dur-fast`, `--ease-hover` | same (non-transform, kept) |
+| 12 | Loader decode / erase / hand-off | page load | text content, line `opacity`, ground `opacity` | §11.2 | decode and erase skipped; lines cross-fade |
+| 13 | CTA / nav hover | `pointerenter` | `opacity 1→0.62` (links), pill `border-color` → `--color-ink` | `--dur-fast`, `--ease-hover` | same (non-transform, kept) |
 
 ### 5.3 Reduced motion
 
@@ -510,6 +516,7 @@ does not already do at 60 fps. **The canvas stays DOM + transforms.**
 | `GalleryCanvas` | `onFirstPan` | — (owns the pan, the lattice, the ticker and the reveal latch) |
 | `PhotoTile` | `tile: Tile`, `primary`, `eager` | by `family` (drives size only) |
 | `AmbiencePlayer` | `revealed`, `status`, `onToggle`, `track`, `audioRef` | by `status`: `paused` \| `playing` \| `blocked` |
+| `LoadingScreen` | — | by phase (§11.2); three-column row at `≥1200px`, stacked below |
 | `HeroTitle` | — | — |
 | `SiteHeader` | `revealed: boolean` | `desktop` \| `tablet` \| `mobile` (CSS, one DOM tree) |
 | `SiteFooterBar` | `revealed: boolean` | `desktop` \| `tablet` \| `mobile` |
@@ -520,9 +527,12 @@ does not already do at 60 fps. **The canvas stays DOM + transforms.**
 | `SkipLink` | `href` | — |
 
 Hooks: `useBreakpoint()` → `'mobile' | 'tablet' | 'desktop'`; `useReducedMotion()` →
-`boolean`; `useAmbience()` → `{ audioRef, status, toggle, start, track }`.
+`boolean`; `useAmbience()` → `{ audioRef, status, toggle, start, track }`;
+`useLoadingSequence(longestLine, reducedMotion)` → `{ phase, elapsed, lineOpacity,
+backdropOpacity }`.
 
-Libraries: `src/lib/pan.ts` — the pan state, its easing, its inertia, the per-axis wrap
+Libraries: `src/lib/scramble.ts` — the loader's two text passes, both pure functions of
+elapsed time (§11.2). `src/lib/pan.ts` — the pan state, its easing, its inertia, the per-axis wrap
 and the whole input driver (§5.1). It holds no React and no DOM beyond the element it is
 handed, which is what makes the pan model testable on its own.
 
@@ -595,6 +605,33 @@ exactly the Figma frame, so both documented states are unchanged.
 **D13 — Ambience player.** Figma contains no music widget; §10 is a deliberate addition,
 built from the existing tokens and type styles and revealed with the bars so State 1 is
 untouched.
+
+**D15 — The two loader dots are kept as brand marks.** The canvas annotation asks
+whether they are marks or wireframe placeholders. They are the only hues in the whole
+design, one per label, deliberately paired and consistently placed (inside the left
+label, outside the right). That reads as intent, not leftover, and stripping the one
+moment of colour the designer drew is the more destructive default — so they ship, as
+`--color-accent-practice` and `--color-accent-place`. If they were placeholders, deleting
+two tokens and two spans removes them.
+
+**D16 — The loader labels stay in Inter.** The annotation asks which family is intended.
+Figma sets them in Inter while the rest of the site is Mate, and this build has followed
+the frames over the annotations throughout (D1, for the hero subheading and tile
+captions). Inter at 16px also matches the register of the Inter tile captions.
+
+**D17 — The loader heading sits at the hero's coordinates, not the frame's.** Figma draws
+it at `y = 486`; the hero heading on the home page is at `y = 481.8`. The annotation is
+explicit that it should occupy "the same coordinates the hero heading occupies on the home
+page, so the loader resolves straight into the landing state with no jump". The intent
+wins over the 4.2px: the loader renders the hero's exact structure — same centred column,
+same gap, an invisible subheading placeholder holding the same space — so the two
+headings are pixel-identical. This is verified in §9.
+
+**D18 — A minimum hold.** The annotation gives a floor of "about 1.2s — long enough for
+the decode to finish". The longest line is 33 characters, which at 30 c/s takes exactly
+1.2s, so on a fast connection the floor is entirely consumed and the line begins deleting
+on the frame its last character resolves. `--loader-hold-min` (0.45s) keeps a beat of
+stillness, which is what the reference's 2.5s hold is for.
 
 **D14 — Tile links point outside this page.** Each photograph links to
 `/portfolio/{couple-slug}` and the CTA to `/contact`. Those routes are not part of this
@@ -747,3 +784,79 @@ paused or blocked.
 
 It is chrome: `inert` and invisible until the first pan, then it fades in with the bars.
 That keeps State 1 exactly as Figma draws it — canvas and title block, nothing else.
+
+---
+
+## 11. Loading screen
+
+Figma frame `2023-1224`, with its behaviour in the canvas note `2025-764`. A
+scrambled-text decode that hands straight over to the gallery.
+
+### 11.1 Layout
+
+White ground (`--color-surface`; the site behind it is `--color-canvas`), three elements
+on one shared baseline:
+
+| | Content | Type | Placement |
+| --- | --- | --- | --- |
+| centre | `Vows Weddings` | `--text-display`, Mate, `--color-ink` | the hero heading's exact position (D17) |
+| left | orange dot, `--loader-gap`, `Wedding photography & videography` | `--text-meta`, Inter | `--loader-gutter` (20px) from the left |
+| right | `Colombo, Sri Lanka`, `--loader-gap`, blue dot | `--text-meta`, Inter | `--loader-gutter` from the right |
+
+The row is a `minmax(0,1fr) auto minmax(0,1fr)` grid with `align-items: baseline`, which
+is what puts the three on one baseline, and the heading is pinned to `grid-column: 2` so
+it is centred on the viewport rather than between its neighbours.
+
+**Below 1200px** the two labels cannot flank the heading without pushing it off the
+viewport's centre — and that centre is the whole point of the screen. They stack
+underneath instead, absolutely positioned so the block above keeps the hero's geometry
+exactly. The two arrangements are separate markup and only one is ever displayed; this is
+the same trade the bottom bar makes in §3.8, and for the same reason.
+
+### 11.2 Sequence
+
+Every phase length is a token. The reference recording's 4.7s is a demo length, not a
+target: the hold ends when the page's assets are actually ready.
+
+| Phase | Length | What happens |
+| --- | --- | --- |
+| `idle` | — | server-rendered: opaque white, lines at zero opacity |
+| `decode` | `--loader-appear` (0.1s) then `length / --loader-rate` (30 chars/s) | each string holds its final character count and resolves left to right; the unresolved tail cycles `! @ # $ % ^ & * + = ?`. Lines ramp from `--loader-rest-opacity` (0.35) to full over `--loader-fade-in` (0.25s), so a line fades up while it is still resolving |
+| `hold` | until assets ready, at least `--loader-hold-min` (0.45s), and at least `--loader-floor` (1.2s) from the decode's start; `--loader-ceiling` (4s) ends it regardless | still, fully resolved |
+| `erase` | `--loader-erase` (0.65s) | **not** a mirror of the entrance: the string is deleted from its tail backwards while the last `--loader-scramble-edge` (3) surviving characters scramble, so the line shortens as it goes and opacity falls with it |
+| `blank` | `--loader-blank` (0.45s) | empty white screen |
+| `handoff` | `--loader-handoff` (0.6s) | the white ground fades out and the site shows through |
+
+"Assets ready" means the two self-hosted faces (`document.fonts.ready`) and every
+`img[loading="eager"]` — the first viewport of tiles. Everything else is lazy and can
+arrive behind the loader.
+
+The site mounts and runs its own entrance underneath the loader, so by the time the
+ground fades the hero is settled at the position the loader's heading just left. That is
+what makes the hand-off read.
+
+**Returning within the session** (`sessionStorage` `vows:loaded`) skips to the exit: no
+decode, no hold, just the `handoff` fade. Measured at 3.5s for a first visit and 0.7s for
+a return.
+
+Both text passes are pure functions of elapsed time in `src/lib/scramble.ts`, so the
+animation is a `render(t)` with no internal state to drift. Spaces are never replaced —
+keeping the word gaps means the line's *width* barely moves while it resolves, which is
+the point of holding the character count in a proportional face.
+
+### 11.3 Accessibility
+
+- Each line renders the finished string in the accessibility tree from the first frame,
+  with the animating characters in a sibling marked `aria-hidden`. A screen reader never
+  meets the symbol soup.
+- The overlay is `role="status"` with `aria-busy`, labelled "Loading Vows Weddings".
+- Under `prefers-reduced-motion` the decode and the erase are both skipped: the finished
+  lines simply cross-fade in and out.
+
+### 11.4 SSR
+
+The loader is server-rendered — opaque ground, lines at zero opacity — so there is no
+window in which the site is visible before the loader covers it. Nothing in its render
+path may call `readMotion()`, which reads computed styles; doing so throws on the server
+and drops the whole route to client rendering. All opacity is computed in the hook, on
+the client, and passed down as plain numbers.

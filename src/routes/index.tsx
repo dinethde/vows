@@ -4,6 +4,7 @@ import gsap from "gsap";
 
 import { AmbiencePlayer } from "~/components/ambience-player";
 import { GalleryCanvas } from "~/components/gallery-canvas";
+import { LoadingScreen } from "~/components/loading-screen";
 import { HeroTitle } from "~/components/hero-title";
 import { SiteHeader } from "~/components/site-header";
 import { SiteFooterBar } from "~/components/site-footer-bar";
@@ -128,6 +129,8 @@ function Home() {
       <p aria-live="polite" className="sr-only-focusable">
         {revealed ? copy.a11y.chromeRevealed : ""}
       </p>
+
+      <LoadingScreen />
     </>
   );
 }

@@ -25,6 +25,11 @@
   --color-scrim: rgb(248 248 249 / 0.94);
   --color-backdrop: rgb(0 0 0 / 0.28);
   --color-tile-ground: #e9e9eb;
+  /* The only accent colours in the design — the two loader dots (DESIGN.md
+   * §11, D15). Nothing else on the site uses a hue. */
+  --color-accent-practice: #ff7513;
+  --color-accent-place: #1389ff;
+
   --color-focus-ring: #000000;
   --color-focus-halo: #ffffff;
 
@@ -50,6 +55,8 @@
   --text-subhead--line-height: 1;
   --text-caption: 12px;
   --text-caption--line-height: 1.25;
+  --text-meta: 16px;              /* loader side labels, Inter */
+  --text-meta--line-height: 1.2;
 
   /* ---- Spacing -------------------------------------------------- */
   --spacing-3xs: 4px;
@@ -156,6 +163,7 @@
   --z-hero: 10;
   --z-chrome: 20;
   --z-overlay: 30;
+  --z-loader: 40;
 
   /* ---- Hamburger rules (Figma menu_icon, 24x24) ------------------ */
   --menu-rule-w: 20px;
@@ -172,6 +180,25 @@
   /* ---- Mobile menu ---------------------------------------------- */
   --sheet-w: min(84vw, 320px);
   --floating-cta-offset: var(--spacing-lg);
+
+  /* ---- Loading screen (DESIGN.md §11) ---------------------------- */
+  --loader-dot: 10px;
+  --loader-gap: var(--spacing-md);
+  --loader-gutter: var(--spacing-xl);
+
+  /* seconds, unless noted */
+  --loader-appear: 0.1;
+  --loader-fade-in: 0.25;
+  --loader-rate: 30;          /* characters resolved per second */
+  --loader-cycle: 0.05;       /* how often the unresolved tail re-rolls */
+  --loader-scramble-edge: 3;  /* characters that scramble at the erasing edge */
+  --loader-floor: 1.2;
+  --loader-hold-min: 0.45;
+  --loader-ceiling: 4;
+  --loader-erase: 0.65;
+  --loader-blank: 0.45;
+  --loader-handoff: 0.6;
+  --loader-rest-opacity: 0.35;
 
   /* ---- Keyboard pan steps --------------------------------------- */
   --key-step: 80;

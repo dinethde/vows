@@ -23,6 +23,12 @@ export const copy = {
     sinceLines: ["Since", "2013"],
     sinceInline: "Since 2013",
   },
+  loader: {
+    /** The centre line — the same string as the hero, so it hands straight over. */
+    heading: "Vows Weddings",
+    practice: "Wedding photography & videography",
+    place: "Colombo, Sri Lanka",
+  },
   a11y: {
     skipToNav: "Skip to navigation",
     canvasLabel: "Wedding gallery — an endless canvas of photographs",
@@ -32,6 +38,11 @@ export const copy = {
     menuClose: "Close menu",
     menuTitle: "Menu",
     chromeRevealed: "Navigation revealed.",
+    loader: {
+      region: "Loading Vows Weddings",
+      busy: "Loading.",
+      done: "Loaded.",
+    },
     player: {
       region: "Background music",
       play: "Play background music",
