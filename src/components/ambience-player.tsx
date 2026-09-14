@@ -34,7 +34,7 @@ export function AmbiencePlayer({
       data-chrome="bottom"
       data-revealed={revealed}
       {...(revealed ? {} : { inert: true })}
-      className="vows-chrome vows-player fixed bottom-[var(--player-bottom)] left-[var(--player-inset)] z-[var(--z-chrome)] flex items-center gap-xs rounded-pill border border-border-subtle bg-surface py-[var(--cta-pad-y)] pr-md pl-xs"
+      className="vows-chrome vows-player fixed bottom-[var(--player-bottom)] left-[var(--player-inset)] z-[var(--z-chrome)] flex items-center gap-xs rounded-pill border border-border-subtle bg-surface py-[var(--cta-pad-y)] pr-md pl-xs pb-md"
       role="group"
       aria-label={copy.a11y.player.region}
     >
