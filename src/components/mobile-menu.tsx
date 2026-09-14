@@ -41,7 +41,10 @@ export function MobileMenu({
         <SheetTitle className="sr-only-focusable">
           {copy.a11y.menuTitle}
         </SheetTitle>
-        <SheetDescription id="vows-menu-description" className="sr-only-focusable">
+        <SheetDescription
+          id="vows-menu-description"
+          className="sr-only-focusable"
+        >
           {copy.a11y.canvasHint}
         </SheetDescription>
 
@@ -59,7 +62,9 @@ export function MobileMenu({
           {copy.nav.map((link) => (
             <a
               key={link.href}
-              className="text-h5 font-serif text-ink transition-opacity duration-[var(--duration-fast)] ease-hover hover:opacity-[var(--hover-link-opacity)]"
+              className="font-serif text-h5 text-ink transition-opacity
+                duration-[var(--duration-fast)] ease-hover
+                hover:opacity-[var(--hover-link-opacity)]"
               href={link.href}
               onClick={() => onOpenChange(false)}
             >

@@ -52,14 +52,12 @@ for (const photo of manifest.photos) {
 
   for (const target of targets) {
     for (const format of FORMATS) {
-      const pipeline = sharp(master)
-        .rotate()
-        .resize({
-          width: target.w,
-          height: target.h,
-          fit: "cover",
-          position: sharp.strategy.attention,
-        });
+      const pipeline = sharp(master).rotate().resize({
+        width: target.w,
+        height: target.h,
+        fit: "cover",
+        position: sharp.strategy.attention,
+      });
       const buffer = await format.encode(pipeline).toBuffer();
       await writeFile(
         join(outDir, `${photo.slot}@${target.suffix}.${format.ext}`),

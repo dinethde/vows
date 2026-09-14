@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useReducedMotion } from "~/hooks/use-reduced-motion";
-import { useLoadingSequence, type LoaderState } from "~/hooks/use-loading-sequence";
+import {
+  useLoadingSequence,
+  type LoaderState,
+} from "~/hooks/use-loading-sequence";
 import { readMotion } from "~/lib/motion";
 import { decodeAt, eraseAt } from "~/lib/scramble";
 import { copy } from "~/data/copy";
@@ -42,7 +45,8 @@ export function LoadingScreen() {
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
         <div className="relative flex flex-col items-center gap-xs text-center whitespace-nowrap">
           <div
-            className="vows-loader-line grid w-screen grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-baseline px-[var(--loader-gutter)]"
+            className="vows-loader-line grid w-screen grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]
+              items-baseline px-[var(--loader-gutter)]"
             style={{ opacity: state.lineOpacity }}
           >
             <Label
@@ -58,7 +62,7 @@ export function LoadingScreen() {
                 two flanking labels are display:none, which removes them from
                 the grid entirely, and auto-placement would drop the heading
                 into column 1 and take it off the viewport's centre. */}
-            <h1 className="text-display col-start-2 justify-self-center font-serif text-ink">
+            <h1 className="col-start-2 justify-self-center font-serif text-display text-ink">
               <Scrambled
                 text={copy.loader.heading}
                 state={state}
@@ -77,7 +81,7 @@ export function LoadingScreen() {
 
           {/* Reserves the hero subheading's space so the heading above lands on
               the hero's line rather than the viewport's centre. */}
-          <p className="text-subhead invisible font-sans" aria-hidden>
+          <p className="invisible font-sans text-subhead" aria-hidden>
             {copy.hero.subtitle}
           </p>
 
@@ -87,7 +91,8 @@ export function LoadingScreen() {
               instead, absolutely positioned so the block above keeps the hero's
               exact geometry. Only one of the two sets is ever displayed. */}
           <div
-            className="absolute top-full left-1/2 mt-xl flex -translate-x-1/2 flex-col items-start gap-xs xl:hidden"
+            className="absolute top-full left-1/2 mt-xl flex -translate-x-1/2 flex-col items-start
+              gap-xs xl:hidden"
             style={{ opacity: state.lineOpacity }}
           >
             <Label
@@ -138,7 +143,7 @@ function Label({
   return (
     <span
       className={cn(
-        "text-meta flex items-center gap-[var(--loader-gap)] font-sans text-ink",
+        "flex items-center gap-[var(--loader-gap)] font-sans text-meta text-ink",
         className,
       )}
     >

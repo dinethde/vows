@@ -37,10 +37,14 @@ if (force || !existsSync(outFile)) {
   // afconvert ships with macOS. On other platforms substitute ffmpeg:
   //   ffmpeg -i <master> -ac 1 -b:a 64k -c:a aac <out>
   await run("afconvert", [
-    "-f", encode.container,
-    "-d", encode.codec,
-    "-b", String(encode.bitrate),
-    "-c", String(encode.channels),
+    "-f",
+    encode.container,
+    "-d",
+    encode.codec,
+    "-b",
+    String(encode.bitrate),
+    "-c",
+    String(encode.channels),
     master,
     outFile,
   ]);

@@ -17,66 +17,67 @@ type PhotoTileProps = {
  * the entrance and hover transforms, so the two never fight.
  */
 export function PhotoTile({ tile, primary, eager }: PhotoTileProps) {
-    const photo = photos[tile.photo as keyof typeof photos];
-    const base = `/photos/${tile.photo}`;
+  const photo = photos[tile.photo as keyof typeof photos];
+  const base = `/photos/${tile.photo}`;
 
-    return (
-      <div
-        className="vows-tile absolute"
-        data-tile={tile.index}
-        style={{
-          left: `${tile.x}px`,
-          top: `${tile.y}px`,
-          width: `${tile.w}px`,
-        }}
+  return (
+    <div
+      className="vows-tile absolute"
+      data-tile={tile.index}
+      style={{
+        left: `${tile.x}px`,
+        top: `${tile.y}px`,
+        width: `${tile.w}px`,
+      }}
+    >
+      <a
+        className={cn(
+          "vows-tile-link group block",
+          !primary && "pointer-events-none",
+        )}
+        href={`/portfolio/${tileSlug(tile)}`}
+        draggable={false}
+        aria-label={copy.a11y.photoAlt(tile.couple)}
+        tabIndex={primary ? undefined : -1}
       >
-        <a
-          className={cn(
-            "vows-tile-link group block",
-            !primary && "pointer-events-none",
-          )}
-          href={`/portfolio/${tileSlug(tile)}`}
-          draggable={false}
-          aria-label={copy.a11y.photoAlt(tile.couple)}
-          tabIndex={primary ? undefined : -1}
+        <span
+          className="vows-tile-frame block overflow-hidden bg-tile-ground"
+          style={{ width: `${tile.w}px`, height: `${tile.h}px` }}
         >
-          <span
-            className="vows-tile-frame block overflow-hidden bg-tile-ground"
-            style={{ width: `${tile.w}px`, height: `${tile.h}px` }}
-          >
-            <picture>
-              <source
-                type="image/avif"
-                srcSet={`${base}@1x.avif 1x, ${base}@2x.avif 2x`}
-              />
-              <source
-                type="image/webp"
-                srcSet={`${base}@1x.webp 1x, ${base}@2x.webp 2x`}
-              />
-              <img
-                className="vows-tile-img size-full object-cover"
-                src={`${base}@1x.webp`}
-                alt={photo.alt}
-                width={tile.w}
-                height={tile.h}
-                loading={eager ? "eager" : "lazy"}
-                fetchPriority={eager ? "high" : "auto"}
-                decoding="async"
-                draggable={false}
-              />
-            </picture>
-          </span>
-          <span
-            className="vows-tile-caption text-caption block truncate px-3xs font-sans font-medium text-caption-ink"
-            style={{
-              marginTop: `${tile.gap}px`,
-              height: `${CAPTION_HEIGHT}px`,
-              maxWidth: `max(var(--caption-min-w), ${tile.w}px)`,
-            }}
-          >
-            {tile.couple}
-          </span>
-        </a>
-      </div>
-    );
+          <picture>
+            <source
+              type="image/avif"
+              srcSet={`${base}@1x.avif 1x, ${base}@2x.avif 2x`}
+            />
+            <source
+              type="image/webp"
+              srcSet={`${base}@1x.webp 1x, ${base}@2x.webp 2x`}
+            />
+            <img
+              className="vows-tile-img size-full object-cover"
+              src={`${base}@1x.webp`}
+              alt={photo.alt}
+              width={tile.w}
+              height={tile.h}
+              loading={eager ? "eager" : "lazy"}
+              fetchPriority={eager ? "high" : "auto"}
+              decoding="async"
+              draggable={false}
+            />
+          </picture>
+        </span>
+        <span
+          className="vows-tile-caption block truncate px-3xs font-sans text-caption font-medium
+            text-caption-ink"
+          style={{
+            marginTop: `${tile.gap}px`,
+            height: `${CAPTION_HEIGHT}px`,
+            maxWidth: `max(var(--caption-min-w), ${tile.w}px)`,
+          }}
+        >
+          {tile.couple}
+        </span>
+      </a>
+    </div>
+  );
 }

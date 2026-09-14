@@ -8,5 +8,11 @@
   "licence": "CC BY 4.0",
   "licenceUrl": "https://creativecommons.org/licenses/by/4.0/",
   "attribution": "\"Night on the Docks - Sax\" by Kevin MacLeod (incompetech.com), licensed under CC BY 4.0",
-  "encode": { "bitrate": 64000, "channels": 1, "container": "m4af", "codec": "aac", "extension": "m4a" }
+  "encode": {
+    "bitrate": 64000,
+    "channels": 1,
+    "container": "m4af",
+    "codec": "aac",
+    "extension": "m4a"
+  }
 }

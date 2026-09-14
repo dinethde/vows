@@ -41,9 +41,9 @@
 
   --text-display: 32px;
   --text-display--line-height: 1.2;
-  --text-h5: 20px;               /* Figma text style H5 */
+  --text-h5: 20px; /* Figma text style H5 */
   --text-h5--line-height: 1.2;
-  --text-body: 16px;             /* Figma text style Regular_text */
+  --text-body: 16px; /* Figma text style Regular_text */
   --text-body--line-height: 1.5;
   --text-cta: 16px;
   --text-cta--line-height: 1.2;
@@ -55,7 +55,7 @@
   --text-subhead--line-height: 1;
   --text-caption: 12px;
   --text-caption--line-height: 1.25;
-  --text-meta: 16px;              /* loader side labels, Inter */
+  --text-meta: 16px; /* loader side labels, Inter */
   --text-meta--line-height: 1.2;
 
   /* ---- Spacing -------------------------------------------------- */
@@ -189,9 +189,9 @@
   /* seconds, unless noted */
   --loader-appear: 0.1;
   --loader-fade-in: 0.25;
-  --loader-rate: 30;          /* characters resolved per second */
-  --loader-cycle: 0.05;       /* how often the unresolved tail re-rolls */
-  --loader-scramble-edge: 3;  /* characters that scramble at the erasing edge */
+  --loader-rate: 30; /* characters resolved per second */
+  --loader-cycle: 0.05; /* how often the unresolved tail re-rolls */
+  --loader-scramble-edge: 3; /* characters that scramble at the erasing edge */
   --loader-floor: 1.2;
   --loader-hold-min: 0.45;
   --loader-ceiling: 4;

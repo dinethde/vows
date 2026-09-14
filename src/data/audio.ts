@@ -20,5 +20,6 @@ export const track: Track = {
   title: "Night on the Docks",
   artist: "Kevin MacLeod",
   licence: "CC BY 4.0",
-  attribution: "\"Night on the Docks - Sax\" by Kevin MacLeod (incompetech.com), licensed under CC BY 4.0",
+  attribution:
+    '"Night on the Docks - Sax" by Kevin MacLeod (incompetech.com), licensed under CC BY 4.0',
 };

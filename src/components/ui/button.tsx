@@ -10,12 +10,16 @@ import { cn } from "~/lib/utils";
  * Every value below resolves to a token from src/styles/tokens.css.
  */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap font-serif transition-[opacity,border-color,transform] ease-hover disabled:pointer-events-none disabled:opacity-50",
+  `inline-flex items-center justify-center font-serif whitespace-nowrap
+  transition-[opacity,border-color,transform] ease-hover disabled:pointer-events-none
+  disabled:opacity-50`,
   {
     variants: {
       variant: {
-        pill: "bg-surface border border-border-subtle text-ink rounded-pill duration-[var(--duration-fast)] hover:border-ink",
-        ghost: "text-ink duration-[var(--duration-fast)] hover:opacity-[var(--hover-link-opacity)]",
+        pill: `rounded-pill border border-border-subtle bg-surface text-ink
+        duration-[var(--duration-fast)] hover:border-ink`,
+        ghost:
+          "text-ink duration-[var(--duration-fast)] hover:opacity-[var(--hover-link-opacity)]",
       },
       size: {
         default: "px-md py-[var(--spacing-2xs)] text-cta",

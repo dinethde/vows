@@ -7,13 +7,7 @@ import { decodeDuration } from "~/lib/scramble";
 const SESSION_KEY = "vows:loaded";
 
 export type LoaderPhase =
-  | "idle"
-  | "decode"
-  | "hold"
-  | "erase"
-  | "blank"
-  | "handoff"
-  | "done";
+  "idle" | "decode" | "hold" | "erase" | "blank" | "handoff" | "done";
 
 export type LoaderState = {
   phase: LoaderPhase;
@@ -143,12 +137,9 @@ export function useLoadingSequence(
     void assetsReady().then(() => {
       ready = true;
     });
-    const ceiling = window.setTimeout(
-      () => {
-        ready = true;
-      },
-      motion["loader-ceiling"] * 1000,
-    );
+    const ceiling = window.setTimeout(() => {
+      ready = true;
+    }, motion["loader-ceiling"] * 1000);
 
     // The decode has to finish before the hold can end, however fast the
     // network was — the floor is the longer of the two.
@@ -176,8 +167,7 @@ export function useLoadingSequence(
           // line on the same frame its last character resolved.
           if (
             ready &&
-            elapsed >=
-              Math.max(motion["loader-hold-min"], floor - decodeFor)
+            elapsed >= Math.max(motion["loader-hold-min"], floor - decodeFor)
           ) {
             setPhase("erase");
           } else {

@@ -47,7 +47,10 @@ export function decodeAt(
   elapsed: number,
   { rate, cycle }: ScrambleOptions,
 ) {
-  const resolved = Math.max(0, Math.min(text.length, Math.floor(elapsed * rate)));
+  const resolved = Math.max(
+    0,
+    Math.min(text.length, Math.floor(elapsed * rate)),
+  );
   if (resolved >= text.length) return text;
 
   const step = Math.floor(elapsed / cycle);

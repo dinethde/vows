@@ -153,7 +153,11 @@ export function GalleryCanvas({ onFirstPan }: GalleryCanvasProps) {
       }
       gsap.fromTo(
         frames,
-        { opacity: 0, y: motion["entrance-y"], scale: motion["entrance-scale"] },
+        {
+          opacity: 0,
+          y: motion["entrance-y"],
+          scale: motion["entrance-scale"],
+        },
         {
           opacity: 1,
           y: 0,
@@ -395,7 +399,9 @@ export function GalleryCanvas({ onFirstPan }: GalleryCanvasProps) {
           const parallax = depth * motion["depth-pan-factor"];
 
           tile.setX(
-            px * depth + fromCentreX * parallax + Math.sin(turn + phase) * amplitude,
+            px * depth +
+              fromCentreX * parallax +
+              Math.sin(turn + phase) * amplitude,
           );
           tile.setY(
             py * depth +

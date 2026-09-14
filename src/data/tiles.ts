@@ -8,11 +8,7 @@ import type { PhotoId } from "./photos";
 export type Breakpoint = "mobile" | "tablet" | "desktop";
 
 export type TileFamily =
-  | "portrait"
-  | "landscape"
-  | "squareLg"
-  | "squareSm"
-  | "tall";
+  "portrait" | "landscape" | "squareLg" | "squareSm" | "tall";
 
 export type Tile = {
   /** Stable within a breakpoint; drives keys, stagger order and captions. */

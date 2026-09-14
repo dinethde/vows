@@ -11,12 +11,28 @@ const dir = join(process.cwd(), ".lint-fixture");
 const cases = [
   ["hex.ts", 'export const a = "#535051";', "Hex colour"],
   ["rgb.ts", 'export const a = "rgba(0, 0, 0, 0.8)";', "Colour function"],
-  ["named.tsx", 'export const a = <i className="bg-white" />;', "CSS named colour"],
-  ["gsap.ts", 'gsap.to(el, { duration: 0.64, backgroundColor: "#fff" });', "Hex colour"],
+  [
+    "named.tsx",
+    'export const a = <i className="bg-white" />;',
+    "CSS named colour",
+  ],
+  [
+    "gsap.ts",
+    'gsap.to(el, { duration: 0.64, backgroundColor: "#fff" });',
+    "Hex colour",
+  ],
   ["size.ts", 'export const a = { width: "150px" };', "Dimension literal"],
   ["dur.ts", 'export const a = "320ms";', "Duration literal"],
-  ["ease.ts", 'export const a = "cubic-bezier(0.22, 1, 0.36, 1)";', "Easing curve"],
-  ["style.css", "a { color: #535051; padding: 12px; transition: 320ms; }", "Hex colour"],
+  [
+    "ease.ts",
+    'export const a = "cubic-bezier(0.22, 1, 0.36, 1)";',
+    "Easing curve",
+  ],
+  [
+    "style.css",
+    "a { color: #535051; padding: 12px; transition: 320ms; }",
+    "Hex colour",
+  ],
 ];
 
 mkdirSync(dir, { recursive: true });
@@ -42,7 +58,9 @@ for (const [name, , expect] of cases) {
 }
 
 if (failed) {
-  console.error("\nvows/no-design-literals is not catching everything it must.");
+  console.error(
+    "\nvows/no-design-literals is not catching everything it must.",
+  );
   process.exit(1);
 }
 console.log("\nvows/no-design-literals verified across all categories.");

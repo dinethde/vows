@@ -13,7 +13,11 @@ import { copy } from "~/data/copy";
 export function SiteFooterBar({ revealed }: { revealed: boolean }) {
   return (
     <>
-      <div className="pointer-events-none fixed inset-x-0 bottom-[calc(var(--bar-bottom-h)+var(--floating-cta-offset))] z-[var(--z-chrome)] flex justify-center md:hidden">
+      <div
+        className="pointer-events-none fixed inset-x-0
+          bottom-[calc(var(--bar-bottom-h)+var(--floating-cta-offset))] z-[var(--z-chrome)] flex
+          justify-center md:hidden"
+      >
         <ChatCta
           data-chrome="bottom"
           data-revealed={revealed}
@@ -26,17 +30,25 @@ export function SiteFooterBar({ revealed }: { revealed: boolean }) {
         data-chrome="bottom"
         data-revealed={revealed}
         {...(revealed ? {} : { inert: true })}
-        className="vows-chrome chrome-bar bottom-0 flex h-[var(--bar-bottom-h)] flex-col justify-center px-[var(--gutter-bottom)] backdrop-blur-[var(--blur-chrome-bottom)] md:flex-row md:items-center md:justify-between"
+        className="vows-chrome chrome-bar bottom-0 flex h-[var(--bar-bottom-h)] flex-col
+          justify-center px-[var(--gutter-bottom)] backdrop-blur-[var(--blur-chrome-bottom)]
+          md:flex-row md:items-center md:justify-between"
       >
-        <p className="text-h5 hidden shrink-0 items-center px-lg py-xs font-serif text-ink md:flex">
+        <p className="hidden shrink-0 items-center px-lg py-xs font-serif text-h5 text-ink md:flex">
           {copy.wordmark}
         </p>
 
-        <p className="text-bar-sm flex w-[var(--bar-blurb-w)] shrink-0 items-center justify-center px-lg py-xs text-center font-serif text-ink md:text-bar">
+        <p
+          className="flex w-[var(--bar-blurb-w)] shrink-0 items-center justify-center px-lg py-xs
+            text-center font-serif text-bar-sm text-ink md:text-bar"
+        >
           {copy.bottomBar.blurb}
         </p>
 
-        <p className="text-bar hidden shrink-0 items-center px-lg py-xs text-center font-serif text-ink md:flex">
+        <p
+          className="hidden shrink-0 items-center px-lg py-xs text-center font-serif text-bar
+            text-ink md:flex"
+        >
           <span>
             {copy.bottomBar.sinceLines[0]}
             <br />
@@ -45,10 +57,10 @@ export function SiteFooterBar({ revealed }: { revealed: boolean }) {
         </p>
 
         <div className="flex items-center justify-between md:hidden">
-          <p className="text-h5 flex shrink-0 items-center px-lg py-xs font-serif text-ink">
+          <p className="flex shrink-0 items-center px-lg py-xs font-serif text-h5 text-ink">
             {copy.wordmark}
           </p>
-          <p className="text-bar flex shrink-0 items-center px-lg py-xs font-serif text-ink">
+          <p className="flex shrink-0 items-center px-lg py-xs font-serif text-bar text-ink">
             {copy.bottomBar.sinceInline}
           </p>
         </div>

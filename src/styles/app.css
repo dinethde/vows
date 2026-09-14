@@ -136,9 +136,15 @@
     animation: vows-eq var(--eq-period) var(--ease-inout) infinite alternate;
   }
 
-  .vows-player-eq i:nth-child(2) { animation-delay: calc(var(--eq-period) * -0.25); }
-  .vows-player-eq i:nth-child(3) { animation-delay: calc(var(--eq-period) * -0.6); }
-  .vows-player-eq i:nth-child(4) { animation-delay: calc(var(--eq-period) * -0.4); }
+  .vows-player-eq i:nth-child(2) {
+    animation-delay: calc(var(--eq-period) * -0.25);
+  }
+  .vows-player-eq i:nth-child(3) {
+    animation-delay: calc(var(--eq-period) * -0.6);
+  }
+  .vows-player-eq i:nth-child(4) {
+    animation-delay: calc(var(--eq-period) * -0.4);
+  }
 
   @media (prefers-reduced-motion: reduce) {
     .vows-player-eq[data-playing="true"] i {
@@ -158,16 +164,26 @@
       opacity var(--duration-fast) var(--ease-hover);
   }
 
-  .vows-menu-rule-1 { top: var(--menu-rule-y1); }
-  .vows-menu-rule-2 { top: var(--menu-rule-y2); }
-  .vows-menu-rule-3 { top: var(--menu-rule-y3); }
+  .vows-menu-rule-1 {
+    top: var(--menu-rule-y1);
+  }
+  .vows-menu-rule-2 {
+    top: var(--menu-rule-y2);
+  }
+  .vows-menu-rule-3 {
+    top: var(--menu-rule-y3);
+  }
 
   [aria-expanded="true"] > .vows-menu-rule-1 {
-    transform: translateY(calc(var(--menu-rule-y2) - var(--menu-rule-y1))) rotate(45deg);
+    transform: translateY(calc(var(--menu-rule-y2) - var(--menu-rule-y1)))
+      rotate(45deg);
   }
-  [aria-expanded="true"] > .vows-menu-rule-2 { opacity: 0; }
+  [aria-expanded="true"] > .vows-menu-rule-2 {
+    opacity: 0;
+  }
   [aria-expanded="true"] > .vows-menu-rule-3 {
-    transform: translateY(calc(var(--menu-rule-y2) - var(--menu-rule-y3))) rotate(-45deg);
+    transform: translateY(calc(var(--menu-rule-y2) - var(--menu-rule-y3)))
+      rotate(-45deg);
   }
 
   /* Hover is on the image alone so the caption slot never moves. */
@@ -193,8 +209,12 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .vows-tile-img { transition: none; }
-    .vows-tile-link:hover .vows-tile-img { transform: none; }
+    .vows-tile-img {
+      transition: none;
+    }
+    .vows-tile-link:hover .vows-tile-img {
+      transform: none;
+    }
   }
 
   /* Chrome starts hidden; GSAP reveals it on the first scroll (§5.2 #3). */
@@ -209,26 +229,50 @@
 }
 
 @keyframes vows-eq {
-  from { height: var(--eq-bar-min); }
-  to { height: var(--eq-h); }
+  from {
+    height: var(--eq-bar-min);
+  }
+  to {
+    height: var(--eq-h);
+  }
 }
 
 @keyframes vows-fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes vows-fade-out {
-  from { opacity: 1; }
-  to { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 @keyframes vows-sheet-in {
-  from { opacity: 0; transform: translate3d(100%, 0, 0); }
-  to { opacity: 1; transform: translate3d(0, 0, 0); }
+  from {
+    opacity: 0;
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 @keyframes vows-sheet-out {
-  from { opacity: 1; transform: translate3d(0, 0, 0); }
-  to { opacity: 0; transform: translate3d(100%, 0, 0); }
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(100%, 0, 0);
+  }
 }

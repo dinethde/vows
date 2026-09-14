@@ -41,7 +41,9 @@ for (const family of FAMILIES) {
   ).then((r) => r.text());
 
   // Google emits `/* subset */ @font-face { ... }` blocks in order.
-  const faces = [...css.matchAll(/\/\*\s*([\w-[\]]+)\s*\*\/\s*@font-face\s*{([^}]+)}/g)];
+  const faces = [
+    ...css.matchAll(/\/\*\s*([\w-[\]]+)\s*\*\/\s*@font-face\s*{([^}]+)}/g),
+  ];
   let kept = 0;
 
   for (const [, subset, body] of faces) {
@@ -51,9 +53,7 @@ for (const family of FAMILIES) {
     if (!url || !range) continue;
 
     const file = `${family.slug}-${subset}.woff2`;
-    const bytes = Buffer.from(
-      await fetch(url).then((r) => r.arrayBuffer()),
-    );
+    const bytes = Buffer.from(await fetch(url).then((r) => r.arrayBuffer()));
     await writeFile(join(outDir, file), bytes);
     kept += 1;
 
@@ -74,5 +74,8 @@ for (const family of FAMILIES) {
   if (!kept) throw new Error(`No subsets kept for ${family.name}`);
 }
 
-await writeFile(join(process.cwd(), "src", "styles", "fonts.css"), blocks.join("\n"));
+await writeFile(
+  join(process.cwd(), "src", "styles", "fonts.css"),
+  blocks.join("\n"),
+);
 console.log("\nwrote src/styles/fonts.css");

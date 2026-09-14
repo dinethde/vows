@@ -226,7 +226,13 @@ export function attachPanInput(options: PanInputOptions): () => void {
           dx += sample.dx;
           dy += sample.dy;
         }
-        applyInertia(pan, dx / elapsed, dy / elapsed, inertiaSeconds, inertiaMax);
+        applyInertia(
+          pan,
+          dx / elapsed,
+          dy / elapsed,
+          inertiaSeconds,
+          inertiaMax,
+        );
       }
     }
     samples = [];

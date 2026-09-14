@@ -34,7 +34,9 @@ export function AmbiencePlayer({
       data-chrome="bottom"
       data-revealed={revealed}
       {...(revealed ? {} : { inert: true })}
-      className="vows-chrome vows-player fixed bottom-[var(--player-bottom)] left-[var(--player-inset)] z-[var(--z-chrome)] flex items-center gap-xs rounded-pill border border-border-subtle bg-surface py-[var(--cta-pad-y)] pr-md pl-xs pb-md"
+      className="vows-chrome vows-player fixed bottom-[var(--player-bottom)]
+        left-[var(--player-inset)] z-[var(--z-chrome)] flex items-center gap-xs rounded-pill border
+        border-border-subtle bg-surface py-[var(--cta-pad-y)] pr-md pb-md pl-xs"
       role="group"
       aria-label={copy.a11y.player.region}
     >
@@ -49,16 +51,18 @@ export function AmbiencePlayer({
         aria-pressed={playing}
         aria-label={label}
         title={label}
-        className="vows-player-toggle flex size-xl shrink-0 items-center justify-center rounded-pill text-ink transition-opacity duration-[var(--duration-fast)] ease-hover hover:opacity-[var(--hover-link-opacity)]"
+        className="vows-player-toggle flex size-xl shrink-0 items-center justify-center rounded-pill
+          text-ink transition-opacity duration-[var(--duration-fast)] ease-hover
+          hover:opacity-[var(--hover-link-opacity)]"
       >
-        <span className="vows-player-glyph" data-playing={playing} aria-hidden />
+        <span
+          className="vows-player-glyph"
+          data-playing={playing}
+          aria-hidden
+        />
       </button>
 
-      <span
-        className="vows-player-eq"
-        data-playing={playing}
-        aria-hidden
-      >
+      <span className="vows-player-eq" data-playing={playing} aria-hidden>
         <i />
         <i />
         <i />
@@ -66,7 +70,7 @@ export function AmbiencePlayer({
       </span>
 
       <span
-        className="text-caption font-sans font-medium text-caption-ink"
+        className="font-sans text-caption font-medium text-caption-ink"
         title={copy.a11y.player.nowPlaying(track.title, track.artist)}
       >
         {track.title}

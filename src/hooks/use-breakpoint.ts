@@ -36,7 +36,8 @@ function subscribe(onChange: () => void) {
   const current = mediaLists();
   for (const [, list] of current) list.addEventListener("change", onChange);
   return () => {
-    for (const [, list] of current) list.removeEventListener("change", onChange);
+    for (const [, list] of current)
+      list.removeEventListener("change", onChange);
   };
 }
 

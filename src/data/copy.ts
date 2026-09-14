@@ -50,8 +50,7 @@ export const copy = {
       playing: "Background music is playing.",
       paused: "Background music is paused.",
       blocked: "Background music could not start automatically.",
-      nowPlaying: (title: string, artist: string) =>
-        `${title} by ${artist}`,
+      nowPlaying: (title: string, artist: string) => `${title} by ${artist}`,
     },
     photoAlt: (couple: string) => `${couple} — wedding photograph`,
   },

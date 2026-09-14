@@ -17,52 +17,58 @@ export function SiteHeader({ revealed }: { revealed: boolean }) {
 
   const onOpenChange = useCallback((open: boolean) => setMenuOpen(open), []);
 
-    return (
-      <>
-        <header
-          id="vows-nav"
-          data-chrome="top"
-          data-revealed={revealed}
-          {...(revealed ? {} : { inert: true })}
-          className="vows-chrome chrome-bar top-0 flex h-[var(--bar-top-h)] items-center justify-between px-[var(--gutter-top)] backdrop-blur-[var(--blur-chrome-top)]"
+  return (
+    <>
+      <header
+        id="vows-nav"
+        data-chrome="top"
+        data-revealed={revealed}
+        {...(revealed ? {} : { inert: true })}
+        className="vows-chrome chrome-bar top-0 flex h-[var(--bar-top-h)] items-center
+          justify-between px-[var(--gutter-top)] backdrop-blur-[var(--blur-chrome-top)]"
+      >
+        <a
+          className="flex shrink-0 items-center px-xs py-3xs font-serif text-h5 text-ink
+            transition-opacity duration-[var(--duration-fast)] ease-hover
+            hover:opacity-[var(--hover-link-opacity)]"
+          href="/"
         >
-          <a
-            className="text-h5 flex shrink-0 items-center px-xs py-3xs font-serif text-ink transition-opacity duration-[var(--duration-fast)] ease-hover hover:opacity-[var(--hover-link-opacity)]"
-            href="/"
-          >
-            {copy.wordmark}
-          </a>
+          {copy.wordmark}
+        </a>
 
-          <nav
-            aria-label="Primary"
-            className="hidden shrink-0 items-center gap-md md:flex mid:absolute mid:left-1/2 mid:-translate-x-1/2"
-          >
-            {copy.nav.map((link) => (
-              <a
-                key={link.href}
-                className="text-body flex w-[var(--nav-link-w)] items-center justify-center px-xs py-3xs font-serif text-ink transition-opacity duration-[var(--duration-fast)] ease-hover hover:opacity-[var(--hover-link-opacity)]"
-                href={link.href}
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
+        <nav
+          aria-label="Primary"
+          className="hidden shrink-0 items-center gap-md md:flex mid:absolute mid:left-1/2
+            mid:-translate-x-1/2"
+        >
+          {copy.nav.map((link) => (
+            <a
+              key={link.href}
+              className="flex w-[var(--nav-link-w)] items-center justify-center px-xs py-3xs
+                font-serif text-body text-ink transition-opacity duration-[var(--duration-fast)]
+                ease-hover hover:opacity-[var(--hover-link-opacity)]"
+              href={link.href}
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
 
-          <ChatCta className="hidden py-[var(--cta-pad-y)] md:inline-flex" />
+        <ChatCta className="hidden py-[var(--cta-pad-y)] md:inline-flex" />
 
-          <MenuButton
-            ref={triggerRef}
-            className="md:hidden"
-            open={menuOpen}
-            onClick={() => onOpenChange(!menuOpen)}
-          />
-        </header>
-
-        <MobileMenu
+        <MenuButton
+          ref={triggerRef}
+          className="md:hidden"
           open={menuOpen}
-          onOpenChange={onOpenChange}
-          returnFocusTo={triggerRef}
+          onClick={() => onOpenChange(!menuOpen)}
         />
-      </>
-    );
+      </header>
+
+      <MobileMenu
+        open={menuOpen}
+        onOpenChange={onOpenChange}
+        returnFocusTo={triggerRef}
+      />
+    </>
+  );
 }

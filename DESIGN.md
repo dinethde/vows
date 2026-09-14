@@ -3,10 +3,10 @@
 Source of truth: Figma `vows-high-fidelity`, section **Homepage** (`2003-760`).
 
 | Breakpoint | Design frame | State 1 (first load) | State 2 (after scroll) |
-| --- | --- | --- | --- |
-| Desktop | 1440 × 1024 | `2003-761` | `2003-1109` |
-| Tablet | 834 × 1194 | `2015-764` | `2010-757` |
-| Mobile | 390 × 844 | `2015-850` | `2010-863` |
+| ---------- | ------------ | -------------------- | ---------------------- |
+| Desktop    | 1440 × 1024  | `2003-761`           | `2003-1109`            |
+| Tablet     | 834 × 1194   | `2015-764`           | `2010-757`             |
+| Mobile     | 390 × 844    | `2015-850`           | `2010-863`             |
 
 The page is a single infinite, cursor-reactive canvas of scattered photographs with a
 still title block held in the centre. There are no sections, no pagination, no footer
@@ -23,95 +23,95 @@ px size for type, a spacing literal, a radius or a motion duration. `eslint-plug
 
 ### 1.1 Colour
 
-| Token | Value | Figma origin |
-| --- | --- | --- |
-| `--color-canvas` | `#f8f8f9` | variable `Color/gray/100` (frame fill) |
-| `--color-ink` | `#000000` | raw `black` — wordmark, nav links, hero title, bar text |
-| `--color-ink-muted` | `#535051` | variable `Color/gray/1500` — hero subheading, hamburger rules |
-| `--color-caption-ink` | `rgb(0 0 0 / 0.8)` | raw `rgba(0,0,0,0.8)` — tile captions |
-| `--color-surface` | `#ffffff` | raw `white` — CTA pill fill |
-| `--color-chrome` | `rgb(255 255 255 / 0.2)` | raw `rgba(255,255,255,0.2)` — both bars |
-| `--color-border-subtle` | `#dddddd` | raw `#ddd` — CTA pill border |
-| `--color-scrim` | `rgb(248 248 249 / 0.94)` | derived from `--color-canvas` — mobile menu sheet |
-| `--color-backdrop` | `rgb(0 0 0 / 0.28)` | derived — mobile menu backdrop |
-| `--color-tile-ground` | `#e9e9eb` | derived — image placeholder before decode |
-| `--color-accent-practice` | `#ff7513` | raw — loader's left dot |
-| `--color-accent-place` | `#1389ff` | raw — loader's right dot |
-| `--color-focus-ring` | `#000000` | derived — focus outline (= ink) |
-| `--color-focus-halo` | `#ffffff` | derived — outer focus halo, keeps the ring legible on dark photos |
+| Token                     | Value                     | Figma origin                                                      |
+| ------------------------- | ------------------------- | ----------------------------------------------------------------- |
+| `--color-canvas`          | `#f8f8f9`                 | variable `Color/gray/100` (frame fill)                            |
+| `--color-ink`             | `#000000`                 | raw `black` — wordmark, nav links, hero title, bar text           |
+| `--color-ink-muted`       | `#535051`                 | variable `Color/gray/1500` — hero subheading, hamburger rules     |
+| `--color-caption-ink`     | `rgb(0 0 0 / 0.8)`        | raw `rgba(0,0,0,0.8)` — tile captions                             |
+| `--color-surface`         | `#ffffff`                 | raw `white` — CTA pill fill                                       |
+| `--color-chrome`          | `rgb(255 255 255 / 0.2)`  | raw `rgba(255,255,255,0.2)` — both bars                           |
+| `--color-border-subtle`   | `#dddddd`                 | raw `#ddd` — CTA pill border                                      |
+| `--color-scrim`           | `rgb(248 248 249 / 0.94)` | derived from `--color-canvas` — mobile menu sheet                 |
+| `--color-backdrop`        | `rgb(0 0 0 / 0.28)`       | derived — mobile menu backdrop                                    |
+| `--color-tile-ground`     | `#e9e9eb`                 | derived — image placeholder before decode                         |
+| `--color-accent-practice` | `#ff7513`                 | raw — loader's left dot                                           |
+| `--color-accent-place`    | `#1389ff`                 | raw — loader's right dot                                          |
+| `--color-focus-ring`      | `#000000`                 | derived — focus outline (= ink)                                   |
+| `--color-focus-halo`      | `#ffffff`                 | derived — outer focus halo, keeps the ring legible on dark photos |
 
 The two loader dots (§11) are the only hues in the design. Everywhere else the
 photography supplies all the colour and contrast.
 
 ### 1.2 Blur / elevation
 
-| Token | Value | Figma origin |
-| --- | --- | --- |
-| `--blur-chrome-top` | `10px` | `navbar` backdrop-blur |
-| `--blur-chrome-bottom` | `5px` | `bottom_bar` backdrop-blur |
-| `--blur-sheet` | `16px` | derived — mobile menu |
+| Token                  | Value  | Figma origin               |
+| ---------------------- | ------ | -------------------------- |
+| `--blur-chrome-top`    | `10px` | `navbar` backdrop-blur     |
+| `--blur-chrome-bottom` | `5px`  | `bottom_bar` backdrop-blur |
+| `--blur-sheet`         | `16px` | derived — mobile menu      |
 
 ### 1.3 Spacing
 
 Only the values the design actually uses.
 
-| Token | Value | Used by |
-| --- | --- | --- |
-| `--space-3xs` | `4px` | caption container inline padding |
-| `--space-2xs` | `5px` | tile → caption gap |
-| `--space-xs` | `8px` | nav link block padding-y, hero title→subheading gap |
-| `--space-sm` | `10px` | bottom bar padding-y, wide-caption tile gap (desktop tile 13) |
-| `--space-md` | `12px` | nav link gap, CTA padding-x |
-| `--space-lg` | `16px` | info-wrapper padding-x, mobile gutter |
-| `--space-xl` | `20px` | mobile navbar gutter |
-| `--space-2xl` | `24px` | tablet navbar/bottom-bar gutter |
-| `--space-3xl` | `62px` | desktop navbar gutter |
-| `--space-4xl` | `64px` | desktop bottom-bar gutter |
+| Token         | Value  | Used by                                                       |
+| ------------- | ------ | ------------------------------------------------------------- |
+| `--space-3xs` | `4px`  | caption container inline padding                              |
+| `--space-2xs` | `5px`  | tile → caption gap                                            |
+| `--space-xs`  | `8px`  | nav link block padding-y, hero title→subheading gap           |
+| `--space-sm`  | `10px` | bottom bar padding-y, wide-caption tile gap (desktop tile 13) |
+| `--space-md`  | `12px` | nav link gap, CTA padding-x                                   |
+| `--space-lg`  | `16px` | info-wrapper padding-x, mobile gutter                         |
+| `--space-xl`  | `20px` | mobile navbar gutter                                          |
+| `--space-2xl` | `24px` | tablet navbar/bottom-bar gutter                               |
+| `--space-3xl` | `62px` | desktop navbar gutter                                         |
+| `--space-4xl` | `64px` | desktop bottom-bar gutter                                     |
 
 ### 1.4 Radius
 
-| Token | Value | Figma origin |
-| --- | --- | --- |
-| `--radius-pill` | `15px` | `nav_link` CTA corner radius |
-| `--radius-tile` | `0px` | tiles are square-cornered in every frame |
+| Token           | Value  | Figma origin                             |
+| --------------- | ------ | ---------------------------------------- |
+| `--radius-pill` | `15px` | `nav_link` CTA corner radius             |
+| `--radius-tile` | `0px`  | tiles are square-cornered in every frame |
 
 ### 1.5 Z-index
 
-| Token | Value | Layer |
-| --- | --- | --- |
-| `--z-canvas` | `0` | gallery stage |
-| `--z-hero` | `10` | centred title block |
-| `--z-chrome` | `20` | navbar, bottom bar, floating mobile CTA |
-| `--z-overlay` | `30` | mobile menu sheet + backdrop |
-| `--z-loader` | `40` | loading screen — above everything, including the sheet |
+| Token         | Value | Layer                                                  |
+| ------------- | ----- | ------------------------------------------------------ |
+| `--z-canvas`  | `0`   | gallery stage                                          |
+| `--z-hero`    | `10`  | centred title block                                    |
+| `--z-chrome`  | `20`  | navbar, bottom bar, floating mobile CTA                |
+| `--z-overlay` | `30`  | mobile menu sheet + backdrop                           |
+| `--z-loader`  | `40`  | loading screen — above everything, including the sheet |
 
 ### 1.6 Motion
 
 Figma specifies no easing or duration. These are chosen; they are the contract.
 
-| Token | Value | Used by |
-| --- | --- | --- |
-| `--dur-instant` | `120ms` | focus ring |
-| `--dur-fast` | `180ms` | caption opacity on hover |
-| `--dur-base` | `320ms` | tile hover scale |
-| `--dur-sheet` | `380ms` | mobile menu open/close |
-| `--dur-slow` | `640ms` | chrome reveal |
-| `--dur-entrance` | `800ms` | first-paint tile entrance |
-| `--dur-drift` | `11s` | idle tile drift cycle (base; per-tile jitter ±3s) |
-| `--ease-out` | `cubic-bezier(0.22, 1, 0.36, 1)` | reveals, entrances (out-quint) |
-| `--ease-hover` | `cubic-bezier(0.33, 1, 0.68, 1)` | hover (out-cubic) |
-| `--ease-inout` | `cubic-bezier(0.65, 0, 0.35, 1)` | sheet |
-| `--stagger-chrome` | `80ms` | navbar → bottom bar |
-| `--stagger-tile` | `36ms` | tile entrance, ordered by distance from viewport centre |
-| `--lerp-pointer` | `0.085` | per-frame smoothing of the pointer-parallax target |
-| `--lerp-pan` | `0.12` | per-frame smoothing of the pan offset |
-| `--wheel-speed` | `1` | wheel delta → pan, unscaled |
-| `--drag-threshold` | `6` | px of travel that turns a press into a pan (§5.1) |
-| `--cull-margin` | `120` | px outside the viewport past which a cell's tiles stop updating |
-| `--inertia-seconds` | `0.28` | release velocity is thrown this far ahead |
-| `--inertia-max` | `1600` | px ceiling on a single throw |
-| `--eq-period` | `900ms` | equalizer bar cycle |
-| `--audio-fade` | `0.9` | seconds, volume ramp in and out |
+| Token               | Value                            | Used by                                                         |
+| ------------------- | -------------------------------- | --------------------------------------------------------------- |
+| `--dur-instant`     | `120ms`                          | focus ring                                                      |
+| `--dur-fast`        | `180ms`                          | caption opacity on hover                                        |
+| `--dur-base`        | `320ms`                          | tile hover scale                                                |
+| `--dur-sheet`       | `380ms`                          | mobile menu open/close                                          |
+| `--dur-slow`        | `640ms`                          | chrome reveal                                                   |
+| `--dur-entrance`    | `800ms`                          | first-paint tile entrance                                       |
+| `--dur-drift`       | `11s`                            | idle tile drift cycle (base; per-tile jitter ±3s)               |
+| `--ease-out`        | `cubic-bezier(0.22, 1, 0.36, 1)` | reveals, entrances (out-quint)                                  |
+| `--ease-hover`      | `cubic-bezier(0.33, 1, 0.68, 1)` | hover (out-cubic)                                               |
+| `--ease-inout`      | `cubic-bezier(0.65, 0, 0.35, 1)` | sheet                                                           |
+| `--stagger-chrome`  | `80ms`                           | navbar → bottom bar                                             |
+| `--stagger-tile`    | `36ms`                           | tile entrance, ordered by distance from viewport centre         |
+| `--lerp-pointer`    | `0.085`                          | per-frame smoothing of the pointer-parallax target              |
+| `--lerp-pan`        | `0.12`                           | per-frame smoothing of the pan offset                           |
+| `--wheel-speed`     | `1`                              | wheel delta → pan, unscaled                                     |
+| `--drag-threshold`  | `6`                              | px of travel that turns a press into a pan (§5.1)               |
+| `--cull-margin`     | `120`                            | px outside the viewport past which a cell's tiles stop updating |
+| `--inertia-seconds` | `0.28`                           | release velocity is thrown this far ahead                       |
+| `--inertia-max`     | `1600`                           | px ceiling on a single throw                                    |
+| `--eq-period`       | `900ms`                          | equalizer bar cycle                                             |
+| `--audio-fade`      | `0.9`                            | seconds, volume ramp in and out                                 |
 
 ---
 
@@ -120,17 +120,17 @@ Figma specifies no easing or duration. These are chosen; they are the contract.
 Two families. `Mate` is the studio voice (variable `Primary Font`); `Inter` appears in
 Figma on exactly two elements and is kept for fidelity (see §8, divergence D1).
 
-| Token | Family | Size | Weight | Line height | Applied to |
-| --- | --- | --- | --- | --- | --- |
-| `--text-display` | Mate | `32px` | 400 | `1.2` | hero `Vows Weddings` |
-| `--text-h5` | Mate | `20px` | 400 | `1.2` | `Vows` wordmark (navbar + bottom bar) — Figma style `H5` |
-| `--text-body` | Mate | `16px` | 400 | `1.5` | nav links Portfolio / About / Contact — Figma style `Regular_text` |
-| `--text-cta` | Mate | `16px` | 400 | `1.2` | `Chat with Dinuka` pill |
-| `--text-bar` | Mate | `16px` | 400 | `1.25` | bottom-bar paragraph, `Since 2013` |
-| `--text-bar-sm` | Mate | `11px` | 400 | `1.25` | bottom-bar paragraph, mobile only |
-| `--text-subhead` | Inter | `14px` | 400 | `1` | hero subheading |
-| `--text-caption` | Inter | `12px` | 500 | `1.25` | tile captions |
-| `--text-meta` | Inter | `16px` | 400 | `1.2` | loader side labels (§11) |
+| Token            | Family | Size   | Weight | Line height | Applied to                                                         |
+| ---------------- | ------ | ------ | ------ | ----------- | ------------------------------------------------------------------ |
+| `--text-display` | Mate   | `32px` | 400    | `1.2`       | hero `Vows Weddings`                                               |
+| `--text-h5`      | Mate   | `20px` | 400    | `1.2`       | `Vows` wordmark (navbar + bottom bar) — Figma style `H5`           |
+| `--text-body`    | Mate   | `16px` | 400    | `1.5`       | nav links Portfolio / About / Contact — Figma style `Regular_text` |
+| `--text-cta`     | Mate   | `16px` | 400    | `1.2`       | `Chat with Dinuka` pill                                            |
+| `--text-bar`     | Mate   | `16px` | 400    | `1.25`      | bottom-bar paragraph, `Since 2013`                                 |
+| `--text-bar-sm`  | Mate   | `11px` | 400    | `1.25`      | bottom-bar paragraph, mobile only                                  |
+| `--text-subhead` | Inter  | `14px` | 400    | `1`         | hero subheading                                                    |
+| `--text-caption` | Inter  | `12px` | 500    | `1.25`      | tile captions                                                      |
+| `--text-meta`    | Inter  | `16px` | 400    | `1.2`       | loader side labels (§11)                                           |
 
 Font families: `--font-serif: 'Mate', 'Iowan Old Style', Georgia, serif`,
 `--font-sans: 'Inter', system-ui, -apple-system, sans-serif`. Both are self-hosted
@@ -147,13 +147,13 @@ re-declared with their own ranges.
 
 ### 3.1 Breakpoints
 
-| Name | Range | Design width | Gallery band |
-| --- | --- | --- | --- |
-| `mobile` | `< 768px` | 390 | 13 tiles, band `473 × 946` |
-| `tablet` | `768px – 1199px` | 834 | 17 tiles, band `950 × 1185` |
-| `desktop` | `≥ 1200px` | 1440 | 22 tiles, band `1860 × 1531` |
+| Name      | Range            | Design width | Gallery band                 |
+| --------- | ---------------- | ------------ | ---------------------------- |
+| `mobile`  | `< 768px`        | 390          | 13 tiles, band `473 × 946`   |
+| `tablet`  | `768px – 1199px` | 834          | 17 tiles, band `950 × 1185`  |
+| `desktop` | `≥ 1200px`       | 1440         | 22 tiles, band `1860 × 1531` |
 
-Tile *density* drops with the breakpoint, tile *size* drops only ~25 % (tablet) and
+Tile _density_ drops with the breakpoint, tile _size_ drops only ~25 % (tablet) and
 ~40 % (mobile) — photographs stay readable rather than becoming thumbnails.
 
 ### 3.2 The scatter model
@@ -170,11 +170,11 @@ wrapper  (absolutely positioned at x, y)
 The band is the axis-aligned bounding box of all wrappers for that breakpoint. Because
 tiles bleed past every edge, the bounding box is larger than the frame:
 
-| Breakpoint | band x | band y | band W × H |
-| --- | --- | --- | --- |
-| desktop | `-240 … 1620` | `-225 … 1306` | `1860 × 1531` |
-| tablet | `-60 … 890` | `-50 … 1135` | `950 × 1185` |
-| mobile | `-50 … 423` | `-40 … 906` | `473 × 946` |
+| Breakpoint | band x        | band y        | band W × H    |
+| ---------- | ------------- | ------------- | ------------- |
+| desktop    | `-240 … 1620` | `-225 … 1306` | `1860 × 1531` |
+| tablet     | `-60 … 890`   | `-50 … 1135`  | `950 × 1185`  |
+| mobile     | `-50 … 423`   | `-40 … 906`   | `473 × 946`   |
 
 **The canvas is a torus.** The band is tiled on a lattice with period `(bandW, bandH)`
 in both axes, and **both axes pan and wrap**. Because each copy is a pure translation of
@@ -200,13 +200,13 @@ holds without the imagery mutating underneath them.
 
 Five repeating image ratios, scaled per breakpoint.
 
-| Family | Desktop | Tablet | Mobile | Ratio |
-| --- | --- | --- | --- | --- |
-| `portrait` | `150 × 180` | `112 × 135` | `96 × 115` | 5 : 6 |
-| `landscape` | `230 × 150` | `172 × 112` | `138 × 90` | 23 : 15 |
-| `squareLg` | `200 × 200` | `150 × 150` | `120 × 120` | 1 : 1 |
-| `squareSm` | `150 × 150` | `112 × 112` | `96 × 96` | 1 : 1 |
-| `tall` | `160 × 210` | `120 × 157` | `100 × 131` | 16 : 21 |
+| Family      | Desktop     | Tablet      | Mobile      | Ratio   |
+| ----------- | ----------- | ----------- | ----------- | ------- |
+| `portrait`  | `150 × 180` | `112 × 135` | `96 × 115`  | 5 : 6   |
+| `landscape` | `230 × 150` | `172 × 112` | `138 × 90`  | 23 : 15 |
+| `squareLg`  | `200 × 200` | `150 × 150` | `120 × 120` | 1 : 1   |
+| `squareSm`  | `150 × 150` | `112 × 112` | `96 × 96`   | 1 : 1   |
+| `tall`      | `160 × 210` | `120 × 157` | `100 × 131` | 16 : 21 |
 
 ### 3.4 Tile positions
 
@@ -214,70 +214,70 @@ Five repeating image ratios, scaled per breakpoint.
 
 **Desktop — 22 tiles**
 
-| # | family | x | y | photo |
-| --- | --- | --- | --- | --- |
-| 0 | squareLg | -210 | -225 | S1 |
-| 1 | landscape | 860 | -200 | L1 |
-| 2 | portrait | 428 | -152 | P1 |
-| 3 | squareLg | 1321 | -92 | S2 |
-| 4 | tall | 990 | 36 | P2 |
-| 5 | landscape | 631 | 95 | L2 |
-| 6 | tall | -96 | 106 | P3 |
-| 7 | portrait | 256 | 170 | P4 |
-| 8 | portrait | 1280 | 330 | P5 |
-| 9 | squareSm | 950 | 403 | S3 |
-| 10 | squareSm | 6 | 447 | S4 |
-| 11 | landscape | 273 | 525 | L3 |
-| 12 | landscape | 1365 | 613 | L4 |
-| 13 | landscape | -240 | 650 | L5 *(gap 10)* |
-| 14 | landscape | 815 | 710 | L6 |
-| 15 | squareLg | 490 | 800 | S5 |
-| 16 | portrait | 1164 | 838 | P6 |
-| 17 | tall | 126 | 863 | P7 |
-| 18 | squareSm | 1470 | 1011 | S6 |
-| 19 | landscape | 371 | 1061 | L7 |
-| 20 | squareSm | -200 | 1073 | S7 |
-| 21 | squareLg | 846 | 1086 | S8 |
+| #   | family    | x    | y    | photo         |
+| --- | --------- | ---- | ---- | ------------- |
+| 0   | squareLg  | -210 | -225 | S1            |
+| 1   | landscape | 860  | -200 | L1            |
+| 2   | portrait  | 428  | -152 | P1            |
+| 3   | squareLg  | 1321 | -92  | S2            |
+| 4   | tall      | 990  | 36   | P2            |
+| 5   | landscape | 631  | 95   | L2            |
+| 6   | tall      | -96  | 106  | P3            |
+| 7   | portrait  | 256  | 170  | P4            |
+| 8   | portrait  | 1280 | 330  | P5            |
+| 9   | squareSm  | 950  | 403  | S3            |
+| 10  | squareSm  | 6    | 447  | S4            |
+| 11  | landscape | 273  | 525  | L3            |
+| 12  | landscape | 1365 | 613  | L4            |
+| 13  | landscape | -240 | 650  | L5 _(gap 10)_ |
+| 14  | landscape | 815  | 710  | L6            |
+| 15  | squareLg  | 490  | 800  | S5            |
+| 16  | portrait  | 1164 | 838  | P6            |
+| 17  | tall      | 126  | 863  | P7            |
+| 18  | squareSm  | 1470 | 1011 | S6            |
+| 19  | landscape | 371  | 1061 | L7            |
+| 20  | squareSm  | -200 | 1073 | S7            |
+| 21  | squareLg  | 846  | 1086 | S8            |
 
 **Tablet — 17 tiles**
 
-| # | family | x | y | photo |
-| --- | --- | --- | --- | --- |
-| 0 | squareLg | 430 | -50 | S1 |
-| 1 | landscape | -40 | -30 | L1 |
-| 2 | portrait | 230 | 60 | P1 |
-| 3 | portrait | 660 | 95 | P2 |
-| 4 | squareLg | 40 | 170 | S2 |
-| 5 | landscape | 300 | 258 | L2 |
-| 6 | squareLg | 690 | 300 | S3 |
-| 7 | tall | -60 | 380 | P3 |
-| 8 | squareSm | 430 | 380 | S4 |
-| 9 | landscape | 130 | 400 | L3 |
-| 10 | squareSm | 700 | 555 | S5 |
-| 11 | portrait | 60 | 620 | P4 |
-| 12 | squareSm | 350 | 700 | S6 |
-| 13 | landscape | 600 | 760 | L4 |
-| 14 | tall | 770 | 860 | P5 |
-| 15 | tall | 200 | 930 | P6 |
-| 16 | portrait | 560 | 980 | P7 |
+| #   | family    | x   | y   | photo |
+| --- | --------- | --- | --- | ----- |
+| 0   | squareLg  | 430 | -50 | S1    |
+| 1   | landscape | -40 | -30 | L1    |
+| 2   | portrait  | 230 | 60  | P1    |
+| 3   | portrait  | 660 | 95  | P2    |
+| 4   | squareLg  | 40  | 170 | S2    |
+| 5   | landscape | 300 | 258 | L2    |
+| 6   | squareLg  | 690 | 300 | S3    |
+| 7   | tall      | -60 | 380 | P3    |
+| 8   | squareSm  | 430 | 380 | S4    |
+| 9   | landscape | 130 | 400 | L3    |
+| 10  | squareSm  | 700 | 555 | S5    |
+| 11  | portrait  | 60  | 620 | P4    |
+| 12  | squareSm  | 350 | 700 | S6    |
+| 13  | landscape | 600 | 760 | L4    |
+| 14  | tall      | 770 | 860 | P5    |
+| 15  | tall      | 200 | 930 | P6    |
+| 16  | portrait  | 560 | 980 | P7    |
 
 **Mobile — 13 tiles**
 
-| # | family | x | y | photo |
-| --- | --- | --- | --- | --- |
-| 0 | squareLg | 285 | -40 | S1 |
-| 1 | landscape | -30 | -20 | L1 |
-| 2 | portrait | 140 | 55 | P1 |
-| 3 | tall | 10 | 120 | P2 |
-| 4 | portrait | 280 | 120 | P3 |
-| 5 | landscape | 130 | 215 | L2 |
-| 6 | squareLg | -50 | 285 | S2 |
-| 7 | landscape | 30 | 490 | L3 |
-| 8 | tall | 255 | 500 | P4 |
-| 9 | portrait | -20 | 640 | P5 |
-| 10 | squareSm | 150 | 660 | S3 |
-| 11 | landscape | 285 | 715 | L4 |
-| 12 | squareSm | 35 | 790 | S4 |
+| #   | family    | x   | y   | photo |
+| --- | --------- | --- | --- | ----- |
+| 0   | squareLg  | 285 | -40 | S1    |
+| 1   | landscape | -30 | -20 | L1    |
+| 2   | portrait  | 140 | 55  | P1    |
+| 3   | tall      | 10  | 120 | P2    |
+| 4   | portrait  | 280 | 120 | P3    |
+| 5   | landscape | 130 | 215 | L2    |
+| 6   | squareLg  | -50 | 285 | S2    |
+| 7   | landscape | 30  | 490 | L3    |
+| 8   | tall      | 255 | 500 | P4    |
+| 9   | portrait  | -20 | 640 | P5    |
+| 10  | squareSm  | 150 | 660 | S3    |
+| 11  | landscape | 285 | 715 | L4    |
+| 12  | squareSm  | 35  | 790 | S4    |
 
 ### 3.5 Photography
 
@@ -308,13 +308,13 @@ It is the only still element on the page and it never moves, in either state.
 
 Full-bleed, fixed to the top. Fill `--color-chrome`, `backdrop-filter: blur(var(--blur-chrome-top))`.
 
-| | Desktop | Tablet | Mobile |
-| --- | --- | --- | --- |
-| height | `48px` | `48px` | `40px` |
-| gutter | `--space-3xl` (62) | `--space-2xl` (24) | `--space-xl` (20) |
-| layout | `justify-between`: wordmark / links / CTA | wordmark left, links absolutely centred, CTA right | wordmark left, hamburger right |
-| links | Portfolio · About · Contact, each `76px` wide, gap `--space-md` | same | moved into the sheet |
-| CTA | `Chat with Dinuka` pill, right | same | not in the bar — floats above the bottom bar |
+|        | Desktop                                                         | Tablet                                             | Mobile                                       |
+| ------ | --------------------------------------------------------------- | -------------------------------------------------- | -------------------------------------------- |
+| height | `48px`                                                          | `48px`                                             | `40px`                                       |
+| gutter | `--space-3xl` (62)                                              | `--space-2xl` (24)                                 | `--space-xl` (20)                            |
+| layout | `justify-between`: wordmark / links / CTA                       | wordmark left, links absolutely centred, CTA right | wordmark left, hamburger right               |
+| links  | Portfolio · About · Contact, each `76px` wide, gap `--space-md` | same                                               | moved into the sheet                         |
+| CTA    | `Chat with Dinuka` pill, right                                  | same                                               | not in the bar — floats above the bottom bar |
 
 CTA pill: `--color-surface` fill, `1px` `--color-border-subtle` border,
 `--radius-pill`, padding `5px --space-md` (`--cta-pad-y`), `--text-cta`. Figma’s codegen reports `6px`, but the instance measures `31px` tall, which `5px` reproduces.
@@ -327,14 +327,14 @@ Hamburger: `24 × 24` box, three `20 × 1.5px` rules in `--color-ink-muted` at
 Full-bleed, fixed to the bottom. Fill `--color-chrome`,
 `backdrop-filter: blur(var(--blur-chrome-bottom))`. Three zones.
 
-| | Desktop | Tablet | Mobile |
-| --- | --- | --- | --- |
-| height | `76px` | `88px` | `120px` |
-| gutter | `--space-4xl` (64) | `--space-2xl` (24) | `--space-lg` (16) |
-| layout | one row, `justify-between` | one row, `justify-between` | two rows |
-| `Vows` | left, `--text-h5` | left, `--text-h5` | row 2 left, `--text-h5` |
-| paragraph | centre, `632px`, `--text-bar` | centre, `480px`, `--text-bar`, 3 lines | row 1, full width, `--text-bar-sm`, 3 lines |
-| `Since 2013` | right, `--text-bar`, two lines | right, two lines | row 2 right, one line |
+|              | Desktop                        | Tablet                                 | Mobile                                      |
+| ------------ | ------------------------------ | -------------------------------------- | ------------------------------------------- |
+| height       | `76px`                         | `88px`                                 | `120px`                                     |
+| gutter       | `--space-4xl` (64)             | `--space-2xl` (24)                     | `--space-lg` (16)                           |
+| layout       | one row, `justify-between`     | one row, `justify-between`             | two rows                                    |
+| `Vows`       | left, `--text-h5`              | left, `--text-h5`                      | row 2 left, `--text-h5`                     |
+| paragraph    | centre, `632px`, `--text-bar`  | centre, `480px`, `--text-bar`, 3 lines | row 1, full width, `--text-bar-sm`, 3 lines |
+| `Since 2013` | right, `--text-bar`, two lines | right, two lines                       | row 2 right, one line                       |
 
 Each zone is an `info_wrapper` with `--space-lg` inline / `--space-xs` block padding.
 
@@ -355,15 +355,15 @@ the three nav links at `--text-display`-adjacent scale (`--text-h5`), stacked wi
 
 State is a single boolean, `chromeRevealed`, latched once and never unset.
 
-| | State 1 — first load | State 2 — after first scroll |
-| --- | --- | --- |
-| gallery canvas | visible, drifting, cursor-reactive | unchanged, still panning infinitely |
-| hero block | visible, centred, still | **unchanged and unmoved** |
-| navbar | absent (`opacity: 0`, `visibility: hidden`, `inert`) | visible |
-| bottom bar | absent | visible |
-| mobile floating CTA | absent | visible |
-| music player | absent | visible, in whatever state §10 resolves to |
-| scroll indicator | none in either state | none |
+|                     | State 1 — first load                                 | State 2 — after first scroll               |
+| ------------------- | ---------------------------------------------------- | ------------------------------------------ |
+| gallery canvas      | visible, drifting, cursor-reactive                   | unchanged, still panning infinitely        |
+| hero block          | visible, centred, still                              | **unchanged and unmoved**                  |
+| navbar              | absent (`opacity: 0`, `visibility: hidden`, `inert`) | visible                                    |
+| bottom bar          | absent                                               | visible                                    |
+| mobile floating CTA | absent                                               | visible                                    |
+| music player        | absent                                               | visible, in whatever state §10 resolves to |
+| scroll indicator    | none in either state                                 | none                                       |
 
 **Trigger:** the first **pan in any direction** — a wheel or trackpad gesture, a mouse
 drag, a touch drag, or a keyboard pan key — that moves the canvas more than `8px`. A
@@ -405,21 +405,21 @@ reported the press, so a drag travelled a few pixels and stopped. Pointer Events
 unify mouse, touch and pen, so the input driver is ~150 lines of explicit handlers and
 the ScrollTrigger dependency is gone entirely.
 
-| Input | Mapping |
-| --- | --- |
+| Input            | Mapping                                                                                                                                                                               |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | wheel / trackpad | `deltaX → panX`, `deltaY → panY`, both applied every event, so a diagonal trackpad gesture pans diagonally. No axis locking. `deltaMode` of lines or pages is normalised to px first. |
-| shift + wheel | whatever the browser reports, unchanged — Chrome and Safari already move the delta onto `deltaX` |
-| mouse drag | `pointerdown` anywhere on the canvas; movement is applied inverted, so the field follows the cursor like a map. Inertia on release. |
-| touch drag | the same pointer path; one finger, both axes, same inertia |
-| keyboard | `←` `→` `↑` `↓` pan by `--key-step` (80px); `PageUp` / `PageDown` / `Space` / `Shift+Space` by `--key-page-ratio` (90 %) of viewport height; `Home` returns to `(0, 0)` |
+| shift + wheel    | whatever the browser reports, unchanged — Chrome and Safari already move the delta onto `deltaX`                                                                                      |
+| mouse drag       | `pointerdown` anywhere on the canvas; movement is applied inverted, so the field follows the cursor like a map. Inertia on release.                                                   |
+| touch drag       | the same pointer path; one finger, both axes, same inertia                                                                                                                            |
+| keyboard         | `←` `→` `↑` `↓` pan by `--key-step` (80px); `PageUp` / `PageDown` / `Space` / `Shift+Space` by `--key-page-ratio` (90 %) of viewport height; `Home` returns to `(0, 0)`               |
 
-| | Value |
-| --- | --- |
-| wheel → pan | `1 : 1` (`--wheel-speed`) |
-| drag → pan | `1 : 1` |
-| smoothing | `lerp(current, target, --lerp-pan)` per tick |
-| inertia | release velocity, sampled over the last `90ms`, thrown `--inertia-seconds` ahead and clamped to `--inertia-max` |
-| wrap | `cellOffset()` per axis, per cell; a cell recycles only while fully off screen |
+|             | Value                                                                                                           |
+| ----------- | --------------------------------------------------------------------------------------------------------------- |
+| wheel → pan | `1 : 1` (`--wheel-speed`)                                                                                       |
+| drag → pan  | `1 : 1`                                                                                                         |
+| smoothing   | `lerp(current, target, --lerp-pan)` per tick                                                                    |
+| inertia     | release velocity, sampled over the last `90ms`, thrown `--inertia-seconds` ahead and clamped to `--inertia-max` |
+| wrap        | `cellOffset()` per axis, per cell; a cell recycles only while fully off screen                                  |
 
 **Click versus drag.** A press that travels more than **`--drag-threshold` (6px)**
 cumulatively is a pan: a capture-phase `click` handler on the canvas cancels the click so
@@ -450,21 +450,21 @@ transform.
 
 ### 5.2 Animation inventory
 
-| # | Animation | Trigger | Property | Duration / easing | Reduced-motion |
-| --- | --- | --- | --- | --- | --- |
-| 1 | Tile entrance | first paint | `opacity 0→1`, `scale 0.96→1`, `y +24→0` | `--dur-entrance`, `--ease-out`, `--stagger-tile` by distance from centre | `opacity` only, `--dur-base`, no stagger |
-| 2 | Hero entrance | first paint | `opacity 0→1`, `y +10→0` | `--dur-entrance`, `--ease-out`, `120ms` delay | `opacity` only |
-| 3 | Chrome reveal | first pan > 8px | navbar `opacity 0→1`, `y −8→0`; bottom bar `opacity 0→1`, `y +8→0` | `--dur-slow`, `--ease-out`, bottom bar delayed `--stagger-chrome` | `opacity` only, `--dur-base` |
-| 4 | Pointer parallax | `pointermove` (fine pointers only) | per-tile `translate3d` of `(pointer − centre) × depth`, `depth ∈ [0.010, 0.026]` scaled inversely with tile area | continuous, lerped at `--lerp-pointer` | **off** |
-| 5 | Pan parallax | pan on either axis | per-tile `x`/`y` offset of `(screen position − viewport centre) × depth × --depth-pan-factor`, clamped to one viewport | continuous, same lerp | **off** |
-| 6 | Idle drift | always | per-tile `x/y` sine, amplitude `±6px` (desktop) / `±4px` (mobile) | `--dur-drift` ± jitter, `sine.inOut`, random phase | **off** |
-| 7 | Tile hover | `pointerenter` | image `scale 1→1.03`; caption `opacity 0.8→1` | `--dur-base` / `--dur-fast`, `--ease-hover` | caption `opacity` only |
-| 8 | Tile focus | `:focus-visible` | focus ring on the wrapper | `--dur-instant` | same |
-| 9 | Ambience fade | play / pause | `audio.volume` 0 ↔ `--audio-volume` | `--audio-fade` (0.9s), linear | unchanged — a fade is not motion |
-| 10 | Equalizer | while playing | bar `height` | `--eq-period`, `--ease-inout`, alternating, staggered per bar | **off** — bars hold at full height |
-| 11 | Mobile sheet | menu toggle | panel `x 100%→0`, backdrop `opacity 0→1` | `--dur-sheet`, `--ease-inout` | `opacity` only |
-| 12 | Loader decode / erase / hand-off | page load | text content, line `opacity`, ground `opacity` | §11.2 | decode and erase skipped; lines cross-fade |
-| 13 | CTA / nav hover | `pointerenter` | `opacity 1→0.62` (links), pill `border-color` → `--color-ink` | `--dur-fast`, `--ease-hover` | same (non-transform, kept) |
+| #   | Animation                        | Trigger                            | Property                                                                                                               | Duration / easing                                                        | Reduced-motion                             |
+| --- | -------------------------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------ |
+| 1   | Tile entrance                    | first paint                        | `opacity 0→1`, `scale 0.96→1`, `y +24→0`                                                                               | `--dur-entrance`, `--ease-out`, `--stagger-tile` by distance from centre | `opacity` only, `--dur-base`, no stagger   |
+| 2   | Hero entrance                    | first paint                        | `opacity 0→1`, `y +10→0`                                                                                               | `--dur-entrance`, `--ease-out`, `120ms` delay                            | `opacity` only                             |
+| 3   | Chrome reveal                    | first pan > 8px                    | navbar `opacity 0→1`, `y −8→0`; bottom bar `opacity 0→1`, `y +8→0`                                                     | `--dur-slow`, `--ease-out`, bottom bar delayed `--stagger-chrome`        | `opacity` only, `--dur-base`               |
+| 4   | Pointer parallax                 | `pointermove` (fine pointers only) | per-tile `translate3d` of `(pointer − centre) × depth`, `depth ∈ [0.010, 0.026]` scaled inversely with tile area       | continuous, lerped at `--lerp-pointer`                                   | **off**                                    |
+| 5   | Pan parallax                     | pan on either axis                 | per-tile `x`/`y` offset of `(screen position − viewport centre) × depth × --depth-pan-factor`, clamped to one viewport | continuous, same lerp                                                    | **off**                                    |
+| 6   | Idle drift                       | always                             | per-tile `x/y` sine, amplitude `±6px` (desktop) / `±4px` (mobile)                                                      | `--dur-drift` ± jitter, `sine.inOut`, random phase                       | **off**                                    |
+| 7   | Tile hover                       | `pointerenter`                     | image `scale 1→1.03`; caption `opacity 0.8→1`                                                                          | `--dur-base` / `--dur-fast`, `--ease-hover`                              | caption `opacity` only                     |
+| 8   | Tile focus                       | `:focus-visible`                   | focus ring on the wrapper                                                                                              | `--dur-instant`                                                          | same                                       |
+| 9   | Ambience fade                    | play / pause                       | `audio.volume` 0 ↔ `--audio-volume`                                                                                    | `--audio-fade` (0.9s), linear                                            | unchanged — a fade is not motion           |
+| 10  | Equalizer                        | while playing                      | bar `height`                                                                                                           | `--eq-period`, `--ease-inout`, alternating, staggered per bar            | **off** — bars hold at full height         |
+| 11  | Mobile sheet                     | menu toggle                        | panel `x 100%→0`, backdrop `opacity 0→1`                                                                               | `--dur-sheet`, `--ease-inout`                                            | `opacity` only                             |
+| 12  | Loader decode / erase / hand-off | page load                          | text content, line `opacity`, ground `opacity`                                                                         | §11.2                                                                    | decode and erase skipped; lines cross-fade |
+| 13  | CTA / nav hover                  | `pointerenter`                     | `opacity 1→0.62` (links), pill `border-color` → `--color-ink`                                                          | `--dur-fast`, `--ease-hover`                                             | same (non-transform, kept)                 |
 
 ### 5.3 Reduced motion
 
@@ -511,20 +511,20 @@ does not already do at 60 fps. **The canvas stays DOM + transforms.**
 
 ## 7. Component inventory
 
-| Component | Props | Variants |
-| --- | --- | --- |
-| `GalleryCanvas` | `onFirstPan` | — (owns the pan, the lattice, the ticker and the reveal latch) |
-| `PhotoTile` | `tile: Tile`, `primary`, `eager` | by `family` (drives size only) |
-| `AmbiencePlayer` | `revealed`, `status`, `onToggle`, `track`, `audioRef` | by `status`: `paused` \| `playing` \| `blocked` |
-| `LoadingScreen` | — | by phase (§11.2); three-column row at `≥1200px`, stacked below |
-| `HeroTitle` | — | — |
-| `SiteHeader` | `revealed: boolean` | `desktop` \| `tablet` \| `mobile` (CSS, one DOM tree) |
-| `SiteFooterBar` | `revealed: boolean` | `desktop` \| `tablet` \| `mobile` |
-| `NavLink` | `href`, `children`, `variant` | `wordmark` \| `link` |
-| `ChatCta` | `className?`, `floating?: boolean` | shadcn `Button` variant `pill`, sizes `default` \| `floating` |
-| `MobileMenu` | `open`, `onOpenChange` | shadcn `Sheet`, side `right` |
-| `MenuButton` | `open`, `onClick` | — |
-| `SkipLink` | `href` | — |
+| Component        | Props                                                 | Variants                                                       |
+| ---------------- | ----------------------------------------------------- | -------------------------------------------------------------- |
+| `GalleryCanvas`  | `onFirstPan`                                          | — (owns the pan, the lattice, the ticker and the reveal latch) |
+| `PhotoTile`      | `tile: Tile`, `primary`, `eager`                      | by `family` (drives size only)                                 |
+| `AmbiencePlayer` | `revealed`, `status`, `onToggle`, `track`, `audioRef` | by `status`: `paused` \| `playing` \| `blocked`                |
+| `LoadingScreen`  | —                                                     | by phase (§11.2); three-column row at `≥1200px`, stacked below |
+| `HeroTitle`      | —                                                     | —                                                              |
+| `SiteHeader`     | `revealed: boolean`                                   | `desktop` \| `tablet` \| `mobile` (CSS, one DOM tree)          |
+| `SiteFooterBar`  | `revealed: boolean`                                   | `desktop` \| `tablet` \| `mobile`                              |
+| `NavLink`        | `href`, `children`, `variant`                         | `wordmark` \| `link`                                           |
+| `ChatCta`        | `className?`, `floating?: boolean`                    | shadcn `Button` variant `pill`, sizes `default` \| `floating`  |
+| `MobileMenu`     | `open`, `onOpenChange`                                | shadcn `Sheet`, side `right`                                   |
+| `MenuButton`     | `open`, `onClick`                                     | —                                                              |
+| `SkipLink`       | `href`                                                | —                                                              |
 
 Hooks: `useBreakpoint()` → `'mobile' | 'tablet' | 'desktop'`; `useReducedMotion()` →
 `boolean`; `useAmbience()` → `{ audioRef, status, toggle, start, track }`;
@@ -652,15 +652,15 @@ and §3.7–3.9.
 
 **Chrome — the residue.** The same set as before; nothing new.
 
-| Element | Breakpoint | Δ | Why |
-| --- | --- | --- | --- |
-| navbar height | tablet | `+1px` | D5 — Figma's frame is `47px`, its children sum to `48px` |
-| wordmark | all | `−0.4px` wide | Mate renders marginally narrower in Chrome than in Figma |
-| nav link group | desktop | `−0.9px` x | knock-on from the wordmark width, via `justify-between` |
-| CTA pill | desktop, tablet | `−1.3px` x, `+1.3px` wide, `+0.2px` tall | "Chat with Dinuka" sets 1.3px wider in Chrome |
-| bottom-bar blurb box | tablet | `−6px` y, `+12px` tall | Figma's wrapper is `64px` around `60px` of text; ours is `76px` around the same `60px`. The rendered text lands on the identical baseline — only the invisible wrapper differs |
-| navbar wordmark / hamburger | mobile | `−4px` y | D6 — both are vertically centred in the `40px` bar rather than sitting at Figma's `8px`/`12px` |
-| hero block | all | `≤0.8px` on any edge | Mate and Inter metrics |
+| Element                     | Breakpoint      | Δ                                        | Why                                                                                                                                                                            |
+| --------------------------- | --------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| navbar height               | tablet          | `+1px`                                   | D5 — Figma's frame is `47px`, its children sum to `48px`                                                                                                                       |
+| wordmark                    | all             | `−0.4px` wide                            | Mate renders marginally narrower in Chrome than in Figma                                                                                                                       |
+| nav link group              | desktop         | `−0.9px` x                               | knock-on from the wordmark width, via `justify-between`                                                                                                                        |
+| CTA pill                    | desktop, tablet | `−1.3px` x, `+1.3px` wide, `+0.2px` tall | "Chat with Dinuka" sets 1.3px wider in Chrome                                                                                                                                  |
+| bottom-bar blurb box        | tablet          | `−6px` y, `+12px` tall                   | Figma's wrapper is `64px` around `60px` of text; ours is `76px` around the same `60px`. The rendered text lands on the identical baseline — only the invisible wrapper differs |
+| navbar wordmark / hamburger | mobile          | `−4px` y                                 | D6 — both are vertically centred in the `40px` bar rather than sitting at Figma's `8px`/`12px`                                                                                 |
+| hero block                  | all             | `≤0.8px` on any edge                     | Mate and Inter metrics                                                                                                                                                         |
 
 The music player (§10) has no Figma counterpart. It measures `181 × 32` and sits at
 `(64, 900)` on desktop, `(24, 1058)` on tablet and `(16, 633)` on mobile — asserted
@@ -669,16 +669,16 @@ intersection.
 
 **Pan behaviour, at 1440 / 834 / 390.**
 
-| Check | Result |
-| --- | --- |
-| wheel / trackpad, diagonal | both axes move together, no axis locking |
-| mouse drag, diagonal | target tracks the cursor `1 : 1` — a 216 × 144 px drag moves the pan exactly 216 × 144 |
-| inertia on release | a flick adds ~230 × 153 px beyond the drag and eases to rest; `0` under reduced motion |
-| cursor | `grab` at rest, `grabbing` while held, back to `grab` on release |
-| touch, one finger | both axes, same inertia |
-| keyboard | `←`/`→` ± 80, `↑`/`↓` ± 80, `PageUp`/`PageDown` ± 90 % of viewport height, `Home` → `(0, 0)` |
-| chrome reveal on a purely horizontal first drag | fires at all three breakpoints, with `panY` still `0` |
-| click vs drag | 0 / 4 / 5 px presses activate the tile's link; 12 / 40 px presses pan and fire no click |
+| Check                                           | Result                                                                                       |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| wheel / trackpad, diagonal                      | both axes move together, no axis locking                                                     |
+| mouse drag, diagonal                            | target tracks the cursor `1 : 1` — a 216 × 144 px drag moves the pan exactly 216 × 144       |
+| inertia on release                              | a flick adds ~230 × 153 px beyond the drag and eases to rest; `0` under reduced motion       |
+| cursor                                          | `grab` at rest, `grabbing` while held, back to `grab` on release                             |
+| touch, one finger                               | both axes, same inertia                                                                      |
+| keyboard                                        | `←`/`→` ± 80, `↑`/`↓` ± 80, `PageUp`/`PageDown` ± 90 % of viewport height, `Home` → `(0, 0)` |
+| chrome reveal on a purely horizontal first drag | fires at all three breakpoints, with `panY` still `0`                                        |
+| click vs drag                                   | 0 / 4 / 5 px presses activate the tile's link; 12 / 40 px presses pan and fire no click      |
 
 **Seamless wrap.** The pan was walked through seven diagonal wrap boundaries per
 breakpoint in 4px steps — 147 positions — and at each one a 25 × 25 grid of viewport
@@ -701,13 +701,13 @@ on `Esc` and returns focus; and keyboard panning is suppressed while it is open.
 
 **Performance** (production build, Chrome).
 
-| | Result |
-| --- | --- |
-| CLS, 22s of hard diagonal panning across ~41,000 × ~70,000 px | `0.00` |
-| long tasks during panning | none |
-| forced reflow / layout thrash during panning | none reported |
-| console at load, and after panning and playback | clean |
-| network | 32 requests, all `200`, including `audio/ambience.m4a` |
+|                                                               | Result                                                 |
+| ------------------------------------------------------------- | ------------------------------------------------------ |
+| CLS, 22s of hard diagonal panning across ~41,000 × ~70,000 px | `0.00`                                                 |
+| long tasks during panning                                     | none                                                   |
+| forced reflow / layout thrash during panning                  | none reported                                          |
+| console at load, and after panning and playback               | clean                                                  |
+| network                                                       | 32 requests, all `200`, including `audio/ambience.m4a` |
 
 Frame pacing could not be measured meaningfully in this environment: **a blank page in
 the same browser also runs at a 33.3 ms median**, so the host is presenting at 30 Hz and
@@ -747,14 +747,14 @@ then calls `audio.pause()`, so playback genuinely stops rather than being muted.
 
 ### 10.2 The track slot
 
-| | |
-| --- | --- |
-| File | `public/audio/ambience.m4a` — AAC-LC, 64 kbps, mono, 1.36 MB |
-| Track | *Night on the Docks* — Kevin MacLeod |
-| Source | <https://incompetech.com/music/royalty-free/> |
-| Licence | **CC BY 4.0** — attribution is required, and is carried in `public/audio/CREDITS.md` |
-| Manifest | `scripts/audio.manifest.json` |
-| Rebuild | `node scripts/prepare-audio.mjs --force` |
+|          |                                                                                      |
+| -------- | ------------------------------------------------------------------------------------ |
+| File     | `public/audio/ambience.m4a` — AAC-LC, 64 kbps, mono, 1.36 MB                         |
+| Track    | _Night on the Docks_ — Kevin MacLeod                                                 |
+| Source   | <https://incompetech.com/music/royalty-free/>                                        |
+| Licence  | **CC BY 4.0** — attribution is required, and is carried in `public/audio/CREDITS.md` |
+| Manifest | `scripts/audio.manifest.json`                                                        |
+| Rebuild  | `node scripts/prepare-audio.mjs --force`                                             |
 
 This is a **placeholder**, chosen to be slow, warm and saxophone-led. It is deliberately
 not a cover of a copyrighted composition: "A Thousand Years", "All of Me" and
@@ -776,11 +776,11 @@ paused or blocked.
 
 **Placement** — pinned to the bottom-left, clear of every other fixed element:
 
-| Breakpoint | Inset from left | Offset from bottom | Clears |
-| --- | --- | --- | --- |
-| desktop | `--spacing-4xl` (64) | `--bar-bottom-h + 16` = 92 | bottom bar starts at 948; widget ends at 932 |
-| tablet | `--spacing-2xl` (24) | `--bar-bottom-h + 16` = 104 | bottom bar starts at 1106 |
-| mobile | `--spacing-lg` (16) | `--bar-bottom-h + 16 + --pill-h + 12` = 179 | sits one row **above** the floating "Chat with Dinuka" pill, which occupies 136–167 |
+| Breakpoint | Inset from left      | Offset from bottom                          | Clears                                                                              |
+| ---------- | -------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------- |
+| desktop    | `--spacing-4xl` (64) | `--bar-bottom-h + 16` = 92                  | bottom bar starts at 948; widget ends at 932                                        |
+| tablet     | `--spacing-2xl` (24) | `--bar-bottom-h + 16` = 104                 | bottom bar starts at 1106                                                           |
+| mobile     | `--spacing-lg` (16)  | `--bar-bottom-h + 16 + --pill-h + 12` = 179 | sits one row **above** the floating "Chat with Dinuka" pill, which occupies 136–167 |
 
 It is chrome: `inert` and invisible until the first pan, then it fades in with the bars.
 That keeps State 1 exactly as Figma draws it — canvas and title block, nothing else.
@@ -797,11 +797,11 @@ scrambled-text decode that hands straight over to the gallery.
 White ground (`--color-surface`; the site behind it is `--color-canvas`), three elements
 on one shared baseline:
 
-| | Content | Type | Placement |
-| --- | --- | --- | --- |
-| centre | `Vows Weddings` | `--text-display`, Mate, `--color-ink` | the hero heading's exact position (D17) |
-| left | orange dot, `--loader-gap`, `Wedding photography & videography` | `--text-meta`, Inter | `--loader-gutter` (20px) from the left |
-| right | `Colombo, Sri Lanka`, `--loader-gap`, blue dot | `--text-meta`, Inter | `--loader-gutter` from the right |
+|        | Content                                                         | Type                                  | Placement                               |
+| ------ | --------------------------------------------------------------- | ------------------------------------- | --------------------------------------- |
+| centre | `Vows Weddings`                                                 | `--text-display`, Mate, `--color-ink` | the hero heading's exact position (D17) |
+| left   | orange dot, `--loader-gap`, `Wedding photography & videography` | `--text-meta`, Inter                  | `--loader-gutter` (20px) from the left  |
+| right  | `Colombo, Sri Lanka`, `--loader-gap`, blue dot                  | `--text-meta`, Inter                  | `--loader-gutter` from the right        |
 
 The row is a `minmax(0,1fr) auto minmax(0,1fr)` grid with `align-items: baseline`, which
 is what puts the three on one baseline, and the heading is pinned to `grid-column: 2` so
@@ -818,14 +818,14 @@ the same trade the bottom bar makes in §3.8, and for the same reason.
 Every phase length is a token. The reference recording's 4.7s is a demo length, not a
 target: the hold ends when the page's assets are actually ready.
 
-| Phase | Length | What happens |
-| --- | --- | --- |
-| `idle` | — | server-rendered: opaque white, lines at zero opacity |
-| `decode` | `--loader-appear` (0.1s) then `length / --loader-rate` (30 chars/s) | each string holds its final character count and resolves left to right; the unresolved tail cycles `! @ # $ % ^ & * + = ?`. Lines ramp from `--loader-rest-opacity` (0.35) to full over `--loader-fade-in` (0.25s), so a line fades up while it is still resolving |
-| `hold` | until assets ready, at least `--loader-hold-min` (0.45s), and at least `--loader-floor` (1.2s) from the decode's start; `--loader-ceiling` (4s) ends it regardless | still, fully resolved |
-| `erase` | `--loader-erase` (0.65s) | **not** a mirror of the entrance: the string is deleted from its tail backwards while the last `--loader-scramble-edge` (3) surviving characters scramble, so the line shortens as it goes and opacity falls with it |
-| `blank` | `--loader-blank` (0.45s) | empty white screen |
-| `handoff` | `--loader-handoff` (0.6s) | the white ground fades out and the site shows through |
+| Phase     | Length                                                                                                                                                             | What happens                                                                                                                                                                                                                                                       |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `idle`    | —                                                                                                                                                                  | server-rendered: opaque white, lines at zero opacity                                                                                                                                                                                                               |
+| `decode`  | `--loader-appear` (0.1s) then `length / --loader-rate` (30 chars/s)                                                                                                | each string holds its final character count and resolves left to right; the unresolved tail cycles `! @ # $ % ^ & * + = ?`. Lines ramp from `--loader-rest-opacity` (0.35) to full over `--loader-fade-in` (0.25s), so a line fades up while it is still resolving |
+| `hold`    | until assets ready, at least `--loader-hold-min` (0.45s), and at least `--loader-floor` (1.2s) from the decode's start; `--loader-ceiling` (4s) ends it regardless | still, fully resolved                                                                                                                                                                                                                                              |
+| `erase`   | `--loader-erase` (0.65s)                                                                                                                                           | **not** a mirror of the entrance: the string is deleted from its tail backwards while the last `--loader-scramble-edge` (3) surviving characters scramble, so the line shortens as it goes and opacity falls with it                                               |
+| `blank`   | `--loader-blank` (0.45s)                                                                                                                                           | empty white screen                                                                                                                                                                                                                                                 |
+| `handoff` | `--loader-handoff` (0.6s)                                                                                                                                          | the white ground fades out and the site shows through                                                                                                                                                                                                              |
 
 "Assets ready" means the two self-hosted faces (`document.fonts.ready`) and every
 `img[loading="eager"]` — the first viewport of tiles. Everything else is lazy and can
@@ -841,7 +841,7 @@ a return.
 
 Both text passes are pure functions of elapsed time in `src/lib/scramble.ts`, so the
 animation is a `render(t)` with no internal state to drift. Spaces are never replaced —
-keeping the word gaps means the line's *width* barely moves while it resolves, which is
+keeping the word gaps means the line's _width_ barely moves while it resolves, which is
 the point of holding the character count in a proportional face.
 
 ### 11.3 Accessibility
