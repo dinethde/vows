@@ -1,0 +1,11 @@
+node_modules
+dist
+.output
+.nitro
+.tanstack
+public
+feature-album
+bun.lock
+package-lock.json
+unsplash.json
+src/routeTree.gen.ts
