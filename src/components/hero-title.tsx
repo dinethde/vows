@@ -13,7 +13,7 @@ export function HeroTitle() {
   return (
     <div className="pointer-events-none fixed inset-0 z-[var(--z-hero)] flex items-center justify-center">
       <div className="vows-hero flex flex-col items-center gap-xs text-center whitespace-nowrap">
-        <h1 className="text-display font-serif text-ink">{copy.hero.title}</h1>
+        <h1 className="text-display font-serif text-ink-muted">{copy.hero.title}</h1>
         <p className="text-subhead font-sans text-ink-muted">
           {copy.hero.subtitle}
         </p>
