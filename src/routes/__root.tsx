@@ -3,6 +3,7 @@ import {
   Outlet,
   Scripts,
   createRootRoute,
+  useRouterState,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
@@ -48,8 +49,12 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: ReactNode }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  // Only the home page's pan canvas locks the document (see app.css).
+  const locked = pathname === "/";
+
   return (
-    <html lang="en">
+    <html lang="en" {...(locked ? { "data-lock-scroll": "" } : {})}>
       <head>
         <HeadContent />
       </head>

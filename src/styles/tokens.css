@@ -51,6 +51,10 @@
   --text-bar--line-height: 1.25;
   --text-bar-sm: 11px;
   --text-bar-sm--line-height: 1.25;
+  --text-couple: 28px;             /* album hero bar — the largest type on the page */
+  --text-couple--line-height: 1.2;
+  --text-album-meta: 14px;         /* (type) / (location) rows */
+  --text-album-meta--line-height: 1.3;
   --text-subhead: 14px;
   --text-subhead--line-height: 1;
   --text-caption: 12px;
@@ -200,6 +204,24 @@
   --loader-handoff: 0.6;
   --loader-rest-opacity: 0.35;
 
+  /* ---- Album page (DESIGN.md §12) -------------------------------- */
+  --album-bar-h: 168px;            /* stacks into three rows at 390 */
+  --album-gutter: var(--spacing-lg);
+  --album-meta-gap: var(--spacing-md);
+  --album-label-w: 51px;           /* the (type) / (location) label column */
+
+  /* seconds and px, read by GSAP */
+  --album-reveal-y: 28;
+  --album-reveal-dur: 0.9;
+  --album-reveal-stagger: 0.06;
+  --album-reveal-margin: 12;      /* % of viewport height held back before a reveal fires */
+  --album-float-amp: 7;
+  --album-float-amp-compact: 4;
+  --album-float-period: 9;
+  --album-float-jitter: 4;
+  --album-hero-enter: 0.7;
+  --album-bar-delay: 0.18;
+
   /* ---- Keyboard pan steps --------------------------------------- */
   --key-step: 80;
   --key-page-ratio: 0.9;
@@ -224,6 +246,8 @@
   :root {
     --bar-top-h: 48px;
     --bar-bottom-h: 88px;
+    --album-bar-h: 112px;
+    --album-gutter: var(--spacing-2xl);
     --gutter-top: var(--spacing-2xl);
     --gutter-bottom: var(--spacing-2xl);
     --bar-blurb-w: 480px;
@@ -235,6 +259,8 @@
   :root {
     --bar-top-h: 48px;
     --bar-bottom-h: 76px;
+    --album-bar-h: 88px;
+    --album-gutter: var(--spacing-4xl);
     --gutter-top: var(--spacing-3xl);
     --gutter-bottom: var(--spacing-4xl);
     --bar-blurb-w: 632px;

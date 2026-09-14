@@ -860,3 +860,260 @@ window in which the site is visible before the loader covers it. Nothing in its 
 path may call `readMotion()`, which reads computed styles; doing so throws on the server
 and drops the whole route to client rendering. All opacity is computed in the hook, on
 the client, and passed down as plain numbers.
+
+---
+
+## 12. Album page
+
+Figma section `2030-1964`, with its behaviour in the three canvas notes
+`2030-1966` (page), `2030-1968` (hero) and `2030-1970` (gallery).
+
+Where the home page is a non-linear field explored in any direction, the album
+is the opposite: one fixed route, top to bottom, with the pace set by the layout
+rather than by the visitor. Two parts, no divider between them — a full-viewport
+hero, then a long gallery on `--color-canvas`. The change of ground is what
+marks the transition.
+
+### 12.1 Route
+
+`/albums/$slug`, resolved in the route loader so a deep link to a missing album
+404s rather than flashing an empty page. `slug` matches the home page's
+`tileSlug`, so a tile links straight to its own event.
+
+The home page's `<a>` tiles became router `<Link>`s: opening an album is now a
+client-side navigation, which is what lets the canvas still be mounted when the
+visitor comes back.
+
+**Scroll ownership.** The home page is a fixed full-screen canvas that owns its
+own panning and therefore locks the document; the album is an ordinary scrolling
+document. `overflow: hidden` moved off the global `html, body` rule onto
+`html[data-lock-scroll]`, set during render in `__root.tsx` from the current
+path — not in an effect, so there is no frame in which the wrong one applies.
+
+### 12.2 Album content
+
+One typed record per event in `src/data/albums.ts`: slug, couple, ISO date,
+time-of-day label, type, location, story, hero focal points, and an ordered list
+of photograph ids. Nothing about placement lives there.
+
+The featured album (Benali & Yasiru) is authored in full. The other 21 events on
+the home page canvas carry their own metadata and draw rotated slices of the
+shared photograph pool at lengths from 11 to 18 — which is what demonstrates the
+layout is data-driven rather than a transcription of one frame.
+
+### 12.3 Hero
+
+`100vw × 100svh` — `svh`, not `vh`, or a phone's dynamic browser chrome crops
+the bar off the first screen. The navbar sits over the photograph in the same
+semi-transparent treatment as the home page. The hero and its bar scroll away
+normally; they do not pin, parallax or fade. Only the navbar stays.
+
+`object-position` differs by aspect (`heroFocus.wide` / `heroFocus.portrait`),
+because a 3:2 source cropped blindly into a tall phone viewport loses the
+subject.
+
+**The bar — four zones.**
+
+| Zone | Type | Desktop | Tablet | Mobile |
+| --- | --- | --- | --- | --- |
+| couple | `--text-couple` (Mate 28) | left gutter | left gutter | row 1 |
+| story | `--text-bar` (Mate 16), `--bar-blurb-w` wide | centre | centre | **dropped** |
+| `(type)` / `(location)` | `--text-album-meta` (Mate 14), label italic lowercase | right of centre | right of centre | row 2 left |
+| time / date | `--text-bar` | right gutter | right gutter | row 2 right |
+
+| | Desktop | Tablet | Mobile |
+| --- | --- | --- | --- |
+| `--album-bar-h` | `88px` | `112px` | `168px` |
+| `--album-gutter` | `64px` | `24px` | `16px` |
+
+Four zones across one row does not survive 390px, so the bar stacks and **grows**
+rather than shrinking the type below the home page's minimum. The story is
+dropped there rather than truncated — a two-word remnant of an editorial note
+reads worse than its absence. The parenthetical-italic label pattern is kept
+intact at every breakpoint.
+
+### 12.4 Gallery — the arrangement sequence
+
+The Figma frame places 18 photographs down a 1440 column. Real albums vary in
+length, so that placement is expressed in `src/data/album-layout.ts` as a
+repeating sequence of arrangements: the walk feeds each arrangement as many
+photographs as it holds, and cycles until the album runs out. An arrangement
+that holds more than remain is skipped, so a short album never renders a
+half-empty triple.
+
+**Size families**, and how they drop with the breakpoint. Density falls —
+tablet runs at ~0.81 of desktop and mobile at ~0.63 — so photographs stay large
+enough to read rather than becoming thumbnails.
+
+| Family | Desktop | Tablet | Mobile |
+| --- | --- | --- | --- |
+| `portraitLg` | `410 × 600` | `330 × 483` | `260 × 380` |
+| `portraitMd` | `325 × 500` | `262 × 403` | `210 × 323` |
+| `accentSm` | `230 × 230` | `186 × 186` | `140 × 140` |
+| `accentMd` | `250 × 380` | `202 × 307` | `150 × 228` |
+| `tallLg` | `475 × 750` | `384 × 606` | `290 × 458` |
+| `squareLg` | `750 × 750` | `500 × 500` | `300 × 300` |
+| `fullBleed` | `1440 × 1135` | viewport | viewport |
+
+**The sequence.** Desktop `x` and `gap` are transcribed from Figma exactly;
+`gap` is the distance from the previous arrangement's bottom.
+
+| # | Arrangement | Desktop gap | Desktop placement | Tablet | Mobile |
+| --- | --- | --- | --- | --- | --- |
+| 1 | `pair` | 479 | `portraitLg` at 300, 730 | row of 2 | single, left |
+| 2 | `accentRight` | 486 | `accentSm` at 1134 | right, inset 46 | right, inset 24 |
+| 3 | `singleRight` | 1048 | `portraitLg` at 925 | right | right |
+| 4 | `triple` | 320 | `portraitMd` at 212, 557, 902 | **row of 2** | single, left inset 28 |
+| 5 | `singleLeftLarge` | 220 | `tallLg` at 106 | left | left |
+| 6 | `offsetDuo` | 272 | `accentMd` at 40, `squareLg` at 648 (+77) | `accentMd` left, `squareLg` right (+62) | `squareLg` right |
+| 7 | `accentLeft` | 352 | `accentSm` at 215 | left, inset 62 | left, inset 36 |
+| 8 | `singleRightMd` | 350 | `portraitMd` at 985 | right, inset 30 | right, inset 18 |
+| 9 | `singleLeftMd` | 158 | `portraitMd` at 192 | left, inset 24 | left, inset 12 |
+| 10 | `pairMd` | 255 | `portraitMd` at 660, 1005 | row of 2 | single, right |
+| 11 | `fullBleed` | 698 | `1440 × 1135` at 0 | edge to edge | edge to edge |
+| 12 | `pairEnd` | 1119 | `portraitLg` at 191, 621 | row of 2 | single, left inset 20 |
+
+### 12.5 Responsive rules
+
+**Figma has no tablet or mobile album frames.** These rules are designed here,
+against the home page's existing 834 and 390 for gutters, type scale and
+density.
+
+| | Tablet (834) | Mobile (390) |
+| --- | --- | --- |
+| gutter | `24px` | `16px` |
+| gap between photographs in a row | `20px` | `12px` |
+| vertical gap | desktop gap × `0.62`, clamped `48…520` | desktop gap × `0.34`, clamped `32…280` |
+
+The governing principle is the home page's: **density drops rather than
+everything shrinking.** The triple becomes a pair at 834 and a single at 390; the
+small accents stay accents at both. Because arrangements hold fewer photographs
+as the breakpoint falls, the sequence simply cycles more times — every
+photograph still appears, and no arrangement is compressed to fit.
+
+At 390 nearly everything is a single column, but alignment alternates and widths
+vary by family, so the page still reads as an editorial scatter rather than a
+uniform feed. The vertical rhythm stays uneven — scaling the desktop gaps by a
+constant preserves their unevenness, and a spec asserts that more than three
+distinct gap values survive at every breakpoint.
+
+**The full-bleed image keeps its full-bleed moment at every size**, because that
+reset is the strongest beat in the sequence.
+
+Between 1200 and 1440 the Figma column is wider than the viewport. Rather than
+re-placing every photograph, the whole column scales by `viewportWidth / 1440`,
+which keeps the transcribed proportions exactly and lands the full-bleed slot on
+the viewport edges for free. At and above 1440 it is 1 : 1, and the full-bleed
+slot alone breaks out of the column to the viewport width.
+
+### 12.6 Images
+
+One shared pool, four buckets, generated by `node scripts/prepare-albums.mjs`
+from `scripts/albums/photos.manifest.json`:
+
+| Bucket | Aspect | Widths |
+| --- | --- | --- |
+| `portrait` | 2 : 3 | 320, 480, 720, 960 |
+| `square` | 1 : 1 | 300, 480, 760, 1120 |
+| `wide` | 1440 : 1135 | 640, 1040, 1600, 2160 |
+| `hero` | 3 : 2 | 800, 1280, 1920, 2560 |
+
+Each is emitted as AVIF and WebP at every width, and `sizes` is the slot's exact
+rendered width, so the widths follow the breakpoint's geometry and a phone never
+downloads a 1440-wide file. Below the fold is `loading="lazy"`; the hero and the
+first screen of photographs are eager.
+
+**Placeholders are not optional here.** With scroll reveal and idle float
+running, an unplaceholdered image pops in mid-animation and the effect reads as
+broken. Every photograph carries a 20px-wide WebP LQIP inlined as a data URI on
+its own background, so it costs no request. Every slot also carries its exact
+width and height, so the box is reserved before the image arrives.
+
+The srcset comes from the **photograph's own bucket**, not the slot's family —
+albums rotate through a shared pool, so a square photograph can land in a
+portrait slot, and asking for the slot's width set would request derivatives
+that were never generated. `object-fit: cover` reconciles the two aspects.
+
+### 12.7 Motion
+
+**Page entry.** The hero fades up over `--album-hero-enter` and the metadata bar
+arrives `--album-bar-delay` later. This is the documented fallback rather than a
+shared-element transition, for a specific reason: the home page tile and the
+album hero are *different photographs* — the tile shows that couple's image from
+the home page pool, the hero shows the album's own — so expanding one into the
+other would visibly swap the picture mid-morph. A shared-element transition is
+the right idea only once a tile and its album hero are the same file.
+
+**Two separate systems**, which is the thing the Figma note is most explicit
+about:
+
+| | Driven by | What it does | Reduced motion |
+| --- | --- | --- | --- |
+| scroll reveal | `IntersectionObserver` on each photograph | one shot on entry: `opacity 0→1`, `y +28→0`, `--album-reveal-dur`, staggered `--album-reveal-stagger` within a batch | opacity only, no travel |
+| idle float | `gsap.ticker` | continuous drift on each photograph's own phase and period (`--album-float-period` ± `--album-float-jitter`), amplitude `--album-float-amp` (7px) desktop, `--album-float-amp-compact` (4px) at 834 and 390 | **off** |
+
+Both run on touch devices; the float's amplitude drops on small screens where
+the travel is proportionally more visible. Nothing here is pointer-only.
+
+The reveal fires **once** and then releases the element — re-revealing on the way
+back up would fight the float. The two never contend for `transform`: the float
+writes the outer element, the reveal tweens the inner one, and the image fades
+over its placeholder on a third.
+
+A full-bleed photograph floats **vertically only**. It is exactly as wide as the
+viewport, so any sideways drift would expose the ground at one edge and give the
+page a horizontal scrollbar.
+
+### 12.8 Leaving and returning
+
+The canvas position is parked in `sessionStorage` under `vows:pan` when
+`GalleryCanvas` unmounts and restored before its first tick, so browser back
+returns the visitor to the part of the field they were looking at rather than to
+the origin. A fresh session still starts at `(0, 0)`, because nothing is written
+until the canvas is left.
+
+### 12.9 Tests
+
+`tests/` holds three spec files, run at all three breakpoints by
+`npm run test:e2e`:
+
+- `album-layout.spec.ts` — hero fills the viewport, the bar's zones and heights,
+  every photograph renders, a shorter album lays out on the same rules, nothing
+  overlaps, the vertical rhythm stays uneven, every slot has a reserved box and
+  a placeholder.
+- `album-navigation.spec.ts` — a home tile opens its album, deep links work,
+  an unknown slug does not crash, browser back restores the canvas position,
+  and the page is reachable and scrollable by keyboard alone.
+- `album-motion.spec.ts` — reveal fires once per photograph and never re-hides,
+  the float drifts without scrolling and out of step, and reduced motion holds
+  it still.
+
+### 12.10 Decisions and divergences
+
+**A1 — 18 photographs, not 21.** The gallery note says 21. The frame contains 21
+`photo_holder` nodes, but three of them sit inside `2030-1929` roughly 16,000px
+below their parent and are invisible on canvas; those are orphans and are not
+built. That leaves **18**. Two of the 18 (`2030-1961`, `2030-1962`) sit 1,119px
+below the frame's own bottom edge — read here as the frame not having been
+resized rather than as two more orphans, because a closing pair after the
+full-bleed is a coherent ending and they are nowhere near as far out as the
+others.
+
+**A2 — `(location)` and the story.** Figma's `(location)` repeats "Wedding",
+duplicating `(type)`, and the story is lorem. Both are placeholders: the sample
+data carries a real location and a short editorial note per album. Figma also
+spells the label "(localtion)"; corrected.
+
+**A3 — The story's length is chosen, not transcribed.** It is sized to set in
+two lines in the bar's 632px zone, which is what keeps the bar at Figma's 88px.
+
+**A4 — The navbar's revealed state now carries its own opacity.** On the home
+page GSAP tweens the chrome in and its inline opacity wins; the album has no such
+reveal, so `.vows-chrome[data-revealed="true"]` sets `opacity: 1` in CSS. The
+home page is unaffected — its `data-revealed` only becomes true when the reveal
+fires, and the inline value takes precedence while the tween runs.
+
+**A5 — Tablet `offsetDuo` keeps both photographs.** Two 500px squares would not
+fit an 834 viewport, so the compact spec places mixed families — the small frame
+at one gutter, the large one dropped below it at the other — rather than
+degrading to a plain row, which would have lost the arrangement's character.

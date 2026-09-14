@@ -25,6 +25,8 @@ const twMerge = extendTailwindMerge({
             "subhead",
             "caption",
             "meta",
+            "couple",
+            "album-meta",
           ],
         },
       ],

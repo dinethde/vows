@@ -1,3 +1,5 @@
+import { Link } from "@tanstack/react-router";
+
 import { copy } from "~/data/copy";
 import { photos } from "~/data/photos";
 import { CAPTION_HEIGHT, tileSlug, type Tile } from "~/data/tiles";
@@ -30,12 +32,16 @@ export function PhotoTile({ tile, primary, eager }: PhotoTileProps) {
           width: `${tile.w}px`,
         }}
       >
-        <a
+        {/* A router Link rather than a bare anchor: opening an album is a
+            client-side navigation, so browser back returns to a canvas that is
+            still mounted and still where the visitor left it. */}
+        <Link
           className={cn(
             "vows-tile-link group block",
             !primary && "pointer-events-none",
           )}
-          href={`/portfolio/${tileSlug(tile)}`}
+          to="/albums/$slug"
+          params={{ slug: tileSlug(tile) }}
           draggable={false}
           aria-label={copy.a11y.photoAlt(tile.couple)}
           tabIndex={primary ? undefined : -1}
@@ -76,7 +82,7 @@ export function PhotoTile({ tile, primary, eager }: PhotoTileProps) {
           >
             {tile.couple}
           </span>
-        </a>
+        </Link>
       </div>
     );
 }

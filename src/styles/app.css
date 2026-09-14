@@ -13,6 +13,14 @@
   body {
     height: 100%;
     margin: 0;
+  }
+
+  /* The home page is a fixed full-screen canvas that owns its own panning, so
+     it locks the document. The album page is an ordinary scrolling document.
+     The attribute is set during render in __root.tsx, not in an effect, so
+     there is no frame in which the wrong one applies. */
+  html[data-lock-scroll],
+  html[data-lock-scroll] body {
     overflow: hidden;
     overscroll-behavior: none;
     overscroll-behavior-x: none;
@@ -147,6 +155,28 @@
     }
   }
 
+  /* Album photographs fade over their own placeholder, which is the element's
+     background. Without it an image pops in mid-reveal and the whole effect
+     reads as broken (DESIGN.md §12.6). */
+  .vows-album-img {
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease-out);
+  }
+
+  .vows-album-img[data-loaded="true"] {
+    opacity: 1;
+  }
+
+  .vows-album-hero-img {
+    background-position: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vows-album-img {
+      transition-duration: var(--duration-fast);
+    }
+  }
+
   .vows-menu-rule {
     position: absolute;
     left: var(--menu-rule-x);
@@ -203,8 +233,12 @@
     visibility: hidden;
   }
 
+  /* On the home page GSAP tweens this in and its inline opacity wins while the
+     tween runs. The album page has no such reveal — the navbar is simply
+     present — so the revealed state carries its own opacity too. */
   .vows-chrome[data-revealed="true"] {
     visibility: visible;
+    opacity: 1;
   }
 }
 

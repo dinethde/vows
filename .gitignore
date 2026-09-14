@@ -10,3 +10,5 @@ src/routeTree.gen.ts
 .lint-fixture
 .playwright-mcp
 bun.lock
+dev-album.log
+serve.log

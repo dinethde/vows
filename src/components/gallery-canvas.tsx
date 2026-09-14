@@ -15,6 +15,9 @@ type GalleryCanvasProps = {
   onFirstPan: () => void;
 };
 
+/** Where the canvas position is parked while the visitor is inside an album. */
+const PAN_KEY = "vows:pan";
+
 /** Test seam: the canvas element carries a live handle on its pan offset. */
 export type PanDebugElement = HTMLElement & { __vowsPan?: PanState };
 
@@ -74,6 +77,30 @@ export function GalleryCanvas({ onFirstPan }: GalleryCanvasProps) {
   // the pointer capture and strands the pan.
   const onFirstPanRef = useRef(onFirstPan);
   onFirstPanRef.current = onFirstPan;
+
+  // Leaving for an album and coming back should return the visitor to the part
+  // of the canvas they were looking at, not to the origin (DESIGN.md §12.8).
+  // Restored before the first tick, so there is no jump.
+  const restoredRef = useRef(false);
+  if (!restoredRef.current && typeof window !== "undefined") {
+    restoredRef.current = true;
+    const saved = window.sessionStorage.getItem(PAN_KEY);
+    const [x, y] = (saved ?? "").split(",").map(Number);
+    if (Number.isFinite(x) && Number.isFinite(y)) {
+      pan.current.targetX = pan.current.x = x!;
+      pan.current.targetY = pan.current.y = y!;
+    }
+  }
+
+  useEffect(() => {
+    const state = pan.current;
+    return () => {
+      window.sessionStorage.setItem(
+        PAN_KEY,
+        `${Math.round(state.x)},${Math.round(state.y)}`,
+      );
+    };
+  }, []);
 
   const notifyPan = useCallback(() => {
     if (hasPanned.current) return;

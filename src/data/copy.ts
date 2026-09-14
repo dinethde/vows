@@ -29,6 +29,11 @@ export const copy = {
     practice: "Wedding photography & videography",
     place: "Colombo, Sri Lanka",
   },
+  album: {
+    /** Figma spells this "(localtion)"; corrected here. */
+    typeLabel: "type",
+    locationLabel: "location",
+  },
   a11y: {
     skipToNav: "Skip to navigation",
     canvasLabel: "Wedding gallery — an endless canvas of photographs",
@@ -38,6 +43,9 @@ export const copy = {
     menuClose: "Close menu",
     menuTitle: "Menu",
     chromeRevealed: "Navigation revealed.",
+    albumGallery: (couple: string) => `Photographs from ${couple}'s wedding`,
+    albumNotFound: "That album could not be found.",
+    backToGallery: "Back to the gallery",
     loader: {
       region: "Loading Vows Weddings",
       busy: "Loading.",

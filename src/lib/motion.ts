@@ -54,6 +54,16 @@ const MOTION_TOKENS = [
   "loader-blank",
   "loader-handoff",
   "loader-rest-opacity",
+  "album-reveal-y",
+  "album-reveal-dur",
+  "album-reveal-stagger",
+  "album-reveal-margin",
+  "album-float-amp",
+  "album-float-amp-compact",
+  "album-float-period",
+  "album-float-jitter",
+  "album-hero-enter",
+  "album-bar-delay",
 ] as const;
 
 type MotionToken = (typeof MOTION_TOKENS)[number];
