@@ -35,6 +35,91 @@ test.describe("navigation", () => {
     await expect(page.locator("[data-album-bar]")).toBeVisible();
   });
 
+  test("a repeated tile opens the same album as its original", async ({ page }) => {
+    await page.goto("/");
+    // The loading screen covers the canvas for its first few seconds and would
+    // swallow a raw coordinate click. Locator clicks retry until actionable;
+    // this one has to wait explicitly.
+    await page.waitForSelector(".vows-loader", { state: "detached" });
+    await page.waitForTimeout(1200);
+    await page.addStyleTag({ content: ".vows-tile{transform:none!important}" });
+
+    // The canvas wraps, so after a band of panning the photographs under the
+    // cursor are lattice repeats, not the base copy. They have to stay
+    // clickable or the gallery goes decorative the moment you explore it.
+    await page.evaluate(() => {
+      const pan = (document.querySelector(".vows-canvas") as HTMLElement & {
+        __vowsPan?: { targetX: number; targetY: number; x: number; y: number };
+      }).__vowsPan!;
+      pan.targetX = pan.x = 1860;
+      pan.targetY = pan.y = 1531;
+    });
+    await page.waitForTimeout(600);
+
+    const onScreen = await page.evaluate(() => {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const tiles = [...document.querySelectorAll<HTMLElement>(".vows-tile")].filter(
+        (t) => {
+          const r = t.getBoundingClientRect();
+          return r.left < vw && r.right > 0 && r.top < vh && r.bottom > 0;
+        },
+      );
+      return {
+        total: tiles.length,
+        dead: tiles.filter((t) => {
+          const link = t.querySelector("a");
+          return (
+            !link ||
+            getComputedStyle(link).pointerEvents === "none" ||
+            !!t.closest("[inert]")
+          );
+        }).length,
+      };
+    });
+    expect(onScreen.total).toBeGreaterThan(0);
+    expect(onScreen.dead).toBe(0);
+
+    // Only the base copy stays in the tab order, so a keyboard visitor meets
+    // 22 photographs rather than every copy of them.
+    const tabbable = await page.evaluate(
+      () =>
+        [...document.querySelectorAll<HTMLAnchorElement>(".vows-tile-link")].filter(
+          (a) => a.tabIndex !== -1 && !a.closest("[inert]"),
+        ).length,
+    );
+    expect(tabbable).toBe(22);
+
+    const target = await page.evaluate(() => {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const repeat = [
+        ...document.querySelectorAll<HTMLElement>(
+          '[data-cell][aria-hidden="true"] .vows-tile',
+        ),
+      ].find((t) => {
+        const r = t.getBoundingClientRect();
+        return r.left > 0 && r.right < vw && r.top > 60 && r.bottom < vh;
+      });
+      if (!repeat) return null;
+      const r = repeat.getBoundingClientRect();
+      return {
+        href: repeat.querySelector("a")!.getAttribute("href"),
+        x: Math.round(r.left + r.width / 2),
+        y: Math.round(r.top + r.height / 2),
+      };
+    });
+    expect(target).not.toBeNull();
+
+    // Polled rather than `waitForURL`: this is a raw coordinate click, so
+    // Playwright has no navigation to attach to and waits for a `load` that a
+    // client-side transition never fires.
+    await page.mouse.click(target!.x, target!.y);
+    await expect
+      .poll(() => new URL(page.url()).pathname)
+      .toBe(target!.href);
+  });
+
   test("a deep link to an album works on its own", async ({ page }) => {
     const response = await page.goto("/albums/lena-and-matteo");
     expect(response?.status()).toBe(200);

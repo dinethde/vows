@@ -495,6 +495,11 @@ does not already do at 60 fps. **The canvas stays DOM + transforms.**
 - Only the **base lattice copy** is in the tab order; every repeated copy is
   `aria-hidden` with `tabindex="-1"`, so tab order is finite and matches the 22/17/13
   real photographs.
+- The repeats are **not** `inert`, and remain clickable. The canvas wraps, so after a
+  band of panning the photograph under the cursor is a repeat rather than the base
+  copy — making them non-interactive left every visible photograph dead as soon as the
+  visitor explored. Keeping them out of the tab order and out of the accessibility tree
+  is the part that was right; taking the pointer away with it was not.
 - Focusing a tile pans the canvas on both axes so the tile is fully in view.
 - Keyboard panning covers **both** axes — it is the only way a keyboard-only visitor
   reaches a photograph that is off to the side, so it is required, not a convenience.

@@ -3,7 +3,6 @@ import { Link } from "@tanstack/react-router";
 import { copy } from "~/data/copy";
 import { photos } from "~/data/photos";
 import { CAPTION_HEIGHT, tileSlug, type Tile } from "~/data/tiles";
-import { cn } from "~/lib/utils";
 
 type PhotoTileProps = {
   tile: Tile;
@@ -36,10 +35,7 @@ export function PhotoTile({ tile, primary, eager }: PhotoTileProps) {
             client-side navigation, so browser back returns to a canvas that is
             still mounted and still where the visitor left it. */}
         <Link
-          className={cn(
-            "vows-tile-link group block",
-            !primary && "pointer-events-none",
-          )}
+          className="vows-tile-link group block"
           to="/albums/$slug"
           params={{ slug: tileSlug(tile) }}
           draggable={false}

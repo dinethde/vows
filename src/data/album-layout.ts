@@ -79,14 +79,14 @@ export const familyBucket: Record<SizeFamily, "portrait" | "square" | "wide"> = 
 export type CompactSpec =
   | { mode: "row"; family: SizeFamily; count: number }
   | {
-      mode: "place";
-      slots: Array<{
-        family: SizeFamily;
-        align: "left" | "right";
-        inset: number;
-        dy: number;
-      }>;
-    }
+    mode: "place";
+    slots: Array<{
+      family: SizeFamily;
+      align: "left" | "right";
+      inset: number;
+      dy: number;
+    }>;
+  }
   | { mode: "full"; family: SizeFamily };
 
 export type ArrangementSpec = {
@@ -158,7 +158,7 @@ export const sequence: ArrangementSpec[] = [
   {
     kind: "singleRight",
     desktop: {
-      gap: 1048,
+      gap: 600,
       height: 600,
       slots: [{ family: "portraitLg", x: 925, dy: 0 }],
     },

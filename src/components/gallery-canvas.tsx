@@ -471,6 +471,12 @@ export function GalleryCanvas({ onFirstPan }: GalleryCanvasProps) {
 
       {cells.map(({ row, col }) => {
         const primary = row === 0 && col === 0;
+        // Repeats are hidden from the accessibility tree so the tab order and
+        // screen-reader output match the real photographs rather than every
+        // copy of them. They are deliberately NOT `inert`: the canvas wraps, so
+        // after a band of panning the copy under the cursor *is* a repeat, and
+        // making those non-interactive would leave the visitor clicking dead
+        // photographs.
         return (
           <div
             key={`${breakpoint}-${row}-${col}`}
@@ -479,7 +485,6 @@ export function GalleryCanvas({ onFirstPan }: GalleryCanvasProps) {
             data-cell-col={col}
             className="absolute top-0 left-0 will-change-transform"
             aria-hidden={primary ? undefined : true}
-            {...(primary ? {} : { inert: true })}
           >
             {band.tiles.map((tile) => (
               <PhotoTile

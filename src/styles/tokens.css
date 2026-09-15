@@ -215,9 +215,9 @@
   --album-reveal-dur: 0.9;
   --album-reveal-stagger: 0.06;
   --album-reveal-margin: 12;      /* % of viewport height held back before a reveal fires */
-  --album-float-amp: 7;
-  --album-float-amp-compact: 4;
-  --album-float-period: 9;
+  --album-float-amp: 10;
+  --album-float-amp-compact: 7;
+  --album-float-period: 6;
   --album-float-jitter: 4;
   --album-hero-enter: 0.7;
   --album-bar-delay: 0.18;
