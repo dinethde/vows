@@ -240,6 +240,112 @@
     visibility: visible;
     opacity: 1;
   }
+
+  /* ---- Footer (DESIGN.md §13) ------------------------------------ */
+
+  /* The wordmark is sized from the panel's own width, hence `cqw`: 100vw would
+     include the scrollbar and overrun the gutter on desktop. */
+  .vows-footer {
+    container-type: inline-size;
+  }
+
+  /* The Figma x positions are these tracks, not offsets — which is what makes
+     the four groups share one top instead of drifting apart as drawn. */
+  .vows-footer-columns {
+    grid-template-columns: var(--footer-cols);
+    grid-template-areas:
+      "menu socials"
+      "email email"
+      "hotline studio";
+    row-gap: var(--footer-contact-row-gap);
+  }
+
+  /* The address is the widest value on the panel, so on mobile it takes a row
+     to itself and Hotline and Studio share the one beneath. `display: contents`
+     lets the same wrapper be a single column from 768 up. */
+  .vows-footer-contact {
+    display: contents;
+  }
+
+  .vows-footer-email-block {
+    margin-top: var(--footer-contact-row-lead);
+  }
+
+  .vows-footer-pin {
+    width: var(--footer-pin-size);
+    height: var(--footer-pin-size);
+  }
+
+  /* Written backwards in the markup and turned round again here, so the page
+     source carries no address-shaped string (DESIGN.md §13.4). */
+  .vows-footer-email {
+    cursor: pointer;
+  }
+
+  .vows-footer-email > span {
+    unicode-bidi: bidi-override;
+    direction: rtl;
+  }
+
+  .vows-footer-wordmark {
+    font-size: min(
+      var(--wordmark-max),
+      calc((100cqw - var(--wordmark-safety)) / var(--wordmark-ratio))
+    );
+    line-height: var(--wordmark-leading);
+  }
+
+  /* Mobile splits the rail: the three policy links spread across the width,
+     copyright on its own line beneath them. */
+  .vows-footer-legal {
+    grid-template-columns: var(--footer-legal-cols);
+    grid-template-areas:
+      "legal1 legal2 legal3"
+      "copyright copyright copyright";
+    row-gap: var(--footer-legal-row-gap);
+  }
+
+  /* Third child is the middle policy link; it is centred in its column on
+     mobile and starts its column everywhere else. */
+  .vows-footer-legal > li:nth-child(3) {
+    justify-self: center;
+  }
+
+  /* The rail ends flush with the right gutter rather than at a track edge. */
+  .vows-footer-legal > li:last-child {
+    justify-self: end;
+  }
+
+  @variant md {
+    .vows-footer-columns {
+      grid-template-areas: "menu socials contact studio";
+    }
+
+    .vows-footer-contact {
+      display: flex;
+      flex-direction: column;
+      gap: var(--footer-contact-gap);
+      grid-area: contact;
+    }
+
+    .vows-footer-email-block {
+      margin-top: 0;
+    }
+
+    /* One row from here up. */
+    .vows-footer-legal {
+      grid-template-areas: "copyright legal1 legal2 legal3";
+    }
+
+    .vows-footer-legal > li:nth-child(3) {
+      justify-self: start;
+    }
+
+    /* One line from here up; the measured size guarantees it fits. */
+    .vows-footer-wordmark {
+      white-space: nowrap;
+    }
+  }
 }
 
 @keyframes vows-eq {

@@ -30,6 +30,13 @@
   --color-accent-practice: #ff7513;
   --color-accent-place: #1389ff;
 
+  /* Footer (DESIGN.md §13). The label blue is the loader marker's blue darkened
+   * until it passes AA on white: #1389ff measures 3.47:1 against the panel and
+   * the labels are 14px, which needs 4.5:1. The marker keeps the original value
+   * because a 10px dot carries no text-contrast requirement. */
+  --color-label: #0b72d9;
+  --color-pin: #71c288;
+
   --color-focus-ring: #000000;
   --color-focus-halo: #ffffff;
 
@@ -61,6 +68,14 @@
   --text-caption--line-height: 1.25;
   --text-meta: 16px;              /* loader side labels, Inter */
   --text-meta--line-height: 1.2;
+  --text-footer-label: 14px;      /* footer column labels, Inter Medium */
+  --text-footer-label--line-height: 20px;
+  --text-footer-link: 16px;       /* footer links, Mate — 24px line, 12px gap */
+  --text-footer-link--line-height: 24px;
+  --text-footer-value: 16px;      /* footer contact values, Mate */
+  --text-footer-value--line-height: 22px;
+  --text-legal: 14px;             /* footer legal rail, Mate */
+  --text-legal--line-height: 19px;
 
   /* ---- Spacing -------------------------------------------------- */
   --spacing-3xs: 4px;
@@ -222,6 +237,45 @@
   --album-hero-enter: 0.7;
   --album-bar-delay: 0.18;
 
+  /* ---- Footer (DESIGN.md §13) ----------------------------------- *
+   * Mobile first, like the rest of this file. Column pitches are the Figma x
+   * positions expressed as grid tracks. The desktop block corrects the two
+   * drifts in that frame: all four columns share one top, and the contact
+   * column sits at 736 to line up with the legal link beneath it.          */
+  --footer-gutter: var(--spacing-xl);
+  --footer-radius: 24px;
+  --footer-pad-top: 40px;
+  --footer-pad-bottom: 40px;
+  --footer-cols: 185px 1fr;
+  --footer-label-gap: var(--spacing-xl);
+  --footer-link-gap: var(--spacing-md);
+  --footer-contact-gap: 32px;
+  --footer-wordmark-gap: 56px;
+  --footer-legal-gap: 80px;
+  --footer-legal-row-gap: 13px;
+  /* The legal rail does not sit on the column tracks at every breakpoint.
+   * Mobile is three equal columns with the middle link centred and the last
+   * flush right; tablet is hand-placed in the frame and these tracks are
+   * those x positions (40, 326, 527, flush right); desktop does follow the
+   * columns above it. */
+  --footer-legal-cols: 1fr 1fr 1fr;
+  --footer-contact-row-gap: 32px;
+  --footer-contact-row-lead: 8px;
+  --footer-pin-size: 18px;
+  --footer-pin-gap: var(--spacing-sm);
+
+  /* The wordmark is measured, not estimated: Mate's advance width divided by
+   * font size, taken from the rendered face. Mobile sets it stacked, so the
+   * ratio is "Weddings" alone — the limiting line, whose W, d and g are far
+   * wider than Mate's average, which is exactly why a ratio taken from the
+   * full string overruns and wraps mid-word. */
+  --wordmark-ratio: 4.192;
+  /* A hair of slack so sub-pixel rounding can never push the line past
+   * the gutter it was measured to fill. */
+  --wordmark-safety: 2px;
+  --wordmark-max: 80px;
+  --wordmark-leading: 1.1;
+
   /* ---- Keyboard pan steps --------------------------------------- */
   --key-step: 80;
   --key-page-ratio: 0.9;
@@ -246,6 +300,17 @@
   :root {
     --bar-top-h: 48px;
     --bar-bottom-h: 88px;
+    --footer-gutter: 40px;
+    --footer-pad-top: 48px;
+    --footer-pad-bottom: 41px;
+    --footer-cols: 170px 180px 240px 1fr;
+    --footer-wordmark-gap: 104px;
+    --footer-legal-gap: 123px;
+    --footer-legal-cols: 286px 201px 185px 1fr;
+    /* One line from here up, so the ratio is the whole string. */
+    --wordmark-ratio: 6.557;
+    --wordmark-max: 200px;
+    --wordmark-leading: 1.2;
     --album-bar-h: 112px;
     --album-gutter: var(--spacing-2xl);
     --gutter-top: var(--spacing-2xl);
@@ -259,6 +324,12 @@
   :root {
     --bar-top-h: 48px;
     --bar-bottom-h: 76px;
+    --footer-gutter: var(--spacing-4xl);
+    --footer-pad-bottom: 45px;
+    --footer-cols: 336px 336px 439px 1fr;
+    --footer-wordmark-gap: 112px;
+    --footer-legal-gap: 228px;
+    --footer-legal-cols: var(--footer-cols);
     --album-bar-h: 88px;
     --album-gutter: var(--spacing-4xl);
     --gutter-top: var(--spacing-3xl);

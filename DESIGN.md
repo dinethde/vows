@@ -525,6 +525,7 @@ does not already do at 60 fps. **The canvas stays DOM + transforms.**
 | `HeroTitle` | — | — |
 | `SiteHeader` | `revealed: boolean` | `desktop` \| `tablet` \| `mobile` (CSS, one DOM tree) |
 | `SiteFooterBar` | `revealed: boolean` | `desktop` \| `tablet` \| `mobile` |
+| `SiteFooter` | — | `desktop` \| `tablet` \| `mobile` (CSS grid, one DOM tree) — the standing panel of §13, rendered by the `_site` layout route |
 | `NavLink` | `href`, `children`, `variant` | `wordmark` \| `link` |
 | `ChatCta` | `className?`, `floating?: boolean` | shadcn `Button` variant `pill`, sizes `default` \| `floating` |
 | `MobileMenu` | `open`, `onOpenChange` | shadcn `Sheet`, side `right` |
@@ -536,14 +537,17 @@ Hooks: `useBreakpoint()` → `'mobile' | 'tablet' | 'desktop'`; `useReducedMotio
 `useLoadingSequence(longestLine, reducedMotion)` → `{ phase, elapsed, lineOpacity,
 backdropOpacity }`.
 
-Libraries: `src/lib/scramble.ts` — the loader's two text passes, both pure functions of
+Libraries: `src/lib/email.ts` — the footer's address obfuscation, kept out of the
+component so what it does and does not protect against is written down once
+(§13.5). `src/lib/scramble.ts` — the loader's two text passes, both pure functions of
 elapsed time (§11.2). `src/lib/pan.ts` — the pan state, its easing, its inertia, the per-axis wrap
 and the whole input driver (§5.1). It holds no React and no DOM beyond the element it is
 handed, which is what makes the pan model testable on its own.
 
 Data: `src/data/tiles.ts` (the three tables of §3.4), `src/data/photos.ts` (the 22-photo
 pool with slug, alt text, orientation and credit), `src/data/audio.ts` (the track slot,
-§10), `src/data/copy.ts` (all page strings).
+§10), `src/data/contact.ts` (the studio's real contact details and the footer's
+link lists, §13.5), `src/data/copy.ts` (all page strings).
 
 shadcn/ui is scoped to **`button`** and **`sheet`** only. Nothing else from the registry
 is installed.
@@ -1079,8 +1083,9 @@ until the canvas is left.
 
 ### 12.9 Tests
 
-`tests/` holds three spec files, run at all three breakpoints by
-`npm run test:e2e`:
+`tests/` holds four spec files, run at all three breakpoints by
+`npm run test:e2e`. Three cover the album page; `footer.spec.ts` is described in
+§13.7:
 
 - `album-layout.spec.ts` — hero fills the viewport, the bar's zones and heights,
   every photograph renders, a shorter album lays out on the same rules, nothing
@@ -1122,3 +1127,272 @@ fires, and the inline value takes precedence while the tween runs.
 fit an 834 viewport, so the compact spec places mixed families — the small frame
 at one gutter, the large one dropped below it at the other — rather than
 degrading to a plain row, which would have lost the arrangement's character.
+
+---
+
+## 13. Footer
+
+Figma section `2043-769` — one frame per breakpoint (`2043-770` desktop 1440,
+`2048-769` tablet 834, `2048-813` mobile 390) with the panel described in
+`2046-770` and the measurements in `2046-771` and `2046-772`.
+
+The site had no conventional footer: the home page ends in a bottom bar and the
+album page simply ran out of photographs. This panel is the full stop. Four
+column groups along the top — Menu, Socials, Email and Hotline stacked together,
+Studio with a pinned location — then the name set as large as the gutters allow,
+then a rail of legal links along the bottom edge. It is a contact card as much
+as a nav list: a visitor who has scrolled this far wants a way to reach the
+studio, so the address, the number and the email are given in full rather than
+hidden behind a form.
+
+White ground against the page's `--color-canvas`, a 24px radius on the top two
+corners only and square along the bottom, so it reads as a card the page slides
+underneath rather than another band of the same sheet.
+
+### 13.1 Where it lives
+
+The footer belongs to content pages, not to the home page.
+
+It is a **layout concern, not an import**. `src/routes/_site.tsx` is a pathless
+layout route that renders `<Outlet />` followed by `<SiteFooter />`; the album
+page is `src/routes/_site.albums.$slug.tsx`, so its URL is unchanged at
+`/albums/$slug` while the panel comes for free. About, Contact and Pricing will
+be `_site.about.tsx` and so on, and will not re-solve this. `src/routes/index.tsx`
+stays outside the layout, which is what keeps the home page footer-free.
+
+The home page is an infinite 2D pan canvas with no bottom. There is nothing for
+a footer to sit below, and a fixed one would fight the canvas. That exclusion is
+the requirement most likely to be undone by a later change, so it is a test
+(`tests/footer.spec.ts`) rather than a note.
+
+On the album page the panel sits at the very bottom, after the gallery, in
+normal flow: `position: static`, no sticky, no reveal, no float. The gallery's
+scroll-reveal and idle-float are scoped to elements inside the gallery's own
+root, so nothing in the footer is ever a target. The footer arrives still.
+
+### 13.2 Grid
+
+Every column position in the frames is a grid track rather than an offset, which
+is what lets one piece of markup serve all three breakpoints and what corrects
+the drift in the desktop frame. `--footer-cols` carries the tracks; the gutters
+are the panel's own padding.
+
+| | gutter | tracks | groups land at |
+|---|---|---|---|
+| mobile | 20 | `185px 1fr` | 20, 205 |
+| tablet | 40 | `170px 180px 240px 1fr` | 40, 210, 390, 630 |
+| desktop | 64 | `336px 336px 439px 1fr` | 64, 400, 736, 1175 |
+
+Desktop and tablet run all four groups on one row: `menu socials contact studio`,
+with Email and Hotline stacked 32px apart inside the contact column. Mobile
+keeps Menu and Socials as two columns — collapsing nine short links into one
+stack would make the panel far too tall — and re-flows the contact group into
+two rows beneath them: Email on its own row because the address is the widest
+element on the panel, then Hotline and Studio side by side. The same wrapper
+serves both: it is `display: contents` on mobile, so Email and Hotline become
+grid items in their own right, and a flex column from 768 up.
+
+Vertical rhythm, top to bottom:
+
+| | desktop | tablet | mobile |
+|---|---|---|---|
+| padding top | 48 | 48 | 40 |
+| column groups | 208 | 208 | 208 + 40 + 62 + 32 + 62 |
+| gap to wordmark | 112 | 104 | 56 |
+| wordmark | 240 | 138 | 176 |
+| gap to legal | 228 | 123 | 80 |
+| legal rail | 19 | 19 | 19 + 13 + 19 |
+| padding bottom | 45 | 41 | 40 |
+| **panel** | **900** | **681** | **847** |
+
+Links sit on a 36px pitch — a 24px line with a 12px gap — and labels 20px above
+the first of them. Contact values sit on a 22px line, which is what makes a
+label-plus-value block exactly 62px tall, as drawn.
+
+The legal rail does not follow the column tracks at every breakpoint, so it has
+its own `--footer-legal-cols`. Desktop does follow them (64, 400, 736) with the
+last link flush right at 1376. Tablet's four x positions in the frame — 40, 326,
+527, flush right at 794 — are hand-placed and fall on no grid; they are
+reproduced exactly as three fixed tracks plus a remainder. Mobile splits the
+rail into two rows: the three policy links across three equal columns, aligned
+start / centre / end, with the copyright on its own line beneath.
+
+### 13.3 The wordmark
+
+"Vows Weddings" in Mate, pure black, centred across the full width between the
+gutters. It is the largest type anywhere on the site and the only pure black on
+this panel.
+
+The size is **measured, not a ratio guessed from the string**. Mate's advance
+width divided by font size is 6.557 for "Vows Weddings" and 4.192 for "Weddings"
+alone — that line is the limiting one, because Mate's W, d and g are far wider
+than its average, and a per-character estimate taken from the full string
+overruns and wraps mid-word. Both numbers are tokens (`--wordmark-ratio`), set
+per breakpoint because mobile breaks the name over two lines and therefore fits
+"Weddings" rather than the whole string.
+
+```
+font-size: min(
+  var(--wordmark-max),
+  calc((100cqw - var(--wordmark-safety)) / var(--wordmark-ratio))
+);
+```
+
+`cqw` and not `vw`: the panel is a size container, so the wordmark is sized from
+the content box inside the gutters. `100vw` would include the scrollbar and
+overrun on desktop. `--wordmark-safety` is 2px of slack so sub-pixel rounding
+can never push the line past the gutter it was measured to fill.
+
+That lands on 199.8px at 1440 and 80px at 390 — the drawn sizes — 114.7px at 834,
+and 66.3px at 320, where "Weddings" still sets on one unbroken line. The name is
+two spans with a space between them, so the only break available is between the
+words.
+
+### 13.4 Type and colour
+
+| token | value | used for |
+|---|---|---|
+| `--text-footer-label` | 14 / 20, Inter Medium | column labels |
+| `--text-footer-link` | 16 / 24, Mate | link columns |
+| `--text-footer-value` | 16 / 22, Mate | email, phone, location |
+| `--text-legal` | 14 / 19, Mate | legal rail |
+| `--color-label` | `#0b72d9` | column labels |
+| `--color-pin` | `#71c288` | the location pin |
+
+The labels are the one deliberate break from the rest of the site: Inter Medium
+in blue, where everything else on the panel — links, values, wordmark, legal —
+is Mate. They are signage, not content, and the switch in both typeface and
+colour is what stops them being read as links.
+
+White as a surface distinct from the page already existed as `--color-surface`
+and is reused. `--color-pin` is new. `--color-label` is new and is **not** the
+blue that was drawn; see F4.
+
+### 13.5 Contact details
+
+`src/data/contact.ts` holds the email, phone number, studio location and the
+three link lists as content. Nothing is hardcoded in the component: changing a
+number or adding a social does not touch JSX. The email renders as `mailto:`,
+the phone as `tel:` and Studio as a map link.
+
+**The address is obfuscated in the markup.** It is stored split, written
+backwards into the DOM and turned round again with `unicode-bidi: bidi-override;
+direction: rtl`, so a regex over the page source finds `moc.liamg@avlisdakunid`,
+which matches no address pattern. The `mailto:` href and the accessible name are
+attached on the client after hydration, because an address in an attribute is
+the easiest thing of all to scrape. A test asserts that the served HTML contains
+no address-shaped string and no `mailto:`.
+
+What that is honest about: it defeats scrapers that read HTML, not ones that run
+a browser, and it costs something. Until hydration the email is not a link — not
+focusable, not clickable — and with JavaScript off it never becomes one. The
+visible text is always the address, so it can still be read and copied; the
+trade is deliberate and applies to the email alone. The phone and map links are
+ordinary anchors that work without JavaScript.
+
+### 13.6 Accessibility and states
+
+**Labels are headings, not links.** Each is an `<h2>` naming the list beneath
+it, and the links are `<li>`s in a labelled `<ul>`, so a screen reader announces
+"Menu, list, 4 items" rather than nine loose links. They are not focusable, not
+hoverable and carry no link styling.
+
+**The pin is decorative.** `aria-hidden`, `focusable="false"`; the word
+"Wadduwa" beside it carries the meaning.
+
+**Contrast.** Measured in the browser rather than taken on trust: the drawn
+`#1389FF` gives **3.471:1** on white, and 14px text needs 4.5:1, so it fails as
+drawn. The token was darkened to `#0b72d9`, which measures **4.748:1**, rather
+than inflating the labels to reach the large-text threshold — 14px is what makes
+them read as signage, and raising them to 24px would have made them compete with
+the links they caption. The loading screen's right-hand marker keeps the
+original `#1389FF` in `--color-accent-place`: it is a 10px dot, not text, and
+carries no contrast requirement. Everything else on the panel measures 7.97:1
+(`--color-ink-muted`) or 21:1 (pure black).
+
+**Hover** is not drawn. Links take the site's existing link hover — opacity to
+`--hover-link-opacity` over `--duration-fast` on `--ease-hover` — which is what
+the navbar, the mobile menu and the player toggle already do. Focus uses the
+global `:focus-visible` ring; on white it is the same ring as everywhere else.
+
+### 13.7 Tests
+
+`tests/footer.spec.ts`, run at all three breakpoints:
+
+- **Placement** — present exactly once on the album page, after `<main>` and not
+  positioned; **absent on the home page**, including after panning the canvas to
+  its bottom; present on a second route under the same layout, which is what
+  proves the layout owns it rather than the album page.
+- **Structure** — five labels that are headings and not focusable, lists of the
+  right length with the right accessible names, fifteen links that all point
+  somewhere with `target`/`rel` on the external ones, mail / phone / map present,
+  the address absent from the served HTML but attached after hydration, the pin
+  hidden from assistive technology, every link focusable and no focus trap.
+- **Layout** — panel height and every group's x and y against the frames, all
+  four groups sharing one top, radius rounded on top and square beneath, the
+  wordmark fitting its gutters unbroken at 320, 390, 834 and 1440, and the panel
+  holding still while the gallery above it keeps moving.
+
+### 13.8 Decisions and divergences
+
+**F1 — It does not render on the home page.** The Figma note `2046-770` says the
+panel "sits below the home page canvas and below the album gallery, identically
+on every route". It is not built that way, on instruction and for the reason
+given in §13.1: the home canvas is infinite and has no bottom. Where the note
+and the instruction conflict, the instruction wins; recorded here so the frame
+is not read as the contract on this point.
+
+**F2 — The column tops are aligned.** In the desktop frame Studio starts at
+y = 26, the Email group at y = 38, and Menu and Socials at y = 48. Tablet and
+mobile align all four. Built with one shared top of 48 at every breakpoint,
+which is what the grid gives for free.
+
+**F3 — The contact column sits at x = 736, not 726.** The frame puts the Email
+group at 726 while the legal link directly beneath it sits at 736 — a 10px drift
+in what should be one shared column. 736 wins.
+
+**F4 — The label blue is darkened.** `#1389FF` as drawn measures 3.471:1 on
+white and fails AA for 14px text. The token ships as `#0b72d9` (4.748:1). Full
+reasoning in §13.6.
+
+**F5 — Inter is reused, not introduced.** The note calls the labels the first
+second typeface in the product UI and asks for a new Medium file, subset and
+scoped. Inter was already loaded: a variable face at weights 400–500, already
+subset to latin and latin-ext, already preloaded, and already used at 500 in the
+home page's tile captions and the ambience player. Shipping a second static file
+would have added a duplicate. The labels use the existing face at 500 through
+`font-sans`, and nothing else on the panel picks it up. Likewise, white as a
+distinct surface already existed as `--color-surface`; only the label blue and
+the pin green were genuinely new.
+
+**F6 — Tablet is 681px tall, not 680.** The wordmark is sized to fill the
+gutters, which at 834 gives 114.7px against the 114px drawn, and a line box one
+pixel taller. Matching 680 exactly would mean pinning the tablet wordmark to a
+fixed size and leaving 7px of slack inside the gutters, which contradicts how
+the wordmark is specified. Desktop (900) and mobile (847) match their frames
+exactly.
+
+**F7 — The tablet legal rail is reproduced, not rationalised.** Its four x
+positions fall on no grid and do not line up with the columns above them, unlike
+desktop's. They are built as drawn via `--footer-legal-cols`; if that rail is
+ever redrawn, that token is the one place to change.
+
+**F8 — The footer's internal links are plain anchors.** Most of their
+destinations — `/about`, `/contact`, `/portfolio`, `/cookies`, `/privacy`,
+`/rates.pdf` — are not routes yet and currently 404, exactly as the navbar's
+links do. A router `<Link>` to a path with no route throws during render rather
+than degrading, so the footer uses `<a href>` for the same reason the navbar
+does. They become client-side navigations for free when those routes are added.
+
+**F9 — The social URLs are placeholders.** The email, phone number and location
+are real. The five social links point at plausible `vowsweddings` handles that
+have not been verified, and the WhatsApp link is built from the real number.
+They are in `src/data/contact.ts` for exactly this reason: they need one pass
+with the studio before launch.
+
+**F10 — Two pre-existing console warnings.** Chrome reports both preloaded fonts
+as "preloaded but not used" on the album page. The same two warnings appear on
+the footer-free home page, so they predate this work: in dev the server
+revalidates `/fonts/*.woff2`, so the preloaded copy is not reused. Nothing in
+the footer causes them and nothing here fixes them. CLS on the album page is
+0.00 and the panel contributes no layout shift.

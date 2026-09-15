@@ -11,7 +11,7 @@ import { readMotion } from "~/lib/motion";
 import { getAlbum } from "~/data/albums";
 import { copy } from "~/data/copy";
 
-export const Route = createFileRoute("/albums/$slug")({
+export const Route = createFileRoute("/_site/albums/$slug")({
   // Resolved in the loader so a deep link to a missing album 404s on the
   // server rather than flashing an empty page on the client.
   loader: ({ params }) => {

@@ -12,3 +12,6 @@ src/routeTree.gen.ts
 bun.lock
 dev-album.log
 serve.log
+
+# Playwright writes traces here when a spec fails.
+test-results

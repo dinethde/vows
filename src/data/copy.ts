@@ -34,6 +34,17 @@ export const copy = {
     typeLabel: "type",
     locationLabel: "location",
   },
+  /** The footer panel (DESIGN.md §13). Contact values live in ~/data/contact. */
+  footer: {
+    menuLabel: "Menu",
+    socialsLabel: "Socials",
+    emailLabel: "Email",
+    hotlineLabel: "Hotline",
+    studioLabel: "Studio",
+    wordmark: "Vows Weddings",
+    /** Two spans so mobile can break between them and never mid-word. */
+    wordmarkLines: ["Vows", "Weddings"],
+  },
   a11y: {
     skipToNav: "Skip to navigation",
     canvasLabel: "Wedding gallery — an endless canvas of photographs",
@@ -46,6 +57,10 @@ export const copy = {
     albumGallery: (couple: string) => `Photographs from ${couple}'s wedding`,
     albumNotFound: "That album could not be found.",
     backToGallery: "Back to the gallery",
+    footer: {
+      region: "Site footer",
+      legal: "Legal and policies",
+    },
     loader: {
       region: "Loading Vows Weddings",
       busy: "Loading.",
