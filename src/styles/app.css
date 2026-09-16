@@ -313,7 +313,9 @@
     min-height: 100svh;
     display: flex;
     flex-direction: column;
-    padding: 40px;
+    /* Top pin, gutter, bottom pin — three separate band values, kept here
+       rather than as utility classes so they cannot be merged into one. */
+    padding: var(--footer-pad-top) var(--footer-gutter) var(--footer-pad-bottom);
   }
 
   .vows-footer-columns,

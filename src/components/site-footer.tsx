@@ -44,7 +44,7 @@ export function SiteFooter({ ref }: { ref?: Ref<HTMLElement> }) {
       aria-label={copy.a11y.footer.region}
       className="vows-footer w-full rounded-t-[var(--footer-radius)] bg-surface"
     >
-      <div className="vows-footer-columns grid px-4">
+      <div className="vows-footer-columns grid">
         <LinkColumn label={copy.footer.menuLabel} links={menuLinks} area="menu" />
         <LinkColumn
           label={copy.footer.socialsLabel}
