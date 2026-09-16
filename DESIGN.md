@@ -973,7 +973,7 @@ enough to read rather than becoming thumbnails.
 | --- | --- | --- | --- | --- | --- |
 | 1 | `pair` | 479 | `portraitLg` at 300, 730 | row of 2 | single, left |
 | 2 | `accentRight` | 486 | `accentSm` at 1134 | right, inset 46 | right, inset 24 |
-| 3 | `singleRight` | 1048 | `portraitLg` at 925 | right | right |
+| 3 | `singleRight` | 600 | `portraitLg` at 925 | right | right |
 | 4 | `triple` | 320 | `portraitMd` at 212, 557, 902 | **row of 2** | single, left inset 28 |
 | 5 | `singleLeftLarge` | 220 | `tallLg` at 106 | left | left |
 | 6 | `offsetDuo` | 272 | `accentMd` at 40, `squareLg` at 648 (+77) | `accentMd` left, `squareLg` right (+62) | `squareLg` right |
@@ -983,6 +983,12 @@ enough to read rather than becoming thumbnails.
 | 10 | `pairMd` | 255 | `portraitMd` at 660, 1005 | row of 2 | single, right |
 | 11 | `fullBleed` | 698 | `1440 × 1135` at 0 | edge to edge | edge to edge |
 | 12 | `pairEnd` | 1119 | `portraitLg` at 191, 621 | row of 2 | single, left inset 20 |
+
+`singleRight`'s gap is **600, not the 1048 in Figma** — tightened deliberately
+after the frame was drawn, because 1048 left a hole in the middle of the
+sequence that read as a missing photograph rather than as breathing room. Gap
+is measured from the previous arrangement's bottom, so this pulls everything
+below it up by 448 and the desktop column is that much shorter.
 
 ### 12.5 Responsive rules
 
