@@ -1095,7 +1095,14 @@ until the canvas is left.
 
 `tests/` holds four spec files, run at all three breakpoints by
 `npm run test:e2e`. Three cover the album page; `footer.spec.ts` is described in
-§13.7:
+§13.7.
+
+On a fresh checkout run `npm run test:e2e:install` once first. `npm install`
+brings in `@playwright/test` but not the browser binaries, and `playwright test`
+fails without them. It is a separate script rather than a `postinstall` hook
+because the download is several hundred megabytes and nobody who only wants to
+run the dev server should pay for it.
+
 
 - `album-layout.spec.ts` — hero fills the viewport, the bar's zones and heights,
   every photograph renders, a shorter album lays out on the same rules, nothing
