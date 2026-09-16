@@ -133,6 +133,17 @@ test.describe("navigation", () => {
     await expect(page.getByText("could not be found")).toBeVisible();
   });
 
+  test("a slug naming an inherited Object member is still unknown", async ({
+    page,
+  }) => {
+    // A bare `albums[slug]` hands these back as real values.
+    for (const slug of ["constructor", "__proto__", "toString"]) {
+      const response = await page.goto(`/albums/${slug}`);
+      expect(response?.status(), slug).toBe(404);
+      await expect(page.getByText("could not be found")).toBeVisible();
+    }
+  });
+
   test("browser back restores the canvas position", async ({ page }) => {
     await page.goto("/");
     await page.waitForTimeout(2200);

@@ -120,7 +120,11 @@ export const albums: Record<string, Album> = {
 };
 
 export function getAlbum(slug: string): Album | undefined {
-  return albums[slug];
+  // Own-property check, not a bare lookup: `albums` is an ordinary object, so
+  // `/albums/constructor` and `/albums/__proto__` would otherwise return an
+  // inherited member, sail past the loader's `notFound()` and crash the page
+  // when it is read as an album.
+  return Object.hasOwn(albums, slug) ? albums[slug] : undefined;
 }
 
 /** `01/02/2022`, as the Figma bar shows it. */
