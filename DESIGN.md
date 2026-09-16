@@ -1067,10 +1067,12 @@ about:
 | | Driven by | What it does | Reduced motion |
 | --- | --- | --- | --- |
 | scroll reveal | `IntersectionObserver` on each photograph | one shot on entry: `opacity 0→1`, `y +28→0`, `--album-reveal-dur`, staggered `--album-reveal-stagger` within a batch | opacity only, no travel |
-| idle float | `gsap.ticker` | continuous drift on each photograph's own phase and period (`--album-float-period` ± `--album-float-jitter`), amplitude `--album-float-amp` (7px) desktop, `--album-float-amp-compact` (4px) at 834 and 390 | **off** |
+| idle float | `gsap.ticker` | continuous drift on each photograph's own phase and period (`--album-float-period` ± `--album-float-jitter`), amplitude `--album-float-amp` (10px) desktop, `--album-float-amp-compact` (7px) at 834 and 390 | **off** |
 
 Both run on touch devices; the float's amplitude drops on small screens where
-the travel is proportionally more visible. Nothing here is pointer-only.
+the travel is proportionally more visible. Nothing here is pointer-only. The
+amplitudes were raised from the 7px / 4px first built — at that size the drift
+was too small to read as movement and only made the grid look unsteady.
 
 The reveal fires **once** and then releases the element — re-revealing on the way
 back up would fight the float. The two never contend for `transform`: the float
