@@ -16,6 +16,32 @@ function box(page: Page, selector: string) {
 }
 
 test.describe("album hero", () => {
+  test("the photograph is cropped to the album's focal point", async ({
+    page,
+  }, testInfo) => {
+    await page.goto(FEATURED);
+    await page.waitForSelector(".vows-album-hero-img");
+
+    // Two focal points per album, picked by aspect: a 3:2 source cropped
+    // blindly into a tall viewport loses the subject (DESIGN.md §12.3).
+    const focus = await page.evaluate(() => {
+      const img = document.querySelector(".vows-album-hero-img")!;
+      const style = getComputedStyle(img);
+      return {
+        object: style.objectPosition,
+        background: style.backgroundPosition,
+      };
+    });
+
+    const portrait = testInfo.project.use.viewport!.height >
+      testInfo.project.use.viewport!.width;
+    expect(focus.object).toBe(portrait ? "58% 45%" : "50% 42%");
+    // The placeholder underneath has to sit on the same point, or the image
+    // shifts as it loads.
+    expect(focus.background).toBe(focus.object);
+    expect(focus.object).not.toBe("50% 50%");
+  });
+
   test("fills the viewport and carries the four metadata zones", async ({
     page,
   }, testInfo) => {

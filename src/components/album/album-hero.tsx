@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import { albumBuckets, albumPhotos } from "~/data/album-photos";
 import { formatAlbumDate, type Album } from "~/data/albums";
 import { copy } from "~/data/copy";
@@ -31,7 +33,16 @@ export function AlbumHero({ album }: { album: Album }) {
           fetchPriority="high"
           decoding="async"
           draggable={false}
-          style={{ backgroundImage: `url("${photo.lqip.hero}")`, backgroundSize: "cover" }}
+          style={
+            {
+              backgroundImage: `url("${photo.lqip.hero}")`,
+              backgroundSize: "cover",
+              // The focal points ride in as custom properties; the CSS picks
+              // one by viewport aspect (DESIGN.md §12.3).
+              "--hero-focus-wide": album.heroFocus.wide,
+              "--hero-focus-portrait": album.heroFocus.portrait,
+            } as CSSProperties
+          }
         />
       </picture>
 

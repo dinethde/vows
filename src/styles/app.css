@@ -167,8 +167,19 @@
     opacity: 1;
   }
 
+  /* A 3:2 source cropped blindly into a tall phone viewport loses the subject,
+     so each album carries two focal points and the aspect picks one
+     (DESIGN.md §12.3). The LQIP underneath follows the same point. */
   .vows-album-hero-img {
-    background-position: center;
+    object-position: var(--hero-focus-wide);
+    background-position: var(--hero-focus-wide);
+  }
+
+  @media (orientation: portrait) {
+    .vows-album-hero-img {
+      object-position: var(--hero-focus-portrait);
+      background-position: var(--hero-focus-portrait);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
