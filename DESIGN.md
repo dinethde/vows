@@ -525,7 +525,7 @@ does not already do at 60 fps. **The canvas stays DOM + transforms.**
 | `HeroTitle` | — | — |
 | `SiteHeader` | `revealed: boolean` | `desktop` \| `tablet` \| `mobile` (CSS, one DOM tree) |
 | `SiteFooterBar` | `revealed: boolean` | `desktop` \| `tablet` \| `mobile` |
-| `SiteFooter` | — | `desktop` \| `tablet` \| `mobile` (CSS grid, one DOM tree) — the standing panel of §13, rendered by the `_site` layout route |
+| `SiteFooter` | — | `desktop` \| `tablet` \| `mobile` (CSS grid, one DOM tree) — the full-screen panel of §13, rendered by the `_site` layout route |
 | `NavLink` | `href`, `children`, `variant` | `wordmark` \| `link` |
 | `ChatCta` | `className?`, `floating?: boolean` | shadcn `Button` variant `pill`, sizes `default` \| `floating` |
 | `MobileMenu` | `open`, `onOpenChange` | shadcn `Sheet`, side `right` |
@@ -1132,12 +1132,15 @@ degrading to a plain row, which would have lost the arrangement's character.
 
 ## 13. Footer
 
-Figma section `2043-769` — one frame per breakpoint (`2043-770` desktop 1440,
-`2048-769` tablet 834, `2048-813` mobile 390) with the panel described in
-`2046-770` and the measurements in `2046-771` and `2046-772`.
+Figma section `2043-769` — one frame per breakpoint (`2043-770` desktop
+1440 × 1024, `2048-769` tablet 834 × 1194, `2048-813` mobile 390 × 844) with the
+panel described in `2046-770` and the measurements in `2046-771` and `2046-772`.
 
 The site had no conventional footer: the home page ends in a bottom bar and the
-album page simply ran out of photographs. This panel is the full stop. Four
+album page simply ran out of photographs. This panel is the full stop. It is a
+**full screen**, not a strip at the end of a longer one: exactly one viewport
+tall at every breakpoint, so reaching the end of an album lands on one complete
+panel with nothing cut off and nothing below the fold. Four
 column groups along the top — Menu, Socials, Email and Hotline stacked together,
 Studio with a pinned location — then the name set as large as the gutters allow,
 then a rail of legal links along the bottom edge. It is a contact card as much
@@ -1170,7 +1173,10 @@ normal flow: `position: static`, no sticky, no reveal, no float. The gallery's
 scroll-reveal and idle-float are scoped to elements inside the gallery's own
 root, so nothing in the footer is ever a target. The footer arrives still.
 
-### 13.2 Grid
+### 13.2 Grid and bands
+
+Horizontally the panel is a grid; vertically it is three bands filling one
+screen. The grid first.
 
 Every column position in the frames is a grid track rather than an offset, which
 is what lets one piece of markup serve all three breakpoints and what corrects
@@ -1186,24 +1192,12 @@ are the panel's own padding.
 Desktop and tablet run all four groups on one row: `menu socials contact studio`,
 with Email and Hotline stacked 32px apart inside the contact column. Mobile
 keeps Menu and Socials as two columns — collapsing nine short links into one
-stack would make the panel far too tall — and re-flows the contact group into
-two rows beneath them: Email on its own row because the address is the widest
-element on the panel, then Hotline and Studio side by side. The same wrapper
-serves both: it is `display: contents` on mobile, so Email and Hotline become
-grid items in their own right, and a flex column from 768 up.
-
-Vertical rhythm, top to bottom:
-
-| | desktop | tablet | mobile |
-|---|---|---|---|
-| padding top | 48 | 48 | 40 |
-| column groups | 208 | 208 | 208 + 40 + 62 + 32 + 62 |
-| gap to wordmark | 112 | 104 | 56 |
-| wordmark | 240 | 138 | 176 |
-| gap to legal | 228 | 123 | 80 |
-| legal rail | 19 | 19 | 19 + 13 + 19 |
-| padding bottom | 45 | 41 | 40 |
-| **panel** | **900** | **681** | **847** |
+stack would make the panel far too tall for one screen — and re-flows the
+contact group into two rows beneath them: Email on its own row because the
+address is the widest element on the panel, then Hotline and Studio side by
+side. The same wrapper serves both: it is `display: contents` on mobile, so
+Email and Hotline become grid items in their own right, and a flex column from
+768 up.
 
 Links sit on a 36px pitch — a 24px line with a 12px gap — and labels 20px above
 the first of them. Contact values sit on a 22px line, which is what makes a
@@ -1216,6 +1210,51 @@ last link flush right at 1376. Tablet's four x positions in the frame — 40, 32
 reproduced exactly as three fixed tracks plus a remainder. Mobile splits the
 rail into two rows: the three policy links across three equal columns, aligned
 start / centre / end, with the copyright on its own line beneath.
+
+**One screen, three bands.** The panel is `min-height: 100svh` and lays out as
+**three bands, not one stack** — which is the whole of how it holds one screen
+at an arbitrary window height:
+
+- the **column groups pin to the top** (48 desktop / 48 tablet / 40 mobile);
+- the **legal rail pins to the bottom** (64 / 60 / 40);
+- the **wordmark takes everything left between them** and centres itself in it.
+
+In CSS that is the footer as a flex column, the two outer bands `flex: none`
+and the wordmark `flex: 1` with `align-items: center`. The consequence worth
+stating plainly: **only the two gaps around the wordmark ever change.** Column
+spacing, link pitch and the legal rail are the same measurements at 700px of
+window as at 1400px. A taller window grows the air around the name; a shorter
+one takes that air away first, before anything else gives.
+
+Because the three project viewports in `playwright.config.ts` are the three
+drawn frames, the built panel and the frames agree exactly:
+
+| | panel | columns | wordmark | legal rail | gaps around the wordmark |
+|---|---|---|---|---|---|
+| desktop 1440 × 1024 | 1024 | y 48 | y 479 | y 941, 64 from the bottom | 223 / 222 |
+| tablet 834 × 1194 | 1194 | y 48 | y 617 | y 1115, 60 from the bottom | 361 / 360 |
+| mobile 390 × 844 | 844 | y 40 | y 511 | y 753, 40 from the bottom | 67 / 66 |
+
+**`svh`, not `vh`.** On mobile browsers `vh` counts the retracting chrome and
+would crop the panel while that chrome is showing. `svh` is the small viewport,
+so the panel fits with the chrome out and simply gains air when it retracts —
+and because the only thing that can absorb that change is the flexible band,
+retraction moves the wordmark rather than reflowing anything.
+
+**The short-viewport fallback is `min-height`, not a media query.** The content
+stack needs roughly 620px on desktop — 48 + 208 + 240 + 19 + 64 of fixed bands
+plus `--footer-band-gap` twice, which is the least air the wordmark keeps. Above
+that the panel fills the screen; below it the gaps are already closed, the panel
+grows past the viewport and the page scrolls to it. Nothing is ever clipped,
+which outranks the one-screen rule. Two cases from the browser pass: a
+1280 × 800 laptop still fills the screen with 116px of air each side of the
+name; a landscape phone at 390px of height takes its natural 514px and scrolls,
+with the gaps at their 20px floor.
+
+The wordmark is not scaled down to buy height. It is sized from the panel's
+width (§13.3), so a short window closes air rather than shrinking type — the
+name is the reason the panel exists, and the fallback is the place to spend a
+scrollbar instead.
 
 ### 13.3 The wordmark
 
@@ -1328,10 +1367,16 @@ global `:focus-visible` ring; on white it is the same ring as everywhere else.
   somewhere with `target`/`rel` on the external ones, mail / phone / map present,
   the address absent from the served HTML but attached after hydration, the pin
   hidden from assistive technology, every link focusable and no focus trap.
-- **Layout** — panel height and every group's x and y against the frames, all
-  four groups sharing one top, radius rounded on top and square beneath, the
-  wordmark fitting its gutters unbroken at 320, 390, 834 and 1440, and the panel
-  holding still while the gallery above it keeps moving.
+- **Layout** — the panel exactly one viewport tall, every group's x and y and
+  the three bands' positions against the frames, all four groups sharing one
+  top, radius rounded on top and square beneath, the wordmark fitting its
+  gutters unbroken at 320, 390, 834 and 1440, and the panel holding still while
+  the gallery above it keeps moving.
+- **Bands** — 200px more window goes entirely into the two gaps around the
+  wordmark, 100 each, while the pinned bands keep their measurements to the
+  pixel; a squeezed window keeps at least the floor of air; a landscape phone
+  drops the one-screen rule, takes its natural height and scrolls, with nothing
+  spilling out of the panel on any side.
 
 ### 13.8 Decisions and divergences
 
@@ -1365,12 +1410,13 @@ would have added a duplicate. The labels use the existing face at 500 through
 distinct surface already existed as `--color-surface`; only the label blue and
 the pin green were genuinely new.
 
-**F6 — Tablet is 681px tall, not 680.** The wordmark is sized to fill the
-gutters, which at 834 gives 114.7px against the 114px drawn, and a line box one
-pixel taller. Matching 680 exactly would mean pinning the tablet wordmark to a
-fixed size and leaving 7px of slack inside the gutters, which contradicts how
-the wordmark is specified. Desktop (900) and mobile (847) match their frames
-exactly.
+**F6 — The tablet wordmark sets at 114.7px, not the 114 drawn.** It is sized to
+fill the gutters, and at 834 that is 114.7 — 0.6% larger, with a line box one
+pixel taller than the frame's 137. Pinning it to 114 would leave 7px of slack
+inside the gutters, which contradicts how the wordmark is specified. Desktop
+(200) and mobile (80) land on the drawn sizes exactly. Because the wordmark
+sits in the flexible band, the extra pixel is absorbed by the air around it and
+the panel is still exactly one viewport tall.
 
 **F7 — The tablet legal rail is reproduced, not rationalised.** Its four x
 positions fall on no grid and do not line up with the columns above them, unlike

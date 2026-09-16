@@ -31,13 +31,16 @@ const HOVER =
  * are expressed as the `--footer-cols` tracks, which is what lets the same
  * markup serve all three breakpoints and what corrects the drift in the frame
  * where the four groups do not share a top.
+ *
+ * Vertically it is three bands filling one viewport (§13.2) — the three
+ * children below are those bands, in order, and the CSS does the rest.
  */
 export function SiteFooter() {
   return (
     <footer
       data-site-footer=""
       aria-label={copy.a11y.footer.region}
-      className="vows-footer w-full rounded-t-[var(--footer-radius)] bg-surface px-[var(--footer-gutter)] pt-[var(--footer-pad-top)] pb-[var(--footer-pad-bottom)]"
+      className="vows-footer w-full rounded-t-[var(--footer-radius)] bg-surface"
     >
       <div className="vows-footer-columns grid">
         <LinkColumn label={copy.footer.menuLabel} links={menuLinks} area="menu" />
@@ -261,9 +264,14 @@ function Wordmark() {
   return (
     <p
       aria-label={copy.footer.wordmark}
-      className="vows-footer-wordmark mt-[var(--footer-wordmark-gap)] text-center font-serif text-ink"
+      className="vows-footer-wordmark text-center font-serif text-ink"
     >
-      <span aria-hidden>{first}</span> <span aria-hidden>{second}</span>
+      {/* Both words in one span: the paragraph is a flex container so it can
+          centre them in the band, and without this wrapper each word would
+          become a flex item and the mobile line break would be lost. */}
+      <span>
+        <span aria-hidden>{first}</span> <span aria-hidden>{second}</span>
+      </span>
     </p>
   );
 }
@@ -272,7 +280,7 @@ function LegalRail() {
   return (
     <ul
       aria-label={copy.a11y.footer.legal}
-      className="vows-footer-legal mt-[var(--footer-legal-gap)] grid"
+      className="vows-footer-legal grid"
     >
       <li className="text-legal" style={{ gridArea: "copyright" }}>
         <span className="font-serif text-ink-muted">{copyright}</span>

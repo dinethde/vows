@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 /**
  * The footer panel (DESIGN.md §13).
@@ -199,6 +199,15 @@ test.describe("footer layout", () => {
         },
         columns: boxes(".vows-footer-columns > div, .vows-footer-contact > div"),
         groups: boxes(".vows-footer-columns > div"),
+        viewport: window.innerHeight,
+        band: {
+          columns: boxes(".vows-footer-columns")[0]!,
+          wordmark: boxes(".vows-footer-wordmark > span")[0]!,
+          legal: boxes(".vows-footer-legal")[0]!,
+        },
+        legalHeight: Math.round(
+          el.querySelector(".vows-footer-legal")!.getBoundingClientRect().height,
+        ),
       };
     });
 
@@ -209,13 +218,43 @@ test.describe("footer layout", () => {
     expect(geometry.radius.bottomRight).toBe(0);
 
     const expected = {
-      desktop: { height: 900, columns: [64, 400, 736, 736, 736, 1175] },
-      tablet: { height: 681, columns: [40, 210, 390, 390, 390, 630] },
-      mobile: { height: 847, columns: [20, 205, 20, 20, 205] },
+      // The three project viewports are the three drawn frames, so these are
+      // the frame's own y positions rather than a derived rhythm.
+      desktop: {
+        columns: [64, 400, 736, 736, 736, 1175],
+        top: 48,
+        wordmark: 479,
+        legal: 941,
+        bottom: 64,
+      },
+      tablet: {
+        columns: [40, 210, 390, 390, 390, 630],
+        top: 48,
+        wordmark: 617,
+        legal: 1115,
+        bottom: 60,
+      },
+      mobile: {
+        columns: [20, 205, 20, 20, 205],
+        top: 40,
+        wordmark: 511,
+        legal: 753,
+        bottom: 40,
+      },
     }[testInfo.project.name]!;
 
-    expect(geometry.height).toBe(expected.height);
+    // One screen exactly — the whole point of the panel.
+    expect(geometry.height).toBe(geometry.viewport);
     expect(geometry.columns.map((c) => c.x)).toEqual(expected.columns);
+
+    // Three bands: columns pinned to the top, legal pinned to the bottom, the
+    // wordmark centred in what is left.
+    expect(geometry.band.columns.y).toBe(expected.top);
+    expect(geometry.band.legal.y).toBe(expected.legal);
+    expect(geometry.height - (geometry.band.legal.y + geometry.legalHeight)).toBe(
+      expected.bottom,
+    );
+    expect(geometry.band.wordmark.y).toBe(expected.wordmark);
 
     // The drift in the frame is corrected: while the four groups share a row,
     // they share a top. Mobile breaks them onto three rows deliberately.
@@ -235,7 +274,9 @@ test.describe("footer layout", () => {
 
       const fit = await page.evaluate(() => {
         const wordmark = document.querySelector<HTMLElement>(".vows-footer-wordmark")!;
-        const spans = [...wordmark.querySelectorAll("span")];
+        // The words themselves, not the wrapper that holds them: the wrapper
+        // spans both lines on mobile by design.
+        const spans = [...wordmark.querySelectorAll("span[aria-hidden]")];
         const range = document.createRange();
         range.selectNodeContents(wordmark);
         return {
@@ -297,5 +338,123 @@ test.describe("footer layout", () => {
     expect(styles.transform).toBe("none");
     expect(styles.animation).toBe("none");
     expect(styles.reveal).toBe(0);
+  });
+});
+
+test.describe("footer bands", () => {
+  /** The three bands and the two gaps between them, in panel coordinates. */
+  const bands = (page: Page) =>
+    page.evaluate(() => {
+      const el = document.querySelector("[data-site-footer]")!;
+      const root = el.getBoundingClientRect();
+      const box = (selector: string) => {
+        const rect = el.querySelector(selector)!.getBoundingClientRect();
+        return {
+          top: Math.round(rect.top - root.top),
+          bottom: Math.round(rect.bottom - root.top),
+        };
+      };
+      const columns = box(".vows-footer-columns");
+      const wordmark = box(".vows-footer-wordmark > span");
+      const legal = box(".vows-footer-legal");
+      return {
+        height: Math.round(root.height),
+        viewport: window.innerHeight,
+        columns,
+        legal,
+        wordmark,
+        above: wordmark.top - columns.bottom,
+        below: legal.top - wordmark.bottom,
+        bottomPin: Math.round(root.height) - legal.bottom,
+        // Nothing may spill out of the panel on any side. Whether the panel
+        // itself is taller than the window is a separate question — there it
+        // scrolls, which is the fallback working rather than content lost.
+        clipped: [...el.querySelectorAll("*")].some((node) => {
+          const child = node.getBoundingClientRect();
+          return (
+            child.right > root.right + 1 ||
+            child.left < root.left - 1 ||
+            child.top < root.top - 1 ||
+            child.bottom > root.bottom + 1
+          );
+        }),
+      };
+    });
+
+  test("a taller window grows the air around the wordmark, nothing else", async ({
+    page,
+  }, testInfo) => {
+    const width = page.viewportSize()!.width;
+    await page.goto("/albums/lena-and-matteo");
+    await page.locator(footer).scrollIntoViewIfNeeded();
+    const short = await bands(page);
+
+    // 200px more window. Only the flexible band may absorb it.
+    await page.setViewportSize({
+      width,
+      height: testInfo.project.use.viewport!.height + 200,
+    });
+    await page.locator(footer).scrollIntoViewIfNeeded();
+    const tall = await bands(page);
+
+    expect(tall.height).toBe(tall.viewport);
+    expect(tall.height - short.height).toBe(200);
+
+    // The pinned bands keep their measurements exactly.
+    expect(tall.columns).toEqual(short.columns);
+    expect(tall.legal.bottom - tall.legal.top).toBe(short.legal.bottom - short.legal.top);
+    expect(tall.bottomPin).toBe(short.bottomPin);
+
+    // The surplus is split between the two gaps, and the wordmark stays centred.
+    expect(tall.above - short.above).toBe(100);
+    expect(tall.below - short.below).toBe(100);
+    expect(Math.abs(tall.above - tall.below)).toBeLessThanOrEqual(1);
+  });
+
+  test("a shorter window closes those gaps first, then lets the panel scroll", async ({
+    page,
+  }) => {
+    const width = page.viewportSize()!.width;
+    // Read the used value off the element: `--footer-band-gap` points at
+    // another token, and `getPropertyValue` hands back the unresolved `var()`.
+    const bandGap = async () =>
+      page.evaluate(() =>
+        parseFloat(
+          getComputedStyle(document.querySelector(".vows-footer-wordmark")!)
+            .marginTop,
+        ),
+      );
+
+    // Squeezed but still able to fill: the gaps give first.
+    await page.setViewportSize({ width, height: 700 });
+    await page.goto("/albums/lena-and-matteo");
+    await page.locator(footer).scrollIntoViewIfNeeded();
+    const squeezed = await bands(page);
+    const squeezedGap = await bandGap();
+    expect(squeezed.above).toBeGreaterThanOrEqual(squeezedGap);
+    expect(squeezed.below).toBeGreaterThanOrEqual(squeezedGap);
+    expect(squeezed.clipped).toBe(false);
+
+    // A landscape phone: too short for one screen at any readable size, so the
+    // panel stops filling and takes its natural height instead of clipping.
+    await page.setViewportSize({ width: Math.max(width, 740), height: 390 });
+    await page.goto("/albums/lena-and-matteo");
+    await page.locator(footer).scrollIntoViewIfNeeded();
+    const landscape = await bands(page);
+    const landscapeGap = await bandGap();
+
+    expect(landscape.height).toBeGreaterThan(landscape.viewport);
+    expect(landscape.above).toBe(landscapeGap);
+    expect(landscape.below).toBe(landscapeGap);
+    expect(landscape.clipped).toBe(false);
+
+    // Everything is still reachable — the page scrolls to it.
+    const reachable = await page.evaluate(() => {
+      const el = document.querySelector("[data-site-footer]")!;
+      window.scrollTo(0, document.body.scrollHeight);
+      const rect = el.querySelector(".vows-footer-legal")!.getBoundingClientRect();
+      return rect.bottom <= window.innerHeight + 1 && rect.top >= 0;
+    });
+    expect(reachable).toBe(true);
   });
 });

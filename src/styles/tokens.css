@@ -245,13 +245,17 @@
   --footer-gutter: var(--spacing-xl);
   --footer-radius: 24px;
   --footer-pad-top: 40px;
+  /* The legal rail is pinned this far from the bottom edge rather than spaced
+   * from the wordmark: it is a band, not the end of a stack (§13.2). */
   --footer-pad-bottom: 40px;
   --footer-cols: 185px 1fr;
   --footer-label-gap: var(--spacing-xl);
   --footer-link-gap: var(--spacing-md);
   --footer-contact-gap: 32px;
-  --footer-wordmark-gap: 56px;
-  --footer-legal-gap: 80px;
+  /* The least air the wordmark keeps above and below it. Anything past this is
+   * surplus viewport, which the middle band absorbs; once even this is gone the
+   * panel stops filling the screen and grows instead (§13.2). */
+  --footer-band-gap: var(--spacing-xl);
   --footer-legal-row-gap: 13px;
   /* The legal rail does not sit on the column tracks at every breakpoint.
    * Mobile is three equal columns with the middle link centred and the last
@@ -302,10 +306,8 @@
     --bar-bottom-h: 88px;
     --footer-gutter: 40px;
     --footer-pad-top: 48px;
-    --footer-pad-bottom: 41px;
+    --footer-pad-bottom: 60px;
     --footer-cols: 170px 180px 240px 1fr;
-    --footer-wordmark-gap: 104px;
-    --footer-legal-gap: 123px;
     --footer-legal-cols: 286px 201px 185px 1fr;
     /* One line from here up, so the ratio is the whole string. */
     --wordmark-ratio: 6.557;
@@ -325,10 +327,8 @@
     --bar-top-h: 48px;
     --bar-bottom-h: 76px;
     --footer-gutter: var(--spacing-4xl);
-    --footer-pad-bottom: 45px;
+    --footer-pad-bottom: 64px;
     --footer-cols: 336px 336px 439px 1fr;
-    --footer-wordmark-gap: 112px;
-    --footer-legal-gap: 228px;
     --footer-legal-cols: var(--footer-cols);
     --album-bar-h: 88px;
     --album-gutter: var(--spacing-4xl);

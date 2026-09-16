@@ -243,10 +243,35 @@
 
   /* ---- Footer (DESIGN.md §13) ------------------------------------ */
 
-  /* The wordmark is sized from the panel's own width, hence `cqw`: 100vw would
-     include the scrollbar and overrun the gutter on desktop. */
+  /* One screen, three bands (DESIGN.md §13.2). The columns pin to the top and
+     the legal rail to the bottom — both `flex: none`, so neither ever moves —
+     and the wordmark takes what is left, which is what lets the panel be
+     exactly one viewport tall at any window height.
+
+     `min-height`, not `height`: when the content needs more room than the
+     viewport has, the panel grows and the page scrolls rather than clipping.
+     That is the whole short-viewport fallback.
+
+     `svh` because on mobile browsers `vh` counts retracting chrome and would
+     crop the panel; `svh` is the small viewport, so the panel fits with the
+     chrome out and simply gains air when it retracts — a change in the
+     flexible band only, never a reflow of the fixed ones.
+
+     `container-type` is for the wordmark, sized from the panel's own width:
+     100vw would include the scrollbar and overrun the gutter on desktop. */
   .vows-footer {
     container-type: inline-size;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    /* Top pin, gutter, bottom pin — three separate band values, kept here
+       rather than as utility classes so they cannot be merged into one. */
+    padding: var(--footer-pad-top) var(--footer-gutter) var(--footer-pad-bottom);
+  }
+
+  .vows-footer-columns,
+  .vows-footer-legal {
+    flex: none;
   }
 
   /* The Figma x positions are these tracks, not offsets — which is what makes
@@ -287,12 +312,26 @@
     direction: rtl;
   }
 
+  /* The one band that flexes. It grows into the surplus and centres the name
+     in it; `--footer-band-gap` is the least air it will keep, so a shrinking
+     window closes these gaps before anything else gives. */
   .vows-footer-wordmark {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-block: var(--footer-band-gap);
     font-size: min(
       var(--wordmark-max),
       calc((100cqw - var(--wordmark-safety)) / var(--wordmark-ratio))
     );
     line-height: var(--wordmark-leading);
+  }
+
+  /* One flex item holding both words, so the name still wraps between them on
+     mobile instead of the two spans becoming flex items of their own. */
+  .vows-footer-wordmark > span {
+    min-width: 0;
   }
 
   /* Mobile splits the rail: the three policy links spread across the width,
