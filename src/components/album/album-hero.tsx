@@ -64,7 +64,12 @@ function AlbumMetaBar({ album }: { album: Album }) {
     >
       <p className="text-couple shrink-0 font-serif text-ink">{album.couple}</p>
 
-      <p className="text-bar order-last shrink-0 font-serif text-ink compact:hidden md:order-none md:w-[var(--bar-blurb-w)] md:px-lg">
+      {/* The one zone that gives: at 834 the four zones at their drawn widths
+          are 83px wider than the viewport, and the hero's `overflow-hidden`
+          took that out of the date on the right. Prose can reflow to a third
+          line; the couple, the metadata and the date cannot. Above ~1173px
+          the row fits and this never fires. */}
+      <p className="text-bar order-last shrink-0 font-serif text-ink compact:hidden md:order-none md:w-[var(--bar-blurb-w)] md:shrink md:px-lg">
         {album.story}
       </p>
 

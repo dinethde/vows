@@ -1125,6 +1125,14 @@ reveal, so `.vows-chrome[data-revealed="true"]` sets `opacity: 1` in CSS. The
 home page is unaffected — its `data-revealed` only becomes true when the reveal
 fires, and the inline value takes precedence while the tween runs.
 
+**A6 — The tablet story shrinks to fit the row.** At 834 the four zones at
+their drawn widths are 83px wider than the viewport, and the hero's
+`overflow-hidden` took the difference out of the date on the right. The story
+is the only zone that can give — prose reflows to a third line, the couple, the
+metadata and the date cannot — so it shrinks below `--bar-blurb-w` where the
+row demands it, reaching 373px at 834 and its full width again from about
+1000px up. The bar's height is unchanged at both breakpoints.
+
 **A5 — Tablet `offsetDuo` keeps both photographs.** Two 500px squares would not
 fit an 834 viewport, so the compact spec places mixed families — the small frame
 at one gutter, the large one dropped below it at the other — rather than

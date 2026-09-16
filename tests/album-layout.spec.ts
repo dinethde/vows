@@ -58,6 +58,25 @@ test.describe("album hero", () => {
     const bar = await box(page, "[data-album-bar]");
     expect(Math.round(bar.y + bar.h)).toBe(Math.round(hero.y + hero.h));
 
+    // And its four zones fit inside it. The hero clips, so a zone that
+    // overflows is a zone the visitor never sees.
+    const clipped = await page.evaluate(() => {
+      const el = document.querySelector("[data-album-bar]")!;
+      const rect = el.getBoundingClientRect();
+      return {
+        overflow: el.scrollWidth - el.clientWidth,
+        outside: [...el.querySelectorAll("*")]
+          .filter((node) => !node.children.length && node.textContent!.trim())
+          .filter((node) => {
+            const child = node.getBoundingClientRect();
+            return child.right > rect.right + 1 || child.left < rect.left - 1;
+          })
+          .map((node) => node.textContent!.trim().slice(0, 16)),
+      };
+    });
+    expect(clipped.outside).toEqual([]);
+    expect(clipped.overflow).toBeLessThanOrEqual(0);
+
     // Figma's 88px bar holds at desktop; the compact ones grow rather than
     // shrinking the type (DESIGN.md §12.5).
     const expected = { desktop: 88, tablet: 112, mobile: 168 }[
