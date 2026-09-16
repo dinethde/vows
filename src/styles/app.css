@@ -241,6 +241,44 @@
     opacity: 1;
   }
 
+  /* The navbar steps aside for the footer (DESIGN.md §13.9). The attribute is
+     only ever set on pages that have a footer, so the transition — and the
+     whole behaviour — cannot reach the home page, where GSAP owns this element
+     and an inline opacity would fight a CSS one. */
+  html[data-nav-hidden] .vows-chrome {
+    transition:
+      opacity var(--duration-fast) var(--ease-hover),
+      transform var(--duration-fast) var(--ease-hover);
+  }
+
+  /* Opacity and transform, never `display`: the bar has to stay in the tab
+     order while it is out of sight, and `pointer-events` is what stops an
+     invisible bar from swallowing clicks on the footer's first column. */
+  html[data-nav-hidden="true"] .vows-chrome {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--bar-top-h)));
+    pointer-events: none;
+  }
+
+  /* A focusable element the visitor cannot see is a bug, not a style choice —
+     so a nav link taking focus brings the bar straight back. */
+  html[data-nav-hidden="true"] .vows-chrome:focus-within {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* Cross-fade, no slide. */
+    html[data-nav-hidden] .vows-chrome {
+      transition: opacity var(--duration-instant) linear;
+    }
+
+    html[data-nav-hidden="true"] .vows-chrome {
+      transform: none;
+    }
+  }
+
   /* ---- Footer (DESIGN.md §13) ------------------------------------ */
 
   /* One screen, three bands (DESIGN.md §13.2). The columns pin to the top and

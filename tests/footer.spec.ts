@@ -458,3 +458,135 @@ test.describe("footer bands", () => {
     expect(reachable).toBe(true);
   });
 });
+
+test.describe("navbar and the footer", () => {
+  /** Settles the transition before reading, since both ends are animated. */
+  const chrome = async (page: Page) => {
+    await page.waitForTimeout(400);
+    return page.evaluate(() => {
+      const el = document.querySelector('[data-chrome="top"]')!;
+      const style = getComputedStyle(el);
+      return {
+        flag: document.documentElement.dataset.navHidden ?? null,
+        opacity: Number(style.opacity),
+        shifted: style.transform !== "none",
+        clickable: style.pointerEvents !== "none",
+      };
+    });
+  };
+
+  // The gallery lays out on load and the page keeps growing as photographs
+  // arrive, so "the bottom" has to be taken after it settles or the scroll
+  // lands in the middle of the gallery instead of in the footer.
+  const toFooter = async (page: Page) => {
+    await page.waitForLoadState("networkidle");
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  };
+
+  test("it is visible while the gallery is in view", async ({ page }) => {
+    await page.goto("/albums/lena-and-matteo");
+    const state = await chrome(page);
+    expect(state.opacity).toBe(1);
+    expect(state.shifted).toBe(false);
+
+    // Still visible after scrolling through the gallery — this change adds
+    // hide-on-scroll nowhere but the footer.
+    await page.evaluate(() => window.scrollBy(0, 2000));
+    const scrolled = await chrome(page);
+    expect(scrolled.opacity).toBe(1);
+  });
+
+  test("scrolling down into the footer hides it, any upward scroll returns it", async ({
+    page,
+  }) => {
+    await page.goto("/albums/lena-and-matteo");
+    await toFooter(page);
+    const hidden = await chrome(page);
+    expect(hidden.flag).toBe("true");
+    expect(hidden.opacity).toBe(0);
+    // Out of sight must also mean out of the way of the footer beneath it.
+    expect(hidden.clickable).toBe(false);
+
+    // Jitter below the threshold must not flicker it back.
+    await page.mouse.move(200, 300);
+    await page.mouse.wheel(0, -4);
+    const jittered = await chrome(page);
+    expect(jittered.opacity).toBe(0);
+
+    // One real upward scroll, still deep inside the footer.
+    await page.mouse.wheel(0, -60);
+    const returned = await chrome(page);
+    expect(returned.opacity).toBe(1);
+    expect(returned.shifted).toBe(false);
+    const stillInFooter = await page.evaluate(() => {
+      const rect = document
+        .querySelector("[data-site-footer]")!
+        .getBoundingClientRect();
+      return rect.top < window.innerHeight * 0.5;
+    });
+    expect(stillInFooter).toBe(true);
+
+    // Down again hides it again.
+    await page.mouse.wheel(0, 300);
+    expect((await chrome(page)).opacity).toBe(0);
+
+    // Leaving the footer upwards restores it for good.
+    await page.evaluate(() => window.scrollTo(0, 0));
+    const back = await chrome(page);
+    expect(back.flag).toBe("false");
+    expect(back.opacity).toBe(1);
+  });
+
+  test("keyboard focus brings it back while it is hidden", async ({ page }) => {
+    await page.goto("/albums/lena-and-matteo");
+    await toFooter(page);
+    expect((await chrome(page)).opacity).toBe(0);
+
+    // Shift+Tab out of the footer's first link lands in the navbar, which is
+    // where a focusable element the visitor cannot see would be a bug.
+    await page.locator("[data-site-footer] a").first().focus();
+    await page.keyboard.press("Shift+Tab");
+
+    const focused = await page.evaluate(
+      () => !!document.activeElement?.closest('[data-chrome="top"]'),
+    );
+    expect(focused).toBe(true);
+
+    const restored = await chrome(page);
+    expect(restored.opacity).toBe(1);
+    expect(restored.shifted).toBe(false);
+    expect(restored.clickable).toBe(true);
+  });
+
+  test("reduced motion cross-fades rather than sliding", async ({ browser }) => {
+    const context = await browser.newContext({ reducedMotion: "reduce" });
+    const page = await context.newPage();
+    await page.goto("/albums/lena-and-matteo");
+    await page.waitForLoadState("networkidle");
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.waitForTimeout(500);
+
+    const state = await page.evaluate(() => {
+      const style = getComputedStyle(document.querySelector('[data-chrome="top"]')!);
+      return {
+        opacity: Number(style.opacity),
+        transform: style.transform,
+        property: style.transitionProperty,
+      };
+    });
+    expect(state.opacity).toBe(0);
+    expect(state.transform).toBe("none");
+    expect(state.property).toBe("opacity");
+
+    await context.close();
+  });
+
+  test("the home page never gets the behaviour", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForTimeout(2200);
+    const flag = await page.evaluate(
+      () => document.documentElement.dataset.navHidden ?? null,
+    );
+    expect(flag).toBeNull();
+  });
+});

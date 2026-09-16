@@ -525,7 +525,7 @@ does not already do at 60 fps. **The canvas stays DOM + transforms.**
 | `HeroTitle` | — | — |
 | `SiteHeader` | `revealed: boolean` | `desktop` \| `tablet` \| `mobile` (CSS, one DOM tree) |
 | `SiteFooterBar` | `revealed: boolean` | `desktop` \| `tablet` \| `mobile` |
-| `SiteFooter` | — | `desktop` \| `tablet` \| `mobile` (CSS grid, one DOM tree) — the full-screen panel of §13, rendered by the `_site` layout route |
+| `SiteFooter` | `ref?` | `desktop` \| `tablet` \| `mobile` (CSS grid, one DOM tree) — the full-screen panel of §13, rendered by the `_site` layout route, which uses the `ref` to watch it (§13.9) |
 | `NavLink` | `href`, `children`, `variant` | `wordmark` \| `link` |
 | `ChatCta` | `className?`, `floating?: boolean` | shadcn `Button` variant `pill`, sizes `default` \| `floating` |
 | `MobileMenu` | `open`, `onOpenChange` | shadcn `Sheet`, side `right` |
@@ -535,7 +535,8 @@ does not already do at 60 fps. **The canvas stays DOM + transforms.**
 Hooks: `useBreakpoint()` → `'mobile' | 'tablet' | 'desktop'`; `useReducedMotion()` →
 `boolean`; `useAmbience()` → `{ audioRef, status, toggle, start, track }`;
 `useLoadingSequence(longestLine, reducedMotion)` → `{ phase, elapsed, lineOpacity,
-backdropOpacity }`.
+backdropOpacity }`; `useNavHide(footerRef)` → nothing, it writes
+`<html data-nav-hidden>` (§13.9).
 
 Libraries: `src/lib/email.ts` — the footer's address obfuscation, kept out of the
 component so what it does and does not protect against is written down once
@@ -915,7 +916,8 @@ layout is data-driven rather than a transcription of one frame.
 `100vw × 100svh` — `svh`, not `vh`, or a phone's dynamic browser chrome crops
 the bar off the first screen. The navbar sits over the photograph in the same
 semi-transparent treatment as the home page. The hero and its bar scroll away
-normally; they do not pin, parallax or fade. Only the navbar stays.
+normally; they do not pin, parallax or fade. Only the navbar stays — until the
+footer, which is the one place it steps aside (§13.9).
 
 `object-position` differs by aspect (`heroFocus.wide` / `heroFocus.portrait`),
 because a 3:2 source cropped blindly into a tall phone viewport loses the
@@ -1140,7 +1142,8 @@ The site had no conventional footer: the home page ends in a bottom bar and the
 album page simply ran out of photographs. This panel is the full stop. It is a
 **full screen**, not a strip at the end of a longer one: exactly one viewport
 tall at every breakpoint, so reaching the end of an album lands on one complete
-panel with nothing cut off and nothing below the fold. Four
+panel with nothing cut off and nothing below the fold. The navbar steps aside
+for it (§13.9) for the same reason. Four
 column groups along the top — Menu, Socials, Email and Hotline stacked together,
 Studio with a pinned location — then the name set as large as the gutters allow,
 then a rail of legal links along the bottom edge. It is a contact card as much
@@ -1377,6 +1380,12 @@ global `:focus-visible` ring; on white it is the same ring as everywhere else.
   pixel; a squeezed window keeps at least the floor of air; a landscape phone
   drops the one-screen rule, takes its natural height and scrolls, with nothing
   spilling out of the panel on any side.
+- **Navbar** — visible through the gallery, hidden on scrolling down into the
+  footer and not clickable while hidden, unmoved by jitter under the threshold,
+  back on one upward scroll while still inside the footer, hidden again on the
+  next downward one, restored for good on leaving the footer, restored by
+  keyboard focus while hidden, cross-fading without a slide under reduced
+  motion, and absent entirely on the home page.
 
 ### 13.8 Decisions and divergences
 
@@ -1442,3 +1451,57 @@ the footer-free home page, so they predate this work: in dev the server
 revalidates `/fonts/*.woff2`, so the preloaded copy is not reused. Nothing in
 the footer causes them and nothing here fixes them. CLS on the album page is
 0.00 and the panel contributes no layout shift.
+
+### 13.9 The navbar steps aside
+
+The footer is meant to be one uninterrupted screen, so the one place on the site
+where the navbar goes away is over it:
+
+- scrolling **down into the footer** hides the bar;
+- **any upward scroll while the footer is still the screen** brings it straight
+  back — a visitor does not have to leave the panel to get navigation;
+- **above the footer nothing changes.** The bar stays pinned for the whole
+  gallery, as the album page already specifies. This adds hide-on-scroll
+  nowhere else, and the home page never gets it at all.
+
+`src/hooks/use-nav-hide.ts`, mounted by the `_site` layout because that is what
+owns the footer. It is driven by an `IntersectionObserver` on the panel plus
+scroll direction rather than by scroll-position arithmetic: the album page's
+length varies with the number of photographs, so there is no fixed offset to
+compare against.
+
+- **"In the footer"** means the panel covers at least `--nav-hide-inset` (40%)
+  of the viewport, applied as a negative bottom `rootMargin`. Against the root
+  rather than as a ratio of the target, because on a short viewport the footer
+  is taller than the screen and a target ratio would never reach its threshold.
+- **`--nav-hide-threshold` (10px)** of travel since the last direction change
+  before the bar toggles, so trackpad jitter cannot flicker it.
+- **Arriving counts as a scroll.** A jump to the bottom — the End key, a
+  restored scroll position — is one enormous scroll event that lands before the
+  observer has said the footer is on screen, so the direction of travel is
+  remembered and applied when the panel arrives. A page that *loads* inside the
+  footer keeps its navbar: nothing was scrolled, and navigation is the safer
+  default.
+
+The state is written to `<html data-nav-hidden>` rather than passed as a prop —
+the navbar is rendered by the page and the footer by the layout around it, so an
+attribute is the one place both can see. It is present and `"false"` while the
+footer is off screen, which also scopes the CSS transition to pages that have a
+footer and keeps it away from the home page, where GSAP owns this element and an
+inline opacity would fight a CSS one.
+
+**Opacity and transform, never `display`.** The bar has to stay in the tab order
+while it is out of sight; `pointer-events: none` is what stops an invisible bar
+from swallowing clicks on the footer's first column, which sits directly under
+it. Being fixed, it shifts nothing when it goes: measured CLS across a full
+scroll into the footer with several toggles is 0.00, with no dropped frames in
+either direction.
+
+**Keyboard focus restores it**, in CSS rather than JavaScript: a hidden bar that
+matches `:focus-within` is fully visible and clickable again. A focusable
+element the visitor cannot see is a bug, not a style choice, and doing it this
+way means it cannot be missed — Shift+Tab out of the footer's first link brings
+the bar back.
+
+**Reduced motion** cross-fades: the transition drops to opacity alone at
+`--duration-instant`, and the translate is removed, so there is no slide.

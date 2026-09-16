@@ -145,6 +145,13 @@
   --depth-max: 0.026;
   --depth-pan-factor: 1.6;
 
+  /* Navbar hide-on-footer (DESIGN.md §13.9). The threshold is scroll travel in
+   * pixels before the bar toggles, so trackpad jitter does not flicker it; the
+   * inset is the fraction of the viewport the footer must cover before it
+   * counts as the screen the visitor is on. */
+  --nav-hide-threshold: 10;
+  --nav-hide-inset: 0.4;
+
   /* Pan gesture (DESIGN.md §5.1) */
   --drag-threshold: 6;
   --cull-margin: 120;

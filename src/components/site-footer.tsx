@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type Ref } from "react";
 
 import {
   copyright,
@@ -33,11 +33,13 @@ const HOVER =
  * where the four groups do not share a top.
  *
  * Vertically it is three bands filling one viewport (§13.2) — the three
- * children below are those bands, in order, and the CSS does the rest.
+ * children below are those bands, in order, and the CSS does the rest. The
+ * `ref` is how the layout watches the panel to hide the navbar for it (§13.9).
  */
-export function SiteFooter() {
+export function SiteFooter({ ref }: { ref?: Ref<HTMLElement> }) {
   return (
     <footer
+      ref={ref}
       data-site-footer=""
       aria-label={copy.a11y.footer.region}
       className="vows-footer w-full rounded-t-[var(--footer-radius)] bg-surface"

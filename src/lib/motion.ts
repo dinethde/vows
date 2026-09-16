@@ -36,6 +36,8 @@ const MOTION_TOKENS = [
   "key-step",
   "key-page-ratio",
   "drag-threshold",
+  "nav-hide-threshold",
+  "nav-hide-inset",
   "cull-margin",
   "inertia-seconds",
   "inertia-max",
