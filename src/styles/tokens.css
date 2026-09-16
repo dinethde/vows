@@ -45,6 +45,11 @@
    * Inter -> literal family on hero subheading + tile captions      */
   --font-serif: "Mate", "Iowan Old Style", Georgia, "Times New Roman", serif;
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Only the wordmark's character field uses this, and only inside a canvas.
+   * A stack rather than a webfont: at 8–11px every mono in it is the same
+   * small rectangle of ink, so shipping a third family would buy nothing. */
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
 
   --text-display: 32px;
   --text-display--line-height: 1.2;
@@ -287,6 +292,32 @@
   --wordmark-max: 80px;
   --wordmark-leading: 1.1;
 
+  /* ---- Wordmark character field (DESIGN.md §13.10) --------------- *
+   * Pitch is the distance between neighbouring characters and size is the
+   * type they are set in; both scale with the wordmark, so the field keeps
+   * roughly a dozen characters across a letter's height at every breakpoint.
+   * The rest is simulation, read as plain numbers by the canvas.          */
+  --wordmark-particle-pitch: 4px;
+  --wordmark-particle-size: 5.5px;
+  /* Added to the sampled letterforms before the grid reads them, so Mate's
+   * hairlines survive as strokes rather than dotted lines (§13.10). */
+  --wordmark-particle-weight: 3px;
+  /* How much of a cell must be inked before it earns a character. Lower than
+   * a half because black on white needs the letterform's edge cells: thinned
+   * strokes read as dirt where white on black would still read as glow. */
+  --wordmark-particle-threshold: 0.36;
+  --wordmark-repel-radius: 70;
+  --wordmark-repel-force: 3.4;
+  --wordmark-spring: 0.055;
+  --wordmark-damping: 0.86;
+  --wordmark-flicker-min: 600;
+  --wordmark-flicker-max: 2400;
+  --wordmark-entrance: 900;
+  --wordmark-entrance-stagger: 420;
+  --wordmark-sweep-travel: 620;
+  --wordmark-disperse-impulse: 7;
+  --wordmark-disperse-hold: 650;
+
   /* ---- Keyboard pan steps --------------------------------------- */
   --key-step: 80;
   --key-page-ratio: 0.9;
@@ -320,6 +351,10 @@
     --wordmark-ratio: 6.557;
     --wordmark-max: 200px;
     --wordmark-leading: 1.2;
+    --wordmark-particle-pitch: 5px;
+    --wordmark-particle-size: 6.5px;
+    --wordmark-particle-weight: 3.5px;
+    --wordmark-sweep-travel: 900;
     --album-bar-h: 112px;
     --album-gutter: var(--spacing-2xl);
     --gutter-top: var(--spacing-2xl);
@@ -336,6 +371,10 @@
     --footer-gutter: var(--spacing-4xl);
     --footer-pad-bottom: 64px;
     --footer-cols: 336px 336px 439px 1fr;
+    --wordmark-particle-pitch: 9px;
+    --wordmark-particle-size: 12px;
+    --wordmark-particle-weight: 8px;
+    --wordmark-repel-radius: 110;
     --footer-legal-cols: var(--footer-cols);
     --album-bar-h: 88px;
     --album-gutter: var(--spacing-4xl);

@@ -66,12 +66,15 @@ test.describe("footer structure", () => {
   });
 
   test("the labels are list headings, not links", async ({ page }) => {
-    const labels = page.locator(`${footer} h2`);
+    // Scoped to the column band: the wordmark is a heading too (§13.10).
+    const labels = page.locator(`${footer} .vows-footer-columns h2`);
     await expect(labels).toHaveCount(5);
 
     // Signage: not focusable, not a link, and not styled as one.
     const state = await page.evaluate(() => {
-      const heads = [...document.querySelectorAll("[data-site-footer] h2")];
+      const heads = [
+        ...document.querySelectorAll("[data-site-footer] .vows-footer-columns h2"),
+      ];
       return heads.map((h) => ({
         text: h.textContent,
         tabbable: (h as HTMLElement).tabIndex >= 0,

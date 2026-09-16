@@ -9,6 +9,8 @@ import {
   studio,
   type FooterLink,
 } from "~/data/contact";
+import { WordmarkParticles } from "~/components/wordmark-particles";
+import { useReducedMotion } from "~/hooks/use-reduced-motion";
 import { emailAddress, emailReversed, mailtoHref } from "~/lib/email";
 import { copy } from "~/data/copy";
 
@@ -260,21 +262,32 @@ function LocationPin() {
  * Two spans with a space between them: mobile breaks between the words, and
  * because the size is derived from the width of "Weddings" alone, that line
  * can never be the one that overruns.
+ *
+ * A real heading with the real text, always. The character field (§13.10) is a
+ * canvas laid over it: the studio's name is the most important text on the
+ * site, and a canvas-only wordmark would take it away from search engines and
+ * screen readers both. Under reduced motion the canvas never mounts and this
+ * is simply the name, as drawn.
  */
 function Wordmark() {
   const [first, second] = copy.footer.wordmarkLines;
+  const textRef = useRef<HTMLSpanElement>(null);
+  const reducedMotion = useReducedMotion();
+
   return (
-    <p
-      aria-label={copy.footer.wordmark}
+    <h2
+      data-particles={!reducedMotion}
       className="vows-footer-wordmark text-center font-serif text-ink"
     >
-      {/* Both words in one span: the paragraph is a flex container so it can
+      {/* Both words in one span: the heading is a flex container so it can
           centre them in the band, and without this wrapper each word would
-          become a flex item and the mobile line break would be lost. */}
-      <span>
-        <span aria-hidden>{first}</span> <span aria-hidden>{second}</span>
+          become a flex item and the mobile line break would be lost. It is
+          also the box the field fills. */}
+      <span ref={textRef}>
+        <span>{first}</span> <span>{second}</span>
+        {!reducedMotion && <WordmarkParticles hostRef={textRef} />}
       </span>
-    </p>
+    </h2>
   );
 }
 

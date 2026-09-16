@@ -525,6 +525,7 @@ does not already do at 60 fps. **The canvas stays DOM + transforms.**
 | `HeroTitle` | — | — |
 | `SiteHeader` | `revealed: boolean` | `desktop` \| `tablet` \| `mobile` (CSS, one DOM tree) |
 | `SiteFooterBar` | `revealed: boolean` | `desktop` \| `tablet` \| `mobile` |
+| `WordmarkParticles` | `hostRef` | — (the canvas of §13.10; mounts only when motion is allowed) |
 | `SiteFooter` | `ref?` | `desktop` \| `tablet` \| `mobile` (CSS grid, one DOM tree) — the full-screen panel of §13, rendered by the `_site` layout route, which uses the `ref` to watch it (§13.9) |
 | `NavLink` | `href`, `children`, `variant` | `wordmark` \| `link` |
 | `ChatCta` | `className?`, `floating?: boolean` | shadcn `Button` variant `pill`, sizes `default` \| `floating` |
@@ -538,7 +539,9 @@ Hooks: `useBreakpoint()` → `'mobile' | 'tablet' | 'desktop'`; `useReducedMotio
 backdropOpacity }`; `useNavHide(footerRef)` → nothing, it writes
 `<html data-nav-hidden>` (§13.9).
 
-Libraries: `src/lib/email.ts` — the footer's address obfuscation, kept out of the
+Libraries: `src/lib/wordmark-field.ts` — the wordmark's character field: sampling,
+physics and the draw loop, with no React and no DOM beyond the canvas it is handed
+(§13.10). `src/lib/email.ts` — the footer's address obfuscation, kept out of the
 component so what it does and does not protect against is written down once
 (§13.5). `src/lib/scramble.ts` — the loader's two text passes, both pure functions of
 elapsed time (§11.2). `src/lib/pan.ts` — the pan state, its easing, its inertia, the per-axis wrap
@@ -1093,9 +1096,9 @@ until the canvas is left.
 
 ### 12.9 Tests
 
-`tests/` holds four spec files, run at all three breakpoints by
+`tests/` holds five spec files, run at all three breakpoints by
 `npm run test:e2e`. Three cover the album page; `footer.spec.ts` is described in
-§13.7.
+§13.7 and `wordmark.spec.ts` in §13.10.
 
 On a fresh checkout run `npm run test:e2e:install` once first. `npm install`
 brings in `@playwright/test` but not the browser binaries, and `playwright test`
@@ -1403,6 +1406,7 @@ global `:focus-visible` ring; on white it is the same ring as everywhere else.
   pixel; a squeezed window keeps at least the floor of air; a landscape phone
   drops the one-screen rule, takes its natural height and scrolls, with nothing
   spilling out of the panel on any side.
+- **Wordmark** — `wordmark.spec.ts`, described in §13.10.
 - **Navbar** — visible through the gallery, hidden on scrolling down into the
   footer and not clickable while hidden, unmoved by jitter under the threshold,
   back on one upward scroll while still inside the footer, hidden again on the
@@ -1528,3 +1532,88 @@ the bar back.
 
 **Reduced motion** cross-fades: the transition drops to opacity alone at
 `--duration-instant`, and the translate is removed, so there is no slide.
+
+### 13.10 The wordmark is a field of characters
+
+Figma note `2120-2238`, with the reference capture at `2120-2237` and the built
+example at [revelatio.studio](https://revelatio.studio/).
+
+The name is drawn as roughly **900 small characters** — `A–Z`, `0–9` and
+`@ # & $ % + =` — standing where Mate's letterforms have ink. Across the room it
+reads as "Vows Weddings"; up close it is a field of glyphs that keeps
+reshuffling. Four things happen to it:
+
+| | |
+|---|---|
+| **flicker** | each character swaps glyph on its own interval, 0.6–2.4s, so the field breathes while the words hold still |
+| **entrance** | characters start packed in a thin line at the wordmark's vertical centre and fly out to their places; outer ones leave last, so the name spreads open. Triggered when the footer scrolls in, not on load |
+| **pointer** | characters within `--wordmark-repel-radius` are pushed out with a squared falloff, leaving a hole that tracks the cursor; springs bring them home when it leaves |
+| **sweep** | dragging `--wordmark-sweep-travel` across the field kicks every character outward into a loose cloud, which reassembles once the weakened spring is restored |
+
+**The letterforms are sampled, not approximated.** The engine draws the real
+heading — same font, same size, at the word positions the browser already
+computed — into an offscreen canvas, then walks a grid over it and keeps every
+cell with enough ink. That is what keeps the field in Mate's shapes and in
+exactly the heading's box, which is why the three bands, the panel height and
+everything in §13.2 are untouched by this. The heading's own box is measured
+before the canvas is placed over it, and the two are asserted equal.
+
+**Black on white needed more weight than the reference.** The reference is white
+characters on black, where a sparse field reads as glow; ours is black on white,
+where the same density reads as dirt. Two things fix it. Mate's hairlines are
+thinner than one grid cell, so the sampled letterforms are **stroked as well as
+filled** (`--wordmark-particle-weight`) — every stroke survives as a stroke
+rather than breaking into a dotted line, and the shape and axis are kept.
+And the character is set slightly larger than the grid pitch, so a cell inside a
+letter is mostly ink. Tuned by looking at all three breakpoints: the field
+carries 11–14% of the box as ink, which the spec fences at 6–28%.
+
+| | wordmark | pitch | character | sampling weight |
+|---|---|---|---|---|
+| mobile | Mate 80, two lines | 4px | 5.5px | 3px |
+| tablet | Mate 114 | 5px | 6.5px | 3.5px |
+| desktop | Mate 200 | 9px | 12px | 6px |
+
+**The characters are set in a mono stack, not a new webfont.**
+`--font-mono` is `ui-monospace, "SF Mono", Menlo, Consolas, …`. At 5–12px inside
+a canvas every mono in that list is the same small rectangle of ink, so a third
+family would have cost a download, a subset and a FOUT for a difference nobody
+can see — and canvas text that starts drawing before its webfont arrives
+silently renders in the fallback and never repaints. Mate and Inter remain the
+only typefaces the site ships.
+
+**The real text never leaves the markup.** The wordmark is an `<h2>` carrying
+"Vows Weddings", server-rendered; the canvas is `aria-hidden` decoration
+absolutely positioned over it, and the heading's ink is turned transparent only
+while the canvas is drawing. A canvas-only wordmark would take the studio's name
+away from search engines and screen readers both, which is a regression, not a
+feature. The spec asserts the accessible name is exactly "Vows Weddings".
+
+**Reduced motion gets the plain wordmark.** Not a stilled field — the canvas
+never mounts, the heading keeps its ink, and what renders is §13.3 exactly as
+drawn.
+
+**Touch pushes.** The field listens for `pointermove` on the window rather than
+on the canvas, which covers a mouse hovering and a finger dragging alike, so a
+phone gets the hole and the sweep rather than a desktop-only interaction with
+nothing in its place. The canvas is `pointer-events: none`, so scrolling and
+text selection still belong to the page. The reference's "Click to interact"
+pill is not built: it is optional in the note, and a hint that only appears for
+mouse users is a line of chrome across the quietest part of the panel.
+
+**Cost.** One canvas and one `requestAnimationFrame` loop, started by an
+`IntersectionObserver` when the footer arrives and stopped the moment it leaves
+— measured at zero draws once it is out of view. On a 120Hz display the entrance
+and a full pointer sweep both hold a median frame of 8.3ms with nothing over
+32ms, and the heap moves 289KB across a minute with the footer open, which is
+GC sawtooth rather than growth. A resize re-samples the letterforms and starts
+the field settled rather than replaying the entrance.
+
+`tests/wordmark.spec.ts` covers, at all three breakpoints: the name in the
+served HTML and as the heading's accessible name; the canvas hidden from
+assistive technology and transparent to the pointer; reduced motion rendering
+the plain wordmark; the canvas box equal to the heading box and the panel still
+one screen tall; ink density inside the legible band; glyphs reshuffling while
+the column profile of the ink holds still; the pointer opening a hole that
+refills when it leaves; and the loop drawing nothing once the footer is out of
+view.

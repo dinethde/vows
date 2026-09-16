@@ -383,6 +383,24 @@
     min-width: 0;
   }
 
+  /* ---- Wordmark character field (DESIGN.md §13.10) --------------- */
+
+  /* The canvas covers the heading's own box and nothing else, so the field
+     cannot move the three bands. The heading stays in the markup and keeps
+     its space; only its ink goes, and only while the canvas is drawing it. */
+  .vows-footer-wordmark[data-particles="true"] > span {
+    position: relative;
+    color: transparent;
+  }
+
+  .vows-wordmark-canvas {
+    position: absolute;
+    inset: 0;
+    /* Decoration: the pointer belongs to the page, and the field listens for
+       it on the window rather than swallowing it here. */
+    pointer-events: none;
+  }
+
   /* Mobile splits the rail: the three policy links spread across the width,
      copyright on its own line beneath them. */
   .vows-footer-legal {
