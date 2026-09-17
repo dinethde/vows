@@ -297,7 +297,11 @@
    * type they are set in; both scale with the wordmark, so the field keeps
    * roughly a dozen characters across a letter's height at every breakpoint.
    * The rest is simulation, read as plain numbers by the canvas.          */
-  --wordmark-particle-pitch: 4px;
+  /* The grid step, not the glyph: spacing the sample points out is what thins
+   * the field without touching the character size. Tuned per breakpoint by
+   * squinting at it — the smaller the wordmark, the smaller the step it can
+   * take before the stems thin to a single character and the words mush. */
+  --wordmark-particle-pitch: 4.5px;
   --wordmark-particle-size: 5.5px;
   /* Added to the sampled letterforms before the grid reads them, so Mate's
    * hairlines survive as strokes rather than dotted lines (§13.10). */
@@ -351,7 +355,7 @@
     --wordmark-ratio: 6.557;
     --wordmark-max: 200px;
     --wordmark-leading: 1.2;
-    --wordmark-particle-pitch: 5px;
+    --wordmark-particle-pitch: 5.5px;
     --wordmark-particle-size: 6.5px;
     --wordmark-particle-weight: 3.5px;
     --wordmark-sweep-travel: 900;
@@ -371,7 +375,7 @@
     --footer-gutter: var(--spacing-4xl);
     --footer-pad-bottom: 64px;
     --footer-cols: 336px 336px 439px 1fr;
-    --wordmark-particle-pitch: 9px;
+    --wordmark-particle-pitch: 11px;
     --wordmark-particle-size: 12px;
     --wordmark-particle-weight: 8px;
     --wordmark-repel-radius: 110;

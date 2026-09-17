@@ -1538,7 +1538,7 @@ the bar back.
 Figma note `2120-2238`, with the reference capture at `2120-2237` and the built
 example at [revelatio.studio](https://revelatio.studio/).
 
-The name is drawn as roughly **900 small characters** — `A–Z`, `0–9` and
+The name is drawn as roughly **700 small characters** — `A–Z`, `0–9` and
 `@ # & $ % + =` — standing where Mate's letterforms have ink. Across the room it
 reads as "Vows Weddings"; up close it is a field of glyphs that keeps
 reshuffling. Four things happen to it:
@@ -1565,14 +1565,25 @@ thinner than one grid cell, so the sampled letterforms are **stroked as well as
 filled** (`--wordmark-particle-weight`) — every stroke survives as a stroke
 rather than breaking into a dotted line, and the shape and axis are kept.
 And the character is set slightly larger than the grid pitch, so a cell inside a
-letter is mostly ink. Tuned by looking at all three breakpoints: the field
-carries 11–14% of the box as ink, which the spec fences at 6–28%.
+letter is mostly ink.
 
-| | wordmark | pitch | character | sampling weight |
-|---|---|---|---|---|
-| mobile | Mate 80, two lines | 4px | 5.5px | 3px |
-| tablet | Mate 114 | 5px | 6.5px | 3.5px |
-| desktop | Mate 200 | 9px | 12px | 6px |
+**The grid step is what tunes density, not the glyph.** Packed too tightly the
+letterforms lose their edges and the panel reads as a grey rectangle; opened up
+too far the stems thin to a single character and the words mush. Spacing the
+sample points keeps the thinning even and the shapes intact, which deleting
+particles at random would not. The test is to blur it: if "Vows Weddings" is
+still instantly obvious, the step is right.
+
+Each breakpoint takes a different step, because the smaller the wordmark the
+sooner a wider grid breaks its stems — desktop can open up by a third, mobile
+by about a sixth before the letters come apart. Ink lands at 8–11% of the box,
+which the spec fences at 6–28%.
+
+| | wordmark | pitch | character | sampling weight | characters |
+|---|---|---|---|---|---|
+| mobile | Mate 80, two lines | 4.5px | 5.5px | 3px | ~640 |
+| tablet | Mate 114 | 5.5px | 6.5px | 3.5px | ~800 |
+| desktop | Mate 200 | 11px | 12px | 6px | ~700 |
 
 **The characters are set in a mono stack, not a new webfont.**
 `--font-mono` is `ui-monospace, "SF Mono", Menlo, Consolas, …`. At 5–12px inside
