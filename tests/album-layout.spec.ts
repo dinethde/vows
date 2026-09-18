@@ -199,6 +199,35 @@ test.describe("album gallery", () => {
     expect(distinct.size).toBeGreaterThan(3);
   });
 
+  test("a cached photograph still lifts its fade", async ({ page }) => {
+    // The `load` event is the only thing that clears `opacity: 0`, and an
+    // image already decoded before hydration never fires one — so this is the
+    // second visit, where every derivative is warm in the cache.
+    await page.goto(FEATURED);
+    await settle(page);
+    await page.evaluate(() => window.scrollBy(0, 1200));
+    await page.waitForTimeout(1500);
+
+    await page.reload();
+    await settle(page);
+    await page.evaluate(() => window.scrollBy(0, 1200));
+    await page.waitForTimeout(1500);
+
+    const decoded = await page.evaluate(() =>
+      [...document.querySelectorAll<HTMLImageElement>(".vows-album-img")]
+        .filter((img) => img.complete && img.naturalWidth > 0)
+        .map((img) => ({
+          src: img.currentSrc.split("/").pop(),
+          loaded: img.dataset.loaded,
+          opacity: getComputedStyle(img).opacity,
+        })),
+    );
+
+    expect(decoded.length).toBeGreaterThan(0);
+    expect(decoded.filter((img) => img.loaded !== "true")).toEqual([]);
+    expect(decoded.filter((img) => img.opacity === "0")).toEqual([]);
+  });
+
   test("every photograph has a reserved box and a placeholder", async ({ page }) => {
     await page.goto(FEATURED);
     await page.waitForSelector("[data-album-photo]");

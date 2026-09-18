@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   albumBuckets,
@@ -52,6 +52,17 @@ export function AlbumPhoto({
   const bucket = albumBuckets[bucketName];
   const lqip = photo.lqip[bucketName];
   const [loaded, setLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  // An image the browser had already decoded before hydration fires no `load`
+  // event, and `load` is the only thing that lifts the fade — so on a warm
+  // cache the photograph sat at `opacity: 0` over its 20px placeholder for
+  // good. Checked once after mount, which covers exactly that case and leaves
+  // the cold path to the handler.
+  useEffect(() => {
+    const img = imgRef.current;
+    if (img?.complete && img.naturalWidth > 0) setLoaded(true);
+  }, []);
 
   const srcSet = (ext: string) =>
     bucket.widths
@@ -81,6 +92,7 @@ export function AlbumPhoto({
           <source type="image/avif" srcSet={srcSet("avif")} sizes={`${width}px`} />
           <source type="image/webp" srcSet={srcSet("webp")} sizes={`${width}px`} />
           <img
+            ref={imgRef}
             className="vows-album-img size-full object-cover"
             src={`/albums/${id}-${bucketName}-${bucket.widths[1]}.webp`}
             alt={photo.alt}
