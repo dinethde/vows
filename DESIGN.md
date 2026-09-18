@@ -1538,7 +1538,7 @@ the bar back.
 Figma note `2120-2238`, with the reference capture at `2120-2237` and the built
 example at [revelatio.studio](https://revelatio.studio/).
 
-The name is drawn as roughly **700 small characters** — `A–Z`, `0–9` and
+The name is drawn as roughly **500 small characters** — `A–Z`, `0–9` and
 `@ # & $ % + =` — standing where Mate's letterforms have ink. Across the room it
 reads as "Vows Weddings"; up close it is a field of glyphs that keeps
 reshuffling. Four things happen to it:
@@ -1575,15 +1575,30 @@ particles at random would not. The test is to blur it: if "Vows Weddings" is
 still instantly obvious, the step is right.
 
 Each breakpoint takes a different step, because the smaller the wordmark the
-sooner a wider grid breaks its stems — desktop can open up by a third, mobile
-by about a sixth before the letters come apart. Ink lands at 8–11% of the box,
-which the spec fences at 6–28%.
+sooner a wider grid breaks its stems. Ink lands at 5–7% of the box, which the
+spec fences at 2.5–28%.
 
 | | wordmark | pitch | character | sampling weight | characters |
 |---|---|---|---|---|---|
-| mobile | Mate 80, two lines | 4.5px | 5.5px | 3px | ~640 |
-| tablet | Mate 114 | 5.5px | 6.5px | 3.5px | ~800 |
-| desktop | Mate 200 | 11px | 12px | 6px | ~700 |
+| mobile | Mate 80, two lines | 5px | 5.5px | 3px | ~515 |
+| tablet | Mate 114 | 7px | 6.5px | 3.5px | ~505 |
+| desktop | Mate 200 | 13px | 12px | 8px | ~520 |
+
+**Tune it at 2×, not 1×.** The canvas is drawn at the device pixel ratio, so on
+a retina screen the same step puts twice the detail into the same space and the
+field reads considerably denser than a 1× render of it suggests. Judged at 1×
+the values above look sparse; judged where people actually see them they are
+where the letterforms hold their edges. Every step here was chosen from a 2×
+render at the breakpoint's own width.
+
+**The step scales with the type.** The wordmark is fluid between breakpoints —
+at a 1200px window it sets at 163 rather than 200 — while the step is a fixed
+px value, so without correction the field packed tighter as the window narrowed
+and a 1280 laptop saw a denser panel than a 1440 one. The step is multiplied by
+the rendered size over `--wordmark-particle-reference`, the type size that
+breakpoint was tuned at, which holds the character count steady across the
+range: 521 at 1440, 546 at 1280. Only the step scales; the characters keep the
+size they are set at.
 
 **The characters are set in a mono stack, not a new webfont.**
 `--font-mono` is `ui-monospace, "SF Mono", Menlo, Consolas, …`. At 5–12px inside

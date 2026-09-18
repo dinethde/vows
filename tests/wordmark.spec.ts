@@ -141,8 +141,9 @@ test.describe("wordmark — the field", () => {
     const ink = await inkRatio(page);
 
     // Black on white: too sparse reads as dirt, too dense as a smudge. The
-    // tuned range is where the words are unmistakable at a glance.
-    expect(ink).toBeGreaterThan(0.06);
+    // fence is the tuned range — the field was thinned deliberately (§13.10),
+    // so the floor sits below where the first, denser version landed.
+    expect(ink).toBeGreaterThan(0.025);
     expect(ink).toBeLessThan(0.28);
   });
 

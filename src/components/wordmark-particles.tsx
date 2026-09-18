@@ -63,6 +63,17 @@ export function WordmarkParticles({
       };
       if (Object.values(config).some((value) => !Number.isFinite(value))) return;
 
+      // The wordmark is fluid between the breakpoints — at 1200 it sets at 163
+      // rather than 200 — while the grid step is a fixed px value, so without
+      // this the field gets denser as the window narrows. Scaling the step by
+      // how far the type is from its reference size keeps the same number of
+      // characters across a letter at every width. Only the step scales; the
+      // characters stay the size they are set at.
+      const reference = number("--wordmark-particle-reference");
+      if (Number.isFinite(reference) && reference > 0) {
+        config.pitch *= Number.parseFloat(style.fontSize) / reference;
+      }
+
       // The words as the browser placed them — one line on desktop and tablet,
       // two on mobile — so the field never re-implements text layout and can
       // never disagree with the heading underneath it.

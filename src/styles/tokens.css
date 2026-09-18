@@ -301,7 +301,12 @@
    * the field without touching the character size. Tuned per breakpoint by
    * squinting at it — the smaller the wordmark, the smaller the step it can
    * take before the stems thin to a single character and the words mush. */
-  --wordmark-particle-pitch: 4.5px;
+  --wordmark-particle-pitch: 5px;
+  /* The type size this breakpoint's step was tuned at. The wordmark is fluid
+   * between breakpoints, so the step is scaled by how far the rendered type is
+   * from this — otherwise the field packs tighter as the window narrows.
+   * Not `--wordmark-max`: that is the cap, and tablet never reaches it. */
+  --wordmark-particle-reference: 80;
   --wordmark-particle-size: 5.5px;
   /* Added to the sampled letterforms before the grid reads them, so Mate's
    * hairlines survive as strokes rather than dotted lines (§13.10). */
@@ -355,7 +360,8 @@
     --wordmark-ratio: 6.557;
     --wordmark-max: 200px;
     --wordmark-leading: 1.2;
-    --wordmark-particle-pitch: 5.5px;
+    --wordmark-particle-pitch: 7px;
+    --wordmark-particle-reference: 115;
     --wordmark-particle-size: 6.5px;
     --wordmark-particle-weight: 3.5px;
     --wordmark-sweep-travel: 900;
@@ -375,7 +381,8 @@
     --footer-gutter: var(--spacing-4xl);
     --footer-pad-bottom: 64px;
     --footer-cols: 336px 336px 439px 1fr;
-    --wordmark-particle-pitch: 11px;
+    --wordmark-particle-pitch: 13px;
+    --wordmark-particle-reference: 200;
     --wordmark-particle-size: 12px;
     --wordmark-particle-weight: 8px;
     --wordmark-repel-radius: 110;
