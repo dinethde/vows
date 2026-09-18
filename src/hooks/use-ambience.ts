@@ -17,6 +17,25 @@ export type AmbienceStatus = "paused" | "playing" | "blocked";
  * leaves the widget paused rather than claiming to play, and the visitor's own
  * choice is remembered — if they pause it, it stays paused next visit.
  */
+/** Storage, guarded — see the note in gallery-canvas.tsx. A forgotten
+ * preference is a shrug; a thrown `SecurityError` inside a click handler
+ * leaves the player wedged. */
+function remember(state: "playing" | "paused") {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, state);
+  } catch {
+    // Nothing to do: the preference lasts the session instead.
+  }
+}
+
+function wasPaused() {
+  try {
+    return window.localStorage.getItem(STORAGE_KEY) === "paused";
+  } catch {
+    return false;
+  }
+}
+
 export function useAmbience() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const fadeRef = useRef<gsap.core.Tween | null>(null);
@@ -54,7 +73,7 @@ export function useAmbience() {
       await audio.play();
       setStatus("playing");
       fadeTo(readMotion()["audio-volume"]);
-      window.localStorage.setItem(STORAGE_KEY, "playing");
+      remember("playing");
     } catch {
       // Autoplay policy, a missing codec, or a blocked request. Show the
       // truth — paused — rather than a playing widget with no sound.
@@ -66,7 +85,7 @@ export function useAmbience() {
     const audio = audioRef.current;
     if (!audio) return;
     setStatus("paused");
-    window.localStorage.setItem(STORAGE_KEY, "paused");
+    remember("paused");
     fadeTo(0, () => audio.pause());
   }, [fadeTo]);
 
@@ -81,7 +100,7 @@ export function useAmbience() {
    */
   const start = useCallback(() => {
     if (status !== "paused") return;
-    if (window.localStorage.getItem(STORAGE_KEY) === "paused") return;
+    if (wasPaused()) return;
     void play();
   }, [status, play]);
 

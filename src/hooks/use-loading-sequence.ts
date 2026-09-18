@@ -83,6 +83,25 @@ function assetsReady(): Promise<void> {
  * decode to finish and a ceiling so a slow network cannot strand anyone. A
  * visitor who has already seen it this session skips straight to the exit.
  */
+function readSeen() {
+  try {
+    return (
+      typeof window !== "undefined" &&
+      window.sessionStorage.getItem(SESSION_KEY) === "1"
+    );
+  } catch {
+    return false;
+  }
+}
+
+function markSeen() {
+  try {
+    window.sessionStorage.setItem(SESSION_KEY, "1");
+  } catch {
+    // Site data blocked; the loader simply plays again next time.
+  }
+}
+
 export function useLoadingSequence(
   longestLine: string,
   reducedMotion: boolean,
@@ -110,9 +129,10 @@ export function useLoadingSequence(
     let ready = false;
     let cancelled = false;
 
-    const seen =
-      typeof window !== "undefined" &&
-      window.sessionStorage.getItem(SESSION_KEY) === "1";
+    // Guarded: storage throws outright where site data is blocked, and this
+    // runs on the home page — the loader missing its "already seen" mark is a
+    // second animation, losing the page is not.
+    const seen = readSeen();
 
     const publish = (phase: LoaderPhase, elapsed: number) =>
       setState({
@@ -194,7 +214,7 @@ export function useLoadingSequence(
           break;
         case "handoff":
           if (elapsed >= motion["loader-handoff"]) {
-            window.sessionStorage.setItem(SESSION_KEY, "1");
+            markSeen();
             setPhase("done");
           } else {
             publish(phase, elapsed);

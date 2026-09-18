@@ -18,6 +18,31 @@ type GalleryCanvasProps = {
 /** Where the canvas position is parked while the visitor is inside an album. */
 const PAN_KEY = "vows:pan";
 
+/**
+ * Session storage, guarded. Touching it throws `SecurityError` outright
+ * wherever site data is blocked — Chrome's "Don't allow sites to save data",
+ * Safari's Lockdown Mode, embedded webviews, partitioned third-party contexts
+ * — and the canvas is the whole home page. Losing the restored position there
+ * is a shrug; losing the page is not.
+ */
+function readStoredPan(): { x: number; y: number } | null {
+  try {
+    const saved = window.sessionStorage.getItem(PAN_KEY);
+    const [x, y] = (saved ?? "").split(",").map(Number);
+    return Number.isFinite(x) && Number.isFinite(y) ? { x: x!, y: y! } : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredPan(x: number, y: number) {
+  try {
+    window.sessionStorage.setItem(PAN_KEY, `${Math.round(x)},${Math.round(y)}`);
+  } catch {
+    // Nothing to do: the next visit simply starts at the origin.
+  }
+}
+
 /** Test seam: the canvas element carries a live handle on its pan offset. */
 export type PanDebugElement = HTMLElement & { __vowsPan?: PanState };
 
@@ -80,26 +105,20 @@ export function GalleryCanvas({ onFirstPan }: GalleryCanvasProps) {
 
   // Leaving for an album and coming back should return the visitor to the part
   // of the canvas they were looking at, not to the origin (DESIGN.md §12.8).
-  // Restored before the first tick, so there is no jump.
-  const restoredRef = useRef(false);
-  if (!restoredRef.current && typeof window !== "undefined") {
-    restoredRef.current = true;
-    const saved = window.sessionStorage.getItem(PAN_KEY);
-    const [x, y] = (saved ?? "").split(",").map(Number);
-    if (Number.isFinite(x) && Number.isFinite(y)) {
-      pan.current.targetX = pan.current.x = x!;
-      pan.current.targetY = pan.current.y = y!;
-    }
-  }
+  // It has to land before the first tick or the canvas jumps, so it cannot
+  // wait for an effect — but it runs in a state initialiser rather than the
+  // render body, which React calls exactly once however often render repeats.
+  useState(() => {
+    const saved = typeof window === "undefined" ? null : readStoredPan();
+    if (!saved) return null;
+    pan.current.targetX = pan.current.x = saved.x;
+    pan.current.targetY = pan.current.y = saved.y;
+    return saved;
+  });
 
   useEffect(() => {
     const state = pan.current;
-    return () => {
-      window.sessionStorage.setItem(
-        PAN_KEY,
-        `${Math.round(state.x)},${Math.round(state.y)}`,
-      );
-    };
+    return () => writeStoredPan(state.x, state.y);
   }, []);
 
   const notifyPan = useCallback(() => {
