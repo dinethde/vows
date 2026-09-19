@@ -142,9 +142,8 @@ function FooterAnchor({
     <a
       className={`font-serif text-ink-muted ${className}`}
       href={link.href}
-      {...(link.external
-        ? { rel: "noreferrer noopener", target: "_blank" }
-        : {})}
+      {...(link.newTab ? { target: "_blank" } : {})}
+      {...(link.external ? { rel: "noreferrer noopener" } : {})}
     >
       {link.label}
     </a>

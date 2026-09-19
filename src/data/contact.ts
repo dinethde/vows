@@ -4,7 +4,18 @@
  * component, so changing a phone number or adding a social does not touch JSX.
  */
 
-export type FooterLink = { label: string; href: string; external?: boolean };
+export type FooterLink = {
+  label: string;
+  href: string;
+  /** Leaves the site: earns `rel="noreferrer noopener"`. */
+  external?: boolean;
+  /**
+   * Opens in a new tab. True for everything external, and separately for the
+   * rates PDF — same-origin, but a download should not replace the page the
+   * visitor was reading.
+   */
+  newTab?: boolean;
+};
 
 /**
  * The address is held split so the complete string never appears as a literal
@@ -34,15 +45,15 @@ export const menuLinks: FooterLink[] = [
 ];
 
 export const socialLinks: FooterLink[] = [
-  { label: "Instagram", href: "https://instagram.com/vowsweddings", external: true },
-  { label: "Pinterest", href: "https://pinterest.com/vowsweddings", external: true },
-  { label: "Facebook", href: "https://facebook.com/vowsweddings", external: true },
-  { label: "TikTok", href: "https://tiktok.com/@vowsweddings", external: true },
-  { label: "WhatsApp", href: "https://wa.me/94716570999", external: true },
+  { label: "Instagram", href: "https://instagram.com/vowsweddings", external: true, newTab: true },
+  { label: "Pinterest", href: "https://pinterest.com/vowsweddings", external: true, newTab: true },
+  { label: "Facebook", href: "https://facebook.com/vowsweddings", external: true, newTab: true },
+  { label: "TikTok", href: "https://tiktok.com/@vowsweddings", external: true, newTab: true },
+  { label: "WhatsApp", href: "https://wa.me/94716570999", external: true, newTab: true },
 ];
 
 export const legalLinks: FooterLink[] = [
-  { label: "Rates (PDF)", href: "/rates.pdf", external: true },
+  { label: "Rates (PDF)", href: "/rates.pdf", newTab: true },
   { label: "Cookies Policy", href: "/cookies" },
   { label: "Privacy Policy", href: "/privacy" },
 ];
