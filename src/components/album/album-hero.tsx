@@ -62,7 +62,11 @@ function AlbumMetaBar({ album }: { album: Album }) {
       data-album-bar=""
       className="vows-album-bar absolute inset-x-0 bottom-0 flex min-h-[var(--album-bar-h)] flex-col justify-center gap-sm bg-chrome px-[var(--album-gutter)] py-md backdrop-blur-[var(--blur-chrome-bottom)] md:flex-row md:items-center md:justify-between md:gap-0"
     >
-      <p className="text-couple shrink-0 font-serif text-ink">{album.couple}</p>
+      {/* The page's subject and its `<title>`, so it is the page's `<h1>` —
+          without it the outline started at the footer's `<h2>`s and a screen
+          reader skimming by heading never met the event's name. The type
+          token is a class, so nothing about it changes visually. */}
+      <h1 className="text-couple shrink-0 font-serif text-ink">{album.couple}</h1>
 
       {/* The one zone that gives: at 834 the four zones at their drawn widths
           are 83px wider than the viewport, and the hero's `overflow-hidden`

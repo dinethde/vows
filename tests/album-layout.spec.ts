@@ -16,6 +16,27 @@ function box(page: Page, selector: string) {
 }
 
 test.describe("album hero", () => {
+  test("the couple is the page's heading", async ({ page }) => {
+    await page.goto(FEATURED);
+    await page.waitForSelector(".vows-album-hero");
+
+    // The couple is the page's subject and its `<title>`; without an `<h1>`
+    // the outline began at the footer's `<h2>`s and a screen reader skimming
+    // by heading never met the event's name.
+    const heading = page.getByRole("heading", { level: 1 });
+    await expect(heading).toHaveCount(1);
+    await expect(heading).toHaveText("Benali & Yasiru");
+    expect(await page.title()).toContain("Benali & Yasiru");
+
+    // Promoting the element must not move it: the type comes from a class.
+    const type = await heading.evaluate((el) => {
+      const style = getComputedStyle(el);
+      return { size: style.fontSize, family: style.fontFamily.split(",")[0] };
+    });
+    expect(type.size).toBe("28px");
+    expect(type.family).toContain("Mate");
+  });
+
   test("the photograph is cropped to the album's focal point", async ({
     page,
   }, testInfo) => {
