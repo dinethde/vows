@@ -117,6 +117,9 @@ function AlbumPage() {
 function AlbumNotFound() {
   return (
     <>
+      {/* The 404 has a navbar like every other page, so it needs the same way
+          past it — this was the one route without one. */}
+      <SkipLink />
       <SiteHeader revealed />
       <main className="flex h-[100svh] flex-col items-center justify-center gap-lg bg-canvas text-center">
         <p className="text-display font-serif text-ink">

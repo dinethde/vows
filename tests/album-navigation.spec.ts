@@ -131,6 +131,14 @@ test.describe("navigation", () => {
   test("an unknown album does not crash the page", async ({ page }) => {
     await page.goto("/albums/not-a-real-album");
     await expect(page.getByText("could not be found")).toBeVisible();
+
+    // It carries a navbar like every other page, so it needs the same way
+    // past it: Tab lands on the skip link first.
+    await page.keyboard.press("Tab");
+    const focused = await page.evaluate(() =>
+      (document.activeElement?.textContent ?? "").trim(),
+    );
+    expect(focused).toContain("Skip");
   });
 
   test("a slug naming an inherited Object member is still unknown", async ({
