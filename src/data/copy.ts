@@ -1,6 +1,15 @@
 /** Every user-visible string on the home page, read off the Figma frames. */
 export const copy = {
   meta: {
+    /**
+     * The public origin, for the absolute URLs that `og:image` and
+     * `canonical` need — most unfurlers drop a relative one. Read from the
+     * environment so a preview deploy advertises itself rather than
+     * production, with the production host as the fallback.
+     */
+    siteUrl: (
+      import.meta.env.VITE_SITE_URL ?? "https://vowsweddings.lk"
+    ).replace(/\/$/, ""),
     title: "Vows Weddings — wedding photography since 2013",
     description:
       "An infinite gallery of weddings photographed by Vows. Golden-hour ceremonies, black-and-white candids and long, dim receptions.",

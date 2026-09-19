@@ -19,15 +19,38 @@ export const Route = createFileRoute("/_site/albums/$slug")({
     if (!album) throw notFound();
     return { album };
   },
-  head: ({ loaderData }) =>
-    loaderData
-      ? {
-          meta: [
-            { title: `${loaderData.album.couple} — ${copy.meta.title}` },
-            { name: "description", content: loaderData.album.story },
-          ],
-        }
-      : {},
+  // An album URL is the shareable unit of this site — a couple sends it to
+  // family in a chat app — so it has to unfurl as a photograph and a name
+  // rather than a bare link on a photography portfolio.
+  head: ({ loaderData }) => {
+    if (!loaderData) return {};
+    const { album } = loaderData;
+    const title = `${album.couple} — ${copy.meta.title}`;
+    const url = `${copy.meta.siteUrl}/albums/${album.slug}`;
+    // Absolute, and the 1280 derivative: it already exists, and it is the
+    // widest that stays under the 5MB most unfurlers will fetch.
+    const image = `${copy.meta.siteUrl}/albums/hero-hero-1280.webp`;
+
+    return {
+      meta: [
+        { title },
+        { name: "description", content: album.story },
+        { property: "og:type", content: "article" },
+        { property: "og:title", content: title },
+        { property: "og:description", content: album.story },
+        { property: "og:image", content: image },
+        { property: "og:url", content: url },
+        { property: "og:site_name", content: copy.footer.wordmark },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: album.story },
+        { name: "twitter:image", content: image },
+      ],
+      // `getAlbum` is an exact-match lookup, so there is one URL per album
+      // and nothing for a crawler to have to choose between.
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
   notFoundComponent: AlbumNotFound,
   component: AlbumPage,
 });
