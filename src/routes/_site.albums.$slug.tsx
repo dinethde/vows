@@ -63,16 +63,28 @@ function AlbumPage() {
   // arrives a beat later.
   useEffect(() => {
     const motion = readMotion();
+    const hero = document.querySelector<HTMLImageElement>(".vows-album-hero-img");
+    // A hero the browser has already decoded is on screen before this runs —
+    // the markup is server-rendered at full opacity — so fading it "in" means
+    // blanking a photograph the visitor is looking at and bringing it back.
+    // Measured on a reload: twelve visible frames, then zero, then a 0.7s
+    // fade. Only an image that has yet to paint gets the entrance.
+    const heroPainted = Boolean(hero?.complete && hero.naturalWidth > 0);
+
     const context = gsap.context(() => {
-      gsap.fromTo(
-        ".vows-album-hero-img",
-        { opacity: 0 },
-        {
-          opacity: 1,
-          duration: reducedMotion ? motion["motion-base"] : motion["album-hero-enter"],
-          ease: "power2.out",
-        },
-      );
+      if (!heroPainted) {
+        gsap.fromTo(
+          ".vows-album-hero-img",
+          { opacity: 0 },
+          {
+            opacity: 1,
+            duration: reducedMotion
+              ? motion["motion-base"]
+              : motion["album-hero-enter"],
+            ease: "power2.out",
+          },
+        );
+      }
       gsap.fromTo(
         "[data-album-bar]",
         reducedMotion ? { opacity: 0 } : { opacity: 0, y: motion["chrome-reveal-y"] },

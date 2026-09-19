@@ -79,6 +79,54 @@ test.describe("album motion", () => {
     expect(new Set(second).size).toBeGreaterThan(4);
   });
 
+  test("a cached hero is not blanked and faded back in", async ({
+    browser,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "the entrance is not responsive");
+
+    const context = await browser.newContext({
+      viewport: testInfo.project.use.viewport,
+    });
+
+    // Prime the cache, then sample opacity per frame from before hydration.
+    const primer = await context.newPage();
+    await primer.goto(FEATURED);
+    await primer.waitForLoadState("networkidle");
+    await primer.waitForTimeout(1200);
+    await primer.close();
+
+    await context.addInitScript(() => {
+      (window as unknown as { __opacity: number[] }).__opacity = [];
+      const tick = () => {
+        const img = document.querySelector(".vows-album-hero-img");
+        const log = (window as unknown as { __opacity: number[] }).__opacity;
+        if (img) log.push(Number(getComputedStyle(img).opacity));
+        if (log.length < 60) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+
+    const page = await context.newPage();
+    await page.goto(FEATURED);
+    await page.waitForTimeout(2200);
+
+    const samples = await page.evaluate(
+      () => (window as unknown as { __opacity: number[] }).__opacity,
+    );
+    expect(samples.length).toBeGreaterThan(10);
+
+    // The markup is server-rendered at full opacity, so fading a decoded
+    // hero "in" means removing a photograph the visitor is already looking
+    // at. Nothing may take it from visible back to invisible.
+    const blanked = samples.some(
+      (value, index) => index > 0 && samples[index - 1]! > 0.9 && value < 0.1,
+    );
+    expect(blanked).toBe(false);
+    expect(Math.min(...samples)).toBeGreaterThan(0.9);
+
+    await context.close();
+  });
+
   test("reduced motion holds the float still and drops the travel", async ({
     browser,
   }, testInfo) => {
