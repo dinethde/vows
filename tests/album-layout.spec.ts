@@ -199,6 +199,53 @@ test.describe("album gallery", () => {
     expect(distinct.size).toBeGreaterThan(3);
   });
 
+  test("the page never scrolls sideways, including before hydration", async ({
+    page,
+  }) => {
+    // The server has no viewport, so it renders the desktop column — a 1440px
+    // block pinned at `left: 50%` that hangs off the side of a phone until the
+    // client corrects it. Sampled per frame from before hydration, because by
+    // the time the page settles the evidence is gone.
+    await page.addInitScript(() => {
+      (window as unknown as { __overflow: number[] }).__overflow = [];
+      const tick = () => {
+        const root = document.documentElement;
+        const log = (window as unknown as { __overflow: number[] }).__overflow;
+        log.push(root.scrollWidth - root.clientWidth);
+        if (log.length < 90) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+
+    await page.goto(FEATURED);
+    await settle(page);
+    await page.evaluate(() => window.scrollBy(0, 1600));
+    await page.waitForTimeout(1200);
+
+    const result = await page.evaluate(() => {
+      const root = document.documentElement;
+      const rects = [
+        ...document.querySelectorAll("[data-album-photo]"),
+      ].map((photo) => photo.getBoundingClientRect());
+      return {
+        worst: Math.max(
+          ...(window as unknown as { __overflow: number[] }).__overflow,
+        ),
+        settled: root.scrollWidth - root.clientWidth,
+        // Clipping the overflow must not clip the photographs themselves.
+        outside: rects.filter(
+          (rect) => rect.right > root.clientWidth + 1 || rect.left < -1,
+        ).length,
+        rendered: rects.filter((rect) => rect.width > 0 && rect.height > 0).length,
+      };
+    });
+
+    expect(result.worst).toBe(0);
+    expect(result.settled).toBeLessThanOrEqual(0);
+    expect(result.outside).toBe(0);
+    expect(result.rendered).toBe(18);
+  });
+
   test("a cached photograph still lifts its fade", async ({ page }) => {
     // The `load` event is the only thing that clears `opacity: 0`, and an
     // image already decoded before hydration never fires one — so this is the

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useSyncExternalStore } from "react";
 import gsap from "gsap";
 
 import { AlbumPhoto } from "~/components/album/album-photo";
@@ -25,22 +25,30 @@ const EAGER_UNTIL = 900;
  *                   photographs move in step and the page stays alive when the
  *                   visitor stops scrolling.
  */
+function subscribeToViewport(onChange: () => void) {
+  window.addEventListener("resize", onChange);
+  window.addEventListener("orientationchange", onChange);
+  return () => {
+    window.removeEventListener("resize", onChange);
+    window.removeEventListener("orientationchange", onChange);
+  };
+}
+
 export function AlbumGallery({ album }: { album: Album }) {
   const breakpoint = useBreakpoint();
   const reducedMotion = useReducedMotion();
   const rootRef = useRef<HTMLDivElement>(null);
-  const [viewportWidth, setViewportWidth] = useState(DESIGN_WIDTH);
-
-  useEffect(() => {
-    const measure = () => setViewportWidth(window.innerWidth);
-    measure();
-    window.addEventListener("resize", measure);
-    window.addEventListener("orientationchange", measure);
-    return () => {
-      window.removeEventListener("resize", measure);
-      window.removeEventListener("orientationchange", measure);
-    };
-  }, []);
+  // Read on the same schedule as the breakpoint, not in an effect. Seeded to
+  // the design width and corrected after paint, the first painted frames laid
+  // a 1440px column out inside a 390px page — 525px of horizontal overflow,
+  // sustained well past the first frame, with the gallery visibly snapping
+  // into place. `useSyncExternalStore` gives the first client render the real
+  // width, so there is nothing to correct.
+  const viewportWidth = useSyncExternalStore(
+    subscribeToViewport,
+    () => window.innerWidth,
+    () => DESIGN_WIDTH,
+  );
 
   const layout = useMemo(
     () => layoutGallery(album.photos.length, breakpoint, viewportWidth),
@@ -208,7 +216,10 @@ export function AlbumGallery({ album }: { album: Album }) {
   if (!isDesktop) return column;
 
   return (
-    <div className="relative w-full" style={{ height: `${layout.height * scale}px` }}>
+    <div
+      className="vows-album-frame relative w-full"
+      style={{ height: `${layout.height * scale}px` }}
+    >
       {column}
     </div>
   );

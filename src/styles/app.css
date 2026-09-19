@@ -155,6 +155,22 @@
     }
   }
 
+  /* The gallery's column is laid out in JavaScript against a measured
+     viewport, and the server has no viewport — so it renders the desktop
+     branch, and a phone's first painted frames carry a 1440px column pinned
+     at `left: 50%; margin-left: -720px`, hanging 525px off the side of a
+     390px page. Clipped at the frame rather than allowed to widen the
+     document: the page must never scroll sideways, least of all for the few
+     frames before hydration. `clip` on one axis leaves the other visible, so
+     the column still flows down the page.
+
+     Both elements: the frame holds the column, the column holds the slots,
+     and either can be the one hanging over the edge mid-correction. */
+  .vows-album-frame,
+  .vows-album-gallery {
+    overflow-x: clip;
+  }
+
   /* Album photographs fade over their own placeholder, which is the element's
      background. Without it an image pops in mid-reveal and the whole effect
      reads as broken (DESIGN.md §12.6). */
