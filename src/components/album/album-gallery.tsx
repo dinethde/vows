@@ -8,9 +8,6 @@ import { readMotion } from "~/lib/motion";
 import { layoutGallery, DESIGN_WIDTH } from "~/data/album-layout";
 import type { Album } from "~/data/albums";
 
-/** Photographs above this many pixels into the page load eagerly. */
-const EAGER_UNTIL = 900;
-
 /**
  * The gallery (DESIGN.md §12.4).
  *
@@ -204,7 +201,6 @@ export function AlbumGallery({ album }: { album: Album }) {
             width={slot.w}
             height={slot.h}
             index={slot.photoIndex}
-            eager={slot.y < EAGER_UNTIL}
             fullBleed={slot.fullBleed}
             style={{ left: `${slot.x}px`, top: `${slot.y}px` }}
           />

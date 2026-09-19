@@ -26,7 +26,6 @@ export function AlbumPhoto({
   width,
   height,
   index,
-  eager,
   fullBleed,
   className,
   style,
@@ -36,7 +35,6 @@ export function AlbumPhoto({
   width: number;
   height: number;
   index: number;
-  eager: boolean;
   fullBleed: boolean;
   className?: string;
   style?: React.CSSProperties;
@@ -98,8 +96,12 @@ export function AlbumPhoto({
             alt={photo.alt}
             width={width}
             height={height}
-            loading={eager ? "eager" : "lazy"}
-            fetchPriority={eager ? "high" : "auto"}
+            // Always lazy: the gallery starts below a full-viewport hero, so
+            // no photograph in it is ever on the first screen, and the hero
+            // is the LCP element — nothing here should compete with it for
+            // priority. The reveal observer brings each one in on approach.
+            loading="lazy"
+            fetchPriority="auto"
             decoding="async"
             draggable={false}
             data-loaded={loaded}

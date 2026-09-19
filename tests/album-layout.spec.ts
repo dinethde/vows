@@ -28,12 +28,20 @@ test.describe("album hero", () => {
     await expect(heading).toHaveText("Benali & Yasiru");
     expect(await page.title()).toContain("Benali & Yasiru");
 
-    // Promoting the element must not move it: the type comes from a class.
+    // Promoting the element must not move it: the type comes from a class,
+    // so it still measures whatever `--text-couple` says rather than the
+    // browser's default `h1`.
     const type = await heading.evaluate((el) => {
       const style = getComputedStyle(el);
-      return { size: style.fontSize, family: style.fontFamily.split(",")[0] };
+      return {
+        size: style.fontSize,
+        token: getComputedStyle(document.documentElement)
+          .getPropertyValue("--text-couple")
+          .trim(),
+        family: style.fontFamily.split(",")[0],
+      };
     });
-    expect(type.size).toBe("28px");
+    expect(type.size).toBe(type.token);
     expect(type.family).toContain("Mate");
   });
 
@@ -294,6 +302,49 @@ test.describe("album gallery", () => {
     expect(decoded.length).toBeGreaterThan(0);
     expect(decoded.filter((img) => img.loaded !== "true")).toEqual([]);
     expect(decoded.filter((img) => img.opacity === "0")).toEqual([]);
+  });
+
+  test("only the hero claims high fetch priority", async ({ page }) => {
+    await page.goto(FEATURED);
+    await settle(page);
+
+    const priority = await page.evaluate(() => {
+      const high = [...document.querySelectorAll('img[fetchpriority="high"]')];
+      return {
+        high: high.length,
+        heroIsHigh: high.every((img) =>
+          img.classList.contains("vows-album-hero-img"),
+        ),
+        // The gallery begins below a full-viewport hero, so none of it is
+        // ever on the first screen and none of it should load eagerly.
+        eagerInGallery: document.querySelectorAll(
+          '.vows-album-img[loading="eager"]',
+        ).length,
+      };
+    });
+
+    expect(priority.high).toBe(1);
+    expect(priority.heroIsHigh).toBe(true);
+    expect(priority.eagerInGallery).toBe(0);
+
+    // Lazy loading must still deliver: scrolling brings them in.
+    await page.evaluate(() => window.scrollBy(0, 1600));
+    await page.waitForTimeout(2200);
+    const arrived = await page.evaluate(() => {
+      const onScreen = [
+        ...document.querySelectorAll<HTMLImageElement>(".vows-album-img"),
+      ].filter((img) => {
+        const rect = img.getBoundingClientRect();
+        return rect.top < window.innerHeight && rect.bottom > 0;
+      });
+      return {
+        onScreen: onScreen.length,
+        decoded: onScreen.filter((img) => img.complete && img.naturalWidth > 0)
+          .length,
+      };
+    });
+    expect(arrived.onScreen).toBeGreaterThan(0);
+    expect(arrived.decoded).toBe(arrived.onScreen);
   });
 
   test("every photograph has a reserved box and a placeholder", async ({ page }) => {
