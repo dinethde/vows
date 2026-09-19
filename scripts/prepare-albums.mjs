@@ -16,6 +16,12 @@ import sharp from "sharp";
 
 const root = process.cwd();
 const outDir = join(root, "public", "albums");
+// The LQIP placeholders are a build intermediate, not an asset: the script
+// writes them, reads them back, and inlines their contents into
+// album-photos.ts. Kept out of `public/` so they are not served, and kept in
+// the repo so a fresh clone does not re-download every master to rebuild a
+// cache it already had.
+const cacheDir = join(root, ".album-cache");
 const force = process.argv.includes("--force");
 
 const manifest = JSON.parse(
@@ -23,6 +29,7 @@ const manifest = JSON.parse(
 );
 
 await mkdir(outDir, { recursive: true });
+await mkdir(cacheDir, { recursive: true });
 
 const FORMATS = [
   { ext: "avif", encode: (p) => p.avif({ quality: 52, effort: 4 }) },
@@ -55,7 +62,7 @@ for (const photo of manifest.photos) {
     ),
   );
   const lqipFiles = buckets.map((name) =>
-    join(outDir, `${photo.slot}-${name}.lqip.txt`),
+    join(cacheDir, `${photo.slot}-${name}.lqip.txt`),
   );
 
   const needsWork =
@@ -102,7 +109,7 @@ for (const photo of manifest.photos) {
         .webp({ quality: 40 })
         .toBuffer();
       await writeFile(
-        join(outDir, `${photo.slot}-${name}.lqip.txt`),
+        join(cacheDir, `${photo.slot}-${name}.lqip.txt`),
         lqip.toString("base64"),
       );
     }
@@ -111,7 +118,7 @@ for (const photo of manifest.photos) {
   const lqip = {};
   for (const name of buckets) {
     lqip[name] = await readFile(
-      join(outDir, `${photo.slot}-${name}.lqip.txt`),
+      join(cacheDir, `${photo.slot}-${name}.lqip.txt`),
       "utf8",
     );
   }
