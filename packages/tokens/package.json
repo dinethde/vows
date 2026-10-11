@@ -1,0 +1,21 @@
+{
+  "name": "@vows/tokens",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./css/primitives.css": "./css/primitives.css",
+    "./css/semantic.css": "./css/semantic.css"
+  },
+  "scripts": {
+    "tokens:build": "tsx scripts/build.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@vows/config": "workspace:*",
+    "tsx": "4.19.2",
+    "typescript": "5.6.3"
+  }
+}

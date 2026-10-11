@@ -1,0 +1,49 @@
+/* Tailwind 4 is configured in CSS, not in a JS file.
+ *
+ * This file maps the Figma variables — exported by @vows/tokens — onto
+ * Tailwind's @theme namespace, so `bg-surface` and `text-ink-muted` exist and
+ * mean exactly what the design file says they mean.
+ *
+ * Do not add a colour here that is not in the Figma `vows/semantic`
+ * collection. Figma is the source of truth for design (chapter 02). Run
+ * `pnpm tokens:build` and this file picks the new value up.
+ */
+
+@import 'tailwindcss';
+@import '@vows/tokens/css/primitives.css';
+@import '@vows/tokens/css/semantic.css';
+
+@theme inline {
+  /* surfaces */
+  --color-page: var(--vows-bg-page);
+  --color-surface: var(--vows-bg-surface);
+  --color-surface-raised: var(--vows-bg-surface-raised);
+
+  /* text */
+  --color-ink: var(--vows-text-primary);
+  --color-ink-muted: var(--vows-text-muted);
+  --color-ink-inverse: var(--vows-text-inverse);
+
+  /* lines */
+  --color-line: var(--vows-border-default);
+  --color-line-strong: var(--vows-border-strong);
+
+  /* actions */
+  --color-primary: var(--vows-action-primary-bg);
+  --color-primary-hover: var(--vows-action-primary-hover);
+  --color-primary-text: var(--vows-action-primary-text);
+  --color-danger: var(--vows-action-danger-bg);
+  --color-danger-hover: var(--vows-action-danger-hover);
+  --color-danger-text: var(--vows-action-danger-text);
+
+  /* type */
+  --font-display: var(--vows-font-display), Georgia, serif;
+  --font-body: var(--vows-font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-ui: var(--vows-font-ui), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* The Studio is the same component set in a different mode. One attribute
+ * switches every token at once, exactly like the Studio mode in Figma. */
+[data-surface='studio'] {
+  color-scheme: light;
+}

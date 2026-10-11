@@ -1,0 +1,47 @@
+# fly deploy -c infra/fly.api.toml --dockerfile apps/api/Dockerfile
+#
+# Two machines in Singapore, the closest region to Sri Lanka. They do not stop:
+# a cold start on a photograph upload is the one thing a couple will notice.
+# Secrets come from Bitwarden — see chapter 19. Never `fly secrets set` with a
+# value typed by hand.
+
+app = "vows-api"
+primary_region = "sin"
+
+[build]
+  dockerfile = "../apps/api/Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "8080"
+  LOG_LEVEL = "info"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+  [http_service.concurrency]
+    type = "requests"
+    hard_limit = 250
+    soft_limit = 200
+
+[[http_service.checks]]
+  grace_period = "10s"
+  interval = "15s"
+  method = "GET"
+  timeout = "5s"
+  path = "/health"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
+  processes = ["app"]
+
+[deploy]
+  # Migrations run in .github/workflows/deploy.yml, before this deploy starts.
+  # Keeping them out of a release_command means one place owns schema changes.
+  strategy = "rolling"

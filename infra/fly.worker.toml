@@ -1,0 +1,28 @@
+# fly deploy -c infra/fly.worker.toml --dockerfile apps/worker/Dockerfile
+#
+# No http_service: nothing calls the worker. It pulls jobs from pg-boss, which
+# lives in the same Postgres as everything else. One machine is enough until a
+# wedding's worth of photographs takes longer than a wedding to process; sharp
+# is why it gets 1GB rather than 512MB.
+
+app = "vows-worker"
+primary_region = "sin"
+
+[build]
+  dockerfile = "../apps/worker/Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  LOG_LEVEL = "info"
+  WORKER_CONCURRENCY = "2"
+
+[processes]
+  worker = "node dist/main.js"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "1gb"
+  processes = ["worker"]
+
+[deploy]
+  strategy = "immediate"
