@@ -8,7 +8,7 @@ person would have chosen differently, or when we will otherwise have the same
 argument again in six months. Choosing a date formatting library does not need
 one. Choosing where the queue lives does.
 
-The decisions here are also summarised in chapter 29 of `architecture.md`, and
+The fifteen decisions here are also summarised in chapter 29 of `architecture.md`, and
 the two must agree. When a decision is replaced, do not edit the old file beyond
 its status line — write a new one and point the old `Status` at it. The history
 is the value.

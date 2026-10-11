@@ -13,8 +13,10 @@ refers to be written in one transaction.
 
 1. **Name it `noun.verb`** — `photo.derive`, `album.revalidate`,
    `enquiry.notify`. The catalogue in chapter 11 is the list of names in use.
-2. **Add the handler** in `apps/worker/src/jobs/<name>.handler.ts`. It calls the
-   same services the API uses — it does not reimplement them.
+2. **Add the folder** `apps/worker/src/jobs/<name-with-hyphens>/` — the queue
+   `photo.derive` lives in `photo-derive/` — holding `handler.ts`, `payload.ts`
+   and `index.ts`. The handler calls the same services the API uses; it does not
+   reimplement them. `jobs/README.md` has the table that maps the two.
 3. **Enqueue inside the transaction** that changes the row:
 
    ```ts

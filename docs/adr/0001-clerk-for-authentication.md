@@ -36,7 +36,8 @@ bug class that cannot be patched quietly.
 
 A vendor in the sign-in path, and a monthly bill the day the studio grows past
 the free tier. Clerk's components also pull their own CSS into the Studio, which
-is why chapter 19's CSP has to name Clerk's host.
+is why the CSP drafted in chapter 19 has to name Clerk's host when it is
+turned on (decision 015).
 
 ## How we would undo it
 

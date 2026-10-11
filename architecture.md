@@ -163,7 +163,7 @@ Seven tables of ours, plus whatever pg-boss creates for itself.
 | Table | What it is |
 | --- | --- |
 | `album` | One finished wedding. slug, title, couple_names, shot_on, location, story, cover_photo_id, status, published_at, sort_index, seo_title, seo_description |
-| `photo` | album_id, original_key, width, height, bytes, mime, thumbhash, alt, position, status, error_code |
+| `photo` | album_id, original_key, width, height, bytes, mime, thumbhash, alt, position, status, error_code, replaces_photo_id, superseded_at, removed_at |
 | `photo_derivative` | photo_id, format, width, height, key, bytes |
 | `enquiry` | name, email, phone, wedding_date, wedding_place, notes, status, ip_hash, user_agent |
 | `slug_redirect` | from_slug → to_album_id, written automatically when a slug changes |
@@ -181,6 +181,17 @@ Conventions that apply everywhere:
 - Nothing is hard-deleted except derivative rows during cleanup. Albums and
   enquiries move to an archived status.
 - Foreign keys are always declared, always with an explicit on-delete rule.
+
+**Nothing in the application deletes an album row.** There is no endpoint for it
+and no button in the Studio, which is why `cover_photo_id` is the only pointer
+that ever has to be repaired. Taking a wedding off the site is unpublishing it.
+Removing it for good is a developer at the database, through the runbook in
+chapter 30, with a backup taken first — the cascade on `photo.album_id` means
+that one row carries every photograph with it.
+
+`replaces_photo_id` is set on the new row when a photograph replaces another. It
+makes the history readable a year later, and it is what lets the album cover
+follow the replacement in the same transaction.
 
 ---
 
@@ -249,9 +260,23 @@ Keys contain ids, never filenames:
 Keys are immutable — replacing a photograph creates a new photo id — which is
 what makes `cache-control: immutable` safe on derivatives.
 
-**The original is kept for as long as the studio exists.** Nothing deletes it,
-not even deleting the photograph from an album. Deleting a photograph removes
-the row and the derivatives; putting it back means uploading again.
+Replacing and removing a photograph both look like one action in the Studio and
+are not:
+
+- **Replacing** creates a new `photo` row with a new id and new keys, recording
+  `replaces_photo_id`. It inherits the old row's position and alt text. If the
+  album's `cover_photo_id` pointed at the old row it is repointed at the new one
+  **in the same transaction** — there is never a moment where an album points at
+  a photograph on its way out. The old row gets `superseded_at`.
+- **Removing** sets `removed_at`, closes up the positions after it, and leaves
+  every file in R2. For thirty days it can be undone by clearing that column.
+  After thirty days `photo.cleanup` deletes the ten derivatives and the original,
+  and that is the point of no return. A photograph that never finished processing
+  is cleaned after seven days instead, because there is nothing to look at.
+
+If the removed photograph was the cover, `cover_photo_id` empties — it is `on
+delete set null` — and the publish checks refuse an album with no cover, so a
+coverless album cannot go out by accident.
 
 ---
 
@@ -271,6 +296,7 @@ than Redis.
 | `album.sitemap` | Cron, 03:00 Asia/Colombo | 2 | 60 s |
 | `housekeeping.archive` | Cron, 03:30 Asia/Colombo | 1 | 60 s |
 | `housekeeping.orphans` | Cron, Sunday 04:00 Asia/Colombo | 1 | 10 min |
+| `db.backup` | Cron, Sunday 02:00 Asia/Colombo | 2 | 15 min |
 
 Retries back off 30 s, 2 m, 8 m, 32 m with jitter. A job that reaches `failed`
 is never retried automatically: it sits in the table with its error and alerts.
@@ -285,6 +311,25 @@ Rules every handler follows:
 - A permanent failure throws `PermanentJobError` and is not retried.
 - Scheduled jobs report to a dead-man's-switch after the work, so silence is
   detectable.
+
+### What gets backed up, and what does not
+
+`db.backup` copies the database once a week, not the photographs: a compressed
+`pg_dump` of every table, written to a separate R2 bucket under the date,
+keeping the last eight. Neon's own restore already covers the last few days;
+this covers the case where the Neon account itself is the problem, which is the
+only case a backup inside the same provider cannot help with.
+
+**The photographs are deliberately not backed up.** A second copy of fifty
+gigabytes would cost more every month than the database backup costs in a year,
+and the originals already sit in two unrelated places: R2, which is durable
+storage rather than a scratch disk, and the photographer's own drives, which is
+where they came from. That is the trade, written down so it is a decision and
+not an oversight.
+
+A backup is only real once it has been restored. The steps are in chapter 30 and
+they get run in the first week, from a real backup file into a fresh Neon branch
+— not the first time something is wrong.
 
 ---
 
@@ -416,10 +461,20 @@ a ticket.
 - Nothing secret is committed. `.env.example` holds names with empty values. A
   pre-commit hook runs gitleaks.
 - Two buckets: originals private and never served, derivatives public.
-- Rate limits are counted in shared storage, never in process memory.
-- CSP, HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`.
-  The CSP ships in report-only mode first and becomes enforcing once the reports
-  are clean, with a nonce for Next's inline scripts.
+- **No rate limit is ever counted in process memory.** A counter inside one API
+  process is correct only while there is one process; the moment Fly runs a
+  second machine the limit quietly doubles. The general limits are a Cloudflare
+  rule at the edge, where a flood is stopped before it costs anything to serve.
+  The enquiry form counts rows written in the last hour, because the database is
+  one shared memory by definition and the form is already writing to it.
+- **Security headers are off for now, deliberately.** The target set — CSP,
+  HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` — is
+  drafted in chapter 19 of the Figma page and none of it is set. A CSP is the one
+  header that breaks a working site in silence: Next injects inline scripts that
+  need a per-request nonce, Clerk loads from its own host, and Google Fonts
+  serves from a second origin. It goes on as its own pull request, assembled in
+  middleware rather than `next.config.ts` because a static header cannot carry a
+  per-request nonce, and checked on staging with the console open.
 - **Photographs can be downloaded, and that is the decision.** Web sizes are
   display copies; the originals are never served.
 - A secret that has appeared anywhere it should not is dead. Rotate it.
@@ -432,6 +487,14 @@ One log format (pino, JSON lines, to stdout), one request id threaded through
 every line and into every job payload, and six alerts that are allowed to
 interrupt someone. `/healthz` says the process is alive; `/readyz` checks
 Postgres, R2 and the queue. A liveness check never touches the database.
+
+All six alerts are Sentry rules, and they arrive as a push notification on the
+phone through the Sentry mobile app. One tool runs the whole table: the error and
+error-rate rules read the events the three apps already send; *site is down* and
+*certificate expiry* are a Sentry uptime monitor on the home page, which checks
+the certificate on the same pass; the two queue rules are metric alerts on the
+counts the worker reports. Only the two *wake someone* rules send a push — the
+rest send email, so the phone stays quiet for what can wait until morning.
 
 ---
 
@@ -577,7 +640,7 @@ attribution anywhere** — not in a commit, a trailer, or a pull request body �
 
 ## 29 · Decision log
 
-Eleven decisions, each with a file in `docs/adr`:
+Fifteen decisions, each with a file in `docs/adr`:
 
 | # | Decision | Chosen over |
 | --- | --- | --- |
@@ -592,21 +655,45 @@ Eleven decisions, each with a file in `docs/adr`:
 | 009 | One API client, TanStack Query in the Studio only | A generic request() helper, axios interceptors |
 | 010 | Bitwarden as the source of truth for secrets | 1Password, Doppler, no readable copy |
 | 011 | Music, but only after the visitor asks for it | Autoplay, no music at all |
+| 012 | No way to delete an album, anywhere in the product | A delete button with a confirmation, a soft delete with an archive |
+| 013 | Weekly database backup; the photographs are not backed up | Backing up everything, backing up nothing, a copy at a second provider |
+| 014 | Rate limits are never counted in memory | An in-process counter, pinning the API to one machine, adding Redis |
+| 015 | Security headers ship after launch, not before | Shipping the drafted CSP now, shipping no headers at all |
 
 ---
 
 ## 30 · Runbooks
 
-Eight, in chapter 30 of the Figma page: photographs stuck on uploading; an album
+Ten, in chapter 30 of the Figma page: photographs stuck on uploading; an album
 published but the site unchanged; enquiry emails not arriving; the database
 refusing connections; R2 costs jumping; something deployed that should not have
-been; nobody able to sign in; a secret leaked or someone with access leaving.
+been; nobody able to sign in; a secret leaked or someone with access leaving;
+the database restored from a backup; an album removed for good.
+
+Two of those are worth knowing before they are needed. **Restoring the
+database** stops writes first (`fly scale count 0` on both apps), restores into
+a *new* Neon branch rather than over the broken one, and ends by turning
+`housekeeping.orphans` off until the photographer has re-uploaded — anything
+uploaded after the backup has files in R2 with no row, which is exactly what
+that sweep deletes. **Removing an album** starts by asking whether unpublish is
+enough, takes a manual `db.backup` first, and decides what happens to the files
+before the row goes, because the cascade removes the photograph rows without
+enqueuing any cleanup.
 
 ---
 
-## 31 · Launch checklist
+## 31 · Glossary
 
-In order, because several of these depend on the one above.
+Chapter 31 of the Figma page is a glossary of the terms used here — derivative,
+ThumbHash, revalidate, presigned URL, dead-man's switch and the rest. It is not
+repeated in this file; read it there when a word is unfamiliar.
+
+---
+
+## Appendix · Launch checklist
+
+Not a chapter of the Figma page — a working list assembled from chapters 18, 19,
+20 and 32. In order, because several of these depend on the one above.
 
 **Domain and mail**
 
@@ -637,7 +724,10 @@ In order, because several of these depend on the one above.
 
 - Cloudflare Web Analytics script live, and a pageview visible
 - Sentry receiving from all three apps, with a release tagged
-- the six alerts in chapter 20 configured and each one fired deliberately once
+- the six Sentry alert rules configured, push on in the Sentry mobile app, and
+  each rule fired deliberately once
+- `db.backup` run by hand, and the restore rehearsed into a throwaway Neon
+  branch
 - 404, 500 and 403 checked on the real domain
 - share cards checked in WhatsApp, Messenger and iMessage — the three places a
   wedding link actually gets sent

@@ -1,34 +1,18 @@
 import type { NextConfig } from 'next';
 
-// Security headers live in chapter 19 of architecture.md. The CSP is assembled
-// in middleware instead of here, because it needs a per-request nonce for the
-// inline scripts Next injects. Keep the static headers here.
+// No security headers are set here, deliberately — chapter 19 and decision 015.
+// The target set is drafted in the Figma architecture and ships as its own pull
+// request. When it does, the CSP goes in middleware, not here: a static header
+// cannot carry the per-request nonce that Next's inline scripts need.
 const config: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   images: {
-    // R2 public bucket + the custom domain in front of it.
+    // R2 public bucket, behind the custom domain.
     remotePatterns: [{ protocol: 'https', hostname: 'cdn.vows.lk' }],
   },
   experimental: {
     typedRoutes: true,
-  },
-  async headers() {
-    return [
-      {
-        source: '/:path*',
-        headers: [
-          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-          { key: 'X-Content-Type-Options', value: 'nosniff' },
-          { key: 'X-Frame-Options', value: 'DENY' },
-          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
-          {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=63072000; includeSubDomains; preload',
-          },
-        ],
-      },
-    ];
   },
 };
 

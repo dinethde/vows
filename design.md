@@ -64,7 +64,7 @@ The Figma library is `packages/ui`. The Figma name is the contract:
 | `button — primary / neutral / outline / danger` | `<Button variant="…">` | danger is only for destroying something |
 | `field — site` / `field — studio` | `<Field surface="site\|studio">` | |
 | `photo_slot` | `<PhotoSlot state badge number>` | five states: Empty, Uploading, Uploaded, Update, Error |
-| `confirmation_modal` | `<ConfirmationModal tone="primary\|danger">` | five real uses; copy is props in code |
+| `confirmation_modal` | `<ConfirmationModal tone="primary\|danger">` | four real uses; copy is props in code. There is no delete-album variant — see decision 012 |
 | `navbar`, `bottom_bar`, `album_page_bottom_bar` | `<Navbar>`, `<BottomBar variant>` | breakpoint is CSS, not a prop |
 | `player — nav` | `<Player />` | client component, lives above the router |
 | `chip`, `status_pill`, `banner — studio` | `<Chip>`, `<StatusPill>`, `<Banner>` | |
