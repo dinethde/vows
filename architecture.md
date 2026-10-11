@@ -85,7 +85,7 @@ at any moment without losing work.
 | Validation       | Zod                                         | 3.x     |
 | Server state     | TanStack Query — **Studio only**            | 5.x     |
 | Database access  | Drizzle ORM                                 | 0.3x    |
-| Database         | PostgreSQL on Neon                          | 17      |
+| Database         | PostgreSQL on Neon, Singapore               | 18      |
 | Job queue        | pg-boss (a schema inside the same database) | 10.x    |
 | Object storage   | Cloudflare R2                               | —       |
 | Image processing | sharp                                       | 0.33    |
@@ -113,8 +113,10 @@ once at upload), Prisma, axios.
 ```
 apps/web        every route a browser can reach. The single API client lives
                 in src/lib/api — nothing else calls fetch against the API
-apps/api        controllers, services, guards. The only writer to the database
-apps/worker     job handlers. The same Nest modules, no HTTP listener
+apps/api        the HTTP entry point. Starts the application in packages/server
+apps/worker     the job entry point. The same application, no HTTP listener
+packages/server     the Nest modules both start: controllers, services, guards,
+                    repositories. The only writer to the database
 packages/db         Drizzle tables, migrations, seed, the typed client factory
 packages/contracts  Zod schemas and the types inferred from them. Depends on zod and nothing else
 packages/tokens     generated from Figma. Never edited by hand
@@ -449,7 +451,8 @@ Two processes, one codebase. Four layers, and what each may do:
 | Repository  | Drizzle queries                                        | Decide anything                              |
 | Job handler | Call the same services                                 | Duplicate a service's logic                  |
 
-The worker imports the same Nest modules and is started without an HTTP
+Both entry points start the one application in `packages/server`, because an
+app may not import from another app. The worker starts it without an HTTP
 listener. Neither process holds an HTTP client for our own API, and neither has
 TanStack Query. Errors cross the boundary once, in a global exception filter
 that produces the envelope.

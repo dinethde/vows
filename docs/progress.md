@@ -17,10 +17,12 @@ Last updated: 2026-10-12, milestones 0 to 2 done, milestone 3 part done.
 - **Next, in this order:** the photograph routes (upload URL, uploaded,
   update, remove, reorder, list); then the worker and its eight jobs; then
   `packages/mail`. The upload path and `photo.derive` cannot be run for real
-  until R2 is on. The worker waits on Q11.
-- **Cloud resources created so far:** one Neon branch, `dev-claude`, off
-  `production` in the existing `Vows` project (`icy-cell-66519183`). Both
-  migrations and the seed have been applied to it. Nothing else exists yet.
+  until R2 is on. The worker goes in `apps/worker` and starts `@vows/server`.
+- **Cloud resources created so far:** a Neon project in Singapore, `vows-sg`
+  (`plain-fog-47201137`, Postgres 18), with a `dev-claude` branch that has both
+  migrations and the seed. That is the one in use. There is also a `dev-claude`
+  branch in the older Ohio project `Vows` (`icy-cell-66519183`), no longer
+  used. Nothing else exists yet.
 - **The workspace checks are not clean yet.** `tokens`, `contracts`, `db` and
   `config` pass typecheck, lint and tests. `api`, `worker`, `mail`, `ui` and
   `web` fail because they have no source files. CI on the pull request will be
@@ -106,19 +108,17 @@ at the end of each later milestone.
   `draft | published | archived`; the API reports "untouched" for a draft with
   nothing in it.
 - **Commits stay signed.**
+- **The worker shares code through a new package, `packages/server`.**
+  `apps/api` and `apps/worker` are thin entry points.
+- **No "Blocked" screen on the contact form.** A repeat within ten minutes gets
+  the normal Thank you. The seventh form state is not built.
+- **Neon moves to Singapore, on Postgres 18.** Chapter 04 said 17.
 - **Token layout:** the scaffold's, which `design.md` and the brief file agree
   on. `css/primitives.css`, `css/semantic.css`, `src/index.ts`.
 
 ## Open questions
 
 Each has the option I would pick, so a one-word answer is enough.
-
-**Q5 — The contact form's "Blocked" state.** It tells the visitor that an
-earlier message from their email exists, and when. Chapter 13 says a repeat
-within ten minutes returns 202 quietly, and the form notes say the page must
-never learn which emails are on the list. The screen and the rule cannot both
-hold. _I would build the quiet 202 and leave the Blocked state out._ Until you
-answer, the API does the quiet 202 and the screen is not built.
 
 **Q6 — The home page.** Figma shows 22 tiles on desktop, 17 on tablet and 13
 on phone. Chapter 12 says the newest six albums. _I would follow the design:
@@ -138,13 +138,6 @@ _I would show `vows.lk/albums/`._
 journeys; `architecture.md` now says eight too. One of them, "an editor who
 opens the settings page gets 403", needs a settings page, which has no design
 (item 5 above). _I would test the 403 on the API route instead._
-
-**Q11 — How the worker shares code with the API.** Chapter 15 has the worker
-start the API's own `AppModule`, and chapter 05 says an app never imports from
-another app. Both cannot hold while they are two folders. _I would move the
-Nest modules both use into a new package, `packages/server`, and leave
-`apps/api` and `apps/worker` as two thin entry points._ The other way is to
-let `apps/worker` import `@vows/api` as the one written exception.
 
 ## Decisions I made that are worth knowing
 
@@ -211,14 +204,14 @@ These are known and not yet fixed.
 
 - Use Node 22: `source ~/.nvm/nvm.sh && nvm use 22` before any `pnpm` command.
 - The dev database URL is never stored. Read it inline:
-  `DATABASE_URL="$(neonctl connection-string dev-claude --project-id icy-cell-66519183)" pnpm db:migrate`.
+  `DATABASE_URL="$(neonctl connection-string dev-claude --project-id plain-fog-47201137)" pnpm db:migrate`.
   That string is unpooled, which migrations need. Add `--pooled` for the apps.
 - `architecture.md` and `design.md` had uncommitted edits from Dineth when the
   build started. They are committed together with my corrections.
 - `.claude/settings.json` asks before `git push`, `fly`, `vercel`, `neonctl`,
   `wrangler` and `pnpm db:migrate`.
-- API tests: `cd apps/api` and run
-  `DATABASE_URL="$(neonctl connection-string dev-claude --project-id icy-cell-66519183 --pooled)" pnpm exec vitest run`.
+- Server tests: `cd packages/server` and run
+  `DATABASE_URL="$(neonctl connection-string dev-claude --project-id plain-fog-47201137 --pooled)" pnpm exec vitest run`.
   Without the variable the database tests skip. They use album `alb_000022`
   as a fixture and put it back.
 - To run the API locally it needs every variable in `src/config/env.ts`.
