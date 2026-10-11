@@ -4,13 +4,20 @@ This file and the git log are how a new session picks up the work. Read it
 first. Update it when a milestone lands, when the plan changes, or when
 something joins the "needs Dineth" list.
 
-Last updated: 2026-10-12, milestones 0 to 2 done.
+Last updated: 2026-10-12, milestones 0 to 2 done, milestone 3 part done.
 
 ## Where things stand
 
 - **Done:** milestones 0, 1 and 2. Tokens, the Tailwind mapping, the contracts,
   the database schema, two migrations and the seed are committed.
-- **Next:** milestone 3, the API and the worker.
+- **Part done:** milestone 3. The API runs: environment parsing, the error
+  envelope, request ids, the Clerk guard, `/healthz`, `/readyz`, the enquiry
+  routes and the album routes. 25 tests pass, 14 of them against the Neon
+  branch through the real app.
+- **Next, in this order:** the photograph routes (upload URL, uploaded,
+  update, remove, reorder, list); then the worker and its eight jobs; then
+  `packages/mail`. The upload path and `photo.derive` cannot be run for real
+  until R2 is on. The worker waits on Q11.
 - **Cloud resources created so far:** one Neon branch, `dev-claude`, off
   `production` in the existing `Vows` project (`icy-cell-66519183`). Both
   migrations and the seed have been applied to it. Nothing else exists yet.
@@ -28,7 +35,7 @@ Each one leaves something that runs.
 | 0   | Read the sources, check the tools, write this plan                    | `pnpm install`                                         | done        |
 | 1   | Tokens from Figma, `config`, `contracts`                              | `pnpm tokens:build`; 34 tests                          | done        |
 | 2   | Database schema, migrations, seed                                     | a seeded Neon branch with 22 albums                    | done        |
-| 3   | API and worker: config, guard, envelope, routes, the eight jobs       | `/healthz`, `/readyz`, one job end to end locally      | not started |
+| 3   | API and worker: config, guard, envelope, routes, the eight jobs       | `/healthz`, `/readyz`, one job end to end locally      | part done   |
 | 4   | Component library in `packages/ui`                                    | each Figma component in every state, with visual tests | not started |
 | 5   | Public site: loader, music gate, home, album, contact, footer, errors | the site locally against the seeded API                | not started |
 | 6   | Studio: dashboard, album editor, confirmation scenarios               | sign in, edit, upload, publish locally                 | not started |
@@ -132,6 +139,13 @@ journeys; `architecture.md` now says eight too. One of them, "an editor who
 opens the settings page gets 403", needs a settings page, which has no design
 (item 5 above). _I would test the 403 on the API route instead._
 
+**Q11 — How the worker shares code with the API.** Chapter 15 has the worker
+start the API's own `AppModule`, and chapter 05 says an app never imports from
+another app. Both cannot hold while they are two folders. _I would move the
+Nest modules both use into a new package, `packages/server`, and leave
+`apps/api` and `apps/worker` as two thin entry points._ The other way is to
+let `apps/worker` import `@vows/api` as the one written exception.
+
 ## Decisions I made that are worth knowing
 
 - **Slots.** `photo.position` 0 is the cover and 1 to 18 the gallery. Removing
@@ -153,6 +167,17 @@ opens the settings page gets 403", needs a settings page, which has no design
 - **Layout switches at 640 and 1024**, the numbers the design notes give.
   390, 834 and 1440 are the widths drawn.
 - **Tailwind is 4.3.3**, up from 4.0.0, which would not start.
+- **The API verifies tokens with `jose`**, as chapter 09's sample does.
+  `@clerk/backend`, `@nestjs/terminus` and `nestjs-pino` are gone: the first
+  two were unused, and the third does not accept Nest 11. Logging is `pino`
+  directly.
+- **Three variables chapter 06 does not list:** `CLERK_ISSUER` (chapter 09
+  uses it), `WEB_ORIGINS` (the allowed `azp` values and CORS origins) and
+  `IP_HASH_SALT` (chapter 07 says the IP hash is salted). `MEDIA_URL` and
+  `SITE_URL` are the API's names for the media and site origins. They still
+  need adding to `.env.example` and the chapter 06 table.
+- **An edit that would leave a published album incomplete is refused**, with
+  the same 422 as publish.
 - **Routes added to chapter 08:** `GET /v1/studio/albums/:id`,
   `POST …/unpublish` and `GET …/albums/:id/photos`. The editor, the "Move to
   draft" modal and the upload poll each need one.
@@ -192,6 +217,12 @@ These are known and not yet fixed.
   build started. They are committed together with my corrections.
 - `.claude/settings.json` asks before `git push`, `fly`, `vercel`, `neonctl`,
   `wrangler` and `pnpm db:migrate`.
+- API tests: `cd apps/api` and run
+  `DATABASE_URL="$(neonctl connection-string dev-claude --project-id icy-cell-66519183 --pooled)" pnpm exec vitest run`.
+  Without the variable the database tests skip. They use album `alb_000022`
+  as a fixture and put it back.
+- To run the API locally it needs every variable in `src/config/env.ts`.
+  Placeholder values work for R2 and Clerk; `/readyz` then reports R2 down.
 - To read Figma text in bulk, `get_metadata` cuts layer names short. A
   read-only `use_figma` script that returns `characters` gets the full text,
   up to about 20 KB a call. Screens and their node ids are listed in the
