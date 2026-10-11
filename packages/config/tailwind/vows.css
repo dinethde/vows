@@ -1,12 +1,15 @@
 /* Tailwind 4 is configured in CSS, not in a JS file.
  *
- * This file maps the Figma variables — exported by @vows/tokens — onto
- * Tailwind's @theme namespace, so `bg-surface` and `text-ink-muted` exist and
- * mean exactly what the design file says they mean.
+ * This file maps the generated custom properties from @vows/tokens onto
+ * Tailwind's @theme namespaces. A Figma variable keeps its name and loses its
+ * first segment to the utility: bg/page is `bg-page`, text/muted is
+ * `text-muted`, border/hairline is `border-hairline`. The action and status
+ * groups keep their group name: action/primary/bg is `bg-action-primary`,
+ * status/error/text is `text-status-error`.
  *
- * Do not add a colour here that is not in the Figma `vows/semantic`
- * collection. Figma is the source of truth for design (chapter 02). Run
- * `pnpm tokens:build` and this file picks the new value up.
+ * Nothing here is a value. Every line points at a token, so a colour that is
+ * not in the Figma `vows/semantic` collection cannot be added here. Change it
+ * in Figma, export, and run `pnpm tokens:build`.
  */
 
 @import 'tailwindcss';
@@ -14,32 +17,123 @@
 @import '@vows/tokens/css/semantic.css';
 
 @theme inline {
-  /* surfaces */
-  --color-page: var(--vows-bg-page);
-  --color-surface: var(--vows-bg-surface);
-  --color-surface-raised: var(--vows-bg-surface-raised);
+  /* The semantic tokens are the whole palette. Tailwind's own is switched off
+   * so `bg-red-500` does not exist. */
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-focus-ring: var(--vows-focus-ring);
+  --color-status-success-icon: var(--vows-status-success-icon);
 
-  /* text */
-  --color-ink: var(--vows-text-primary);
-  --color-ink-muted: var(--vows-text-muted);
-  --color-ink-inverse: var(--vows-text-inverse);
+  /* bg/* */
+  --background-color-page: var(--vows-bg-page);
+  --background-color-surface: var(--vows-bg-surface);
+  --background-color-surface-light: var(--vows-bg-surface-light);
+  --background-color-raised: var(--vows-bg-raised);
+  --background-color-field: var(--vows-bg-field);
+  --background-color-field-muted: var(--vows-bg-field-muted);
+  --background-color-slot: var(--vows-bg-slot);
+  --background-color-inverse: var(--vows-bg-inverse);
+  --background-color-accent: var(--vows-bg-accent);
+  --background-color-scrim: var(--vows-bg-scrim);
 
-  /* lines */
-  --color-line: var(--vows-border-default);
-  --color-line-strong: var(--vows-border-strong);
+  /* text/* */
+  --text-color-primary: var(--vows-text-primary);
+  --text-color-heading: var(--vows-text-heading);
+  --text-color-secondary: var(--vows-text-secondary);
+  --text-color-muted: var(--vows-text-muted);
+  --text-color-placeholder: var(--vows-text-placeholder);
+  --text-color-inverse: var(--vows-text-inverse);
+  --text-color-accent: var(--vows-text-accent);
+  --text-color-on-accent: var(--vows-text-on-accent);
+  --text-color-ghost: var(--vows-text-ghost);
 
-  /* actions */
-  --color-primary: var(--vows-action-primary-bg);
-  --color-primary-hover: var(--vows-action-primary-hover);
-  --color-primary-text: var(--vows-action-primary-text);
-  --color-danger: var(--vows-action-danger-bg);
-  --color-danger-hover: var(--vows-action-danger-hover);
-  --color-danger-text: var(--vows-action-danger-text);
+  /* border/* */
+  --border-color-hairline: var(--vows-border-hairline);
+  --border-color-field: var(--vows-border-field);
+  --border-color-card: var(--vows-border-card);
+  --border-color-strong: var(--vows-border-strong);
+  --border-color-dashed: var(--vows-border-dashed);
+  --border-color-inverse: var(--vows-border-inverse);
+  --border-color-accent: var(--vows-border-accent);
 
-  /* type */
-  --font-display: var(--vows-font-display), Georgia, serif;
-  --font-body: var(--vows-font-body), ui-sans-serif, system-ui, sans-serif;
-  --font-ui: var(--vows-font-ui), ui-sans-serif, system-ui, sans-serif;
+  /* action/* */
+  --background-color-action-primary: var(--vows-action-primary-bg);
+  --background-color-action-primary-hover: var(--vows-action-primary-hover);
+  --background-color-action-primary-pressed: var(--vows-action-primary-pressed);
+  --text-color-action-primary: var(--vows-action-primary-text);
+  --background-color-action-neutral: var(--vows-action-neutral-bg);
+  --background-color-action-neutral-hover: var(--vows-action-neutral-hover);
+  --background-color-action-neutral-pressed: var(--vows-action-neutral-pressed);
+  --border-color-action-neutral: var(--vows-action-neutral-border);
+  --border-color-action-neutral-hover: var(--vows-action-neutral-border-hover);
+  --text-color-action-neutral: var(--vows-action-neutral-text);
+  --background-color-action-outline-pressed: var(--vows-action-outline-bg-pressed);
+  --border-color-action-outline-pressed: var(--vows-action-outline-border-pressed);
+  --background-color-action-danger: var(--vows-action-danger-bg);
+  --background-color-action-danger-hover: var(--vows-action-danger-hover);
+  --background-color-action-danger-pressed: var(--vows-action-danger-pressed);
+  --text-color-action-danger: var(--vows-action-danger-text);
+
+  /* status/* */
+  --background-color-status-success: var(--vows-status-success-bg);
+  --text-color-status-success: var(--vows-status-success-text);
+  --background-color-status-warning: var(--vows-status-warning-bg);
+  --text-color-status-warning: var(--vows-status-warning-text);
+  --background-color-status-error: var(--vows-status-error-bg);
+  --background-color-status-error-field: var(--vows-status-error-field);
+  --text-color-status-error: var(--vows-status-error-text);
+  --border-color-status-error: var(--vows-status-error-border);
+  --text-color-status-info: var(--vows-status-info-text);
+
+  /* space/* — `gap-space-4`, `p-space-8`. The Figma step is in the name, so a
+   * class reads the same as the variable it came from. */
+  --spacing-space-0: var(--vows-space-0);
+  --spacing-space-1: var(--vows-space-1);
+  --spacing-space-2: var(--vows-space-2);
+  --spacing-space-3: var(--vows-space-3);
+  --spacing-space-4: var(--vows-space-4);
+  --spacing-space-5: var(--vows-space-5);
+  --spacing-space-6: var(--vows-space-6);
+  --spacing-space-7: var(--vows-space-7);
+  --spacing-space-8: var(--vows-space-8);
+  --spacing-space-9: var(--vows-space-9);
+  --spacing-space-10: var(--vows-space-10);
+  --spacing-space-11: var(--vows-space-11);
+  --spacing-space-12: var(--vows-space-12);
+  --spacing-space-13: var(--vows-space-13);
+  --spacing-space-14: var(--vows-space-14);
+  --spacing-space-15: var(--vows-space-15);
+
+  /* radius/* */
+  --radius-*: initial;
+  --radius-none: var(--vows-radius-none);
+  --radius-sm: var(--vows-radius-sm);
+  --radius-md: var(--vows-radius-md);
+  --radius-lg: var(--vows-radius-lg);
+  --radius-pill: var(--vows-radius-pill);
+
+  /* Elevation/* */
+  --shadow-*: initial;
+  --shadow-card: var(--vows-elevation-card);
+  --shadow-modal: var(--vows-elevation-modal);
+  --blur-nav: var(--vows-elevation-nav-blur);
+
+  /* The three families. Each app loads the font and sets the variable. */
+  --font-*: initial;
+  --font-mate: var(--vows-font-mate), Georgia, serif;
+  --font-inter: var(--vows-font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-instrument-sans: var(--vows-font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+@theme {
+  /* Figma draws 390, 834 and 1440. These are where the layout switches between
+   * them, taken from the design notes: the phone layout holds below 640, and
+   * the desktop layout starts at 1024. A media query cannot read a custom
+   * property, so these two are written out. */
+  --breakpoint-*: initial;
+  --breakpoint-tablet: 40rem;
+  --breakpoint-desktop: 64rem;
 }
 
 /* The Studio is the same component set in a different mode. One attribute

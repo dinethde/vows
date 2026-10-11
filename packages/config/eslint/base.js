@@ -10,7 +10,17 @@ import prettier from 'eslint-config-prettier';
  * .claude/rules and belong to review.
  */
 export default ts.config(
-  { ignores: ['**/dist/**', '**/.next/**', '**/node_modules/**', '**/*.gen.ts'] },
+  {
+    // Config files sit outside each package's tsconfig, so the type-aware
+    // rules cannot read them.
+    ignores: [
+      '**/dist/**',
+      '**/.next/**',
+      '**/node_modules/**',
+      '**/*.gen.ts',
+      '**/*.config.{js,mjs,cjs,ts,mts}',
+    ],
+  },
   js.configs.recommended,
   ...ts.configs.strictTypeChecked,
   ...ts.configs.stylisticTypeChecked,
