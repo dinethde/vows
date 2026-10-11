@@ -1,7 +1,6 @@
 pnpm-lock.yaml
-packages/tokens/tokens.css
-packages/tokens/tokens.ts
-packages/tokens/tailwind.preset.js
+packages/tokens/css
+packages/tokens/src/index.ts
 .next
 dist
 coverage
