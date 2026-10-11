@@ -1,8 +1,9 @@
 ---
-source:     Figma — Architecture.md (page 2388:2315)
-reflects:   version 2.2
-written:    2026-10-11
-authority:  reflection only. Figma is the source of truth.
+source: Figma — Architecture.md (page 2388:2315)
+link: https://www.figma.com/design/XMGt6qNAT5LbwvmoPfflFo/vows-high-fidelity?node-id=2388-2315
+reflects: version 2.2
+written: 2026-10-11
+authority: reflection only. Figma is the source of truth.
 ---
 
 # Vows — architecture
@@ -15,24 +16,29 @@ code that depends on the change.
 Chapter numbers below match the Figma page, so "chapter 11" means the same
 thing in both places.
 
+**Figma page:** [Architecture.md](https://www.figma.com/design/XMGt6qNAT5LbwvmoPfflFo/vows-high-fidelity?node-id=2388-2315)
+— file key `XMGt6qNAT5LbwvmoPfflFo`, page node `2388:2315`. The design is on the `Design` page
+of the same file; see `design.md`.
+
 ---
 
 ## 02 · Product and surfaces
 
 Two halves, one database, almost nothing else shared.
 
-| Surface | Who | What they do | How it is built |
-| --- | --- | --- | --- |
-| `vows.lk` | Couples, planners, strangers | Browse albums, read, send an enquiry | Static pages, rebuilt on publish, served from the edge |
-| `vows.lk/studio` | The photographer | Make albums, upload photographs, read enquiries | Signed-in app. Never cached, never indexed |
+| Surface          | Who                          | What they do                                    | How it is built                                        |
+| ---------------- | ---------------------------- | ----------------------------------------------- | ------------------------------------------------------ |
+| `vows.lk`        | Couples, planners, strangers | Browse albums, read, send an enquiry            | Static pages, rebuilt on publish, served from the edge |
+| `vows.lk/studio` | The photographer             | Make albums, upload photographs, read enquiries | Signed-in app. Never cached, never indexed             |
 
 **Deliberately not built:** no client logins or private galleries, no payments,
 no general CMS, no second language, no native app. Each "no" is weight the
 system does not carry, and several later decisions depend on them.
 
-**Size being built for:** ~40 albums (headroom 500), 30–120 photographs per
-album (headroom 400), ~4,000 photographs total (headroom 100,000), 5–20
-enquiries a month, under 50 concurrent readers, 1 Studio user (headroom 5).
+**Size being built for:** exactly 22 albums — the set is fixed, one per tile on
+the home page — each with a cover and 18 photographs, so about 420 photographs
+in all. 5–20 enquiries a month, under 50 concurrent readers, 1 Studio user
+(headroom 5).
 
 ---
 
@@ -66,32 +72,32 @@ at any moment without losing work.
 
 ## 04 · Tech stack
 
-| Layer | Choice | Version |
-| --- | --- | --- |
-| Framework | Next.js, App Router | 15.x |
-| UI | React | 19.x |
-| Language | TypeScript, strict | 5.6 |
-| Styling | Tailwind CSS | 4.x |
-| Components | shadcn/ui, copied into `packages/ui` | — |
-| Motion | Motion | 11.x |
-| API | NestJS | 11.x |
-| Runtime | Node | 22 LTS |
-| Validation | Zod | 3.x |
-| Server state | TanStack Query — **Studio only** | 5.x |
-| Database access | Drizzle ORM | 0.3x |
-| Database | PostgreSQL on Neon | 17 |
-| Job queue | pg-boss (a schema inside the same database) | 10.x |
-| Object storage | Cloudflare R2 | — |
-| Image processing | sharp | 0.33 |
-| Blur placeholder | thumbhash | — |
-| Auth | Clerk | — |
-| Mail | Resend + React Email | — |
-| Analytics | Cloudflare Web Analytics | — |
-| Secrets | Bitwarden | — |
-| Errors | Sentry | — |
-| Logs | pino | 9.x |
-| Monorepo | pnpm workspaces + Turborepo | — |
-| Tests | Vitest + Playwright | — |
+| Layer            | Choice                                      | Version |
+| ---------------- | ------------------------------------------- | ------- |
+| Framework        | Next.js, App Router                         | 15.x    |
+| UI               | React                                       | 19.x    |
+| Language         | TypeScript, strict                          | 5.6     |
+| Styling          | Tailwind CSS                                | 4.x     |
+| Components       | shadcn/ui, copied into `packages/ui`        | —       |
+| Motion           | Motion                                      | 11.x    |
+| API              | NestJS                                      | 11.x    |
+| Runtime          | Node                                        | 22 LTS  |
+| Validation       | Zod                                         | 3.x     |
+| Server state     | TanStack Query — **Studio only**            | 5.x     |
+| Database access  | Drizzle ORM                                 | 0.3x    |
+| Database         | PostgreSQL on Neon                          | 17      |
+| Job queue        | pg-boss (a schema inside the same database) | 10.x    |
+| Object storage   | Cloudflare R2                               | —       |
+| Image processing | sharp                                       | 0.33    |
+| Blur placeholder | thumbhash                                   | —       |
+| Auth             | Clerk                                       | —       |
+| Mail             | Resend + React Email                        | —       |
+| Analytics        | Cloudflare Web Analytics                    | —       |
+| Secrets          | Bitwarden                                   | —       |
+| Errors           | Sentry                                      | —       |
+| Logs             | pino                                        | 9.x     |
+| Monorepo         | pnpm workspaces + Turborepo                 | —       |
+| Tests            | Vitest + Playwright                         | —       |
 
 Versions are pinned exactly in `package.json`. No carets, no tildes. CI installs
 with a frozen lockfile.
@@ -148,8 +154,9 @@ in the first second, not a null three hours later.
 deployment targets — nothing is typed into them that was not written in the
 vault first, and when the two disagree the vault is right. Fly and GitHub are
 write-only by design, which is exactly why the vault has to exist. Local
-development injects from the vault (`bws run -- pnpm dev`) rather than keeping a
-production value on disk.
+development reads a value from the vault inline (`"$(bw get password …)"`)
+rather than keeping a production value on disk. The CLI is `bw`; `bws` is not
+used.
 
 A new variable lands in four places in the same pull request: a Bitwarden item,
 `.env.example`, the Zod schema, and the table in chapter 06 of the Figma page.
@@ -160,15 +167,15 @@ A new variable lands in four places in the same pull request: a Bitwarden item,
 
 Seven tables of ours, plus whatever pg-boss creates for itself.
 
-| Table | What it is |
-| --- | --- |
-| `album` | One finished wedding. slug, title, couple_names, shot_on, location, story, cover_photo_id, status, published_at, sort_index, seo_title, seo_description |
-| `photo` | album_id, original_key, width, height, bytes, mime, thumbhash, alt, position, status, error_code, replaces_photo_id, superseded_at, removed_at |
-| `photo_derivative` | photo_id, format, width, height, key, bytes |
-| `enquiry` | name, email, phone, wedding_date, wedding_place, notes, status, ip_hash, user_agent |
-| `slug_redirect` | from_slug → to_album_id, written automatically when a slug changes |
-| `setting` | key/value. Studio-editable bits: notify address, phone, social links, pinned album |
-| `audit_log` | actor_clerk_id, action, entity, entity_id, diff |
+| Table              | What it is                                                                                                                                                                                                       |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `album`            | One finished wedding. slug, title, couple_names, shot_on, time_of_day, wedding_type, location, story, cover_photo_id, cover_focal_x, cover_focal_y, status, published_at, sort_index, seo_title, seo_description |
+| `photo`            | album_id, original_key, idempotency_key, width, height, bytes, mime, thumbhash, alt, position, status, error_code, replaces_photo_id, superseded_at, removed_at                                                  |
+| `photo_derivative` | photo_id, format (`avif`, `webp`, or `jpeg` for the share card), width, height, key, bytes                                                                                                                       |
+| `enquiry`          | name, email, phone, wedding_date, wedding_place, notes, status, ip_hash, user_agent                                                                                                                              |
+| `slug_redirect`    | from_slug → to_album_id, written automatically when a slug changes                                                                                                                                               |
+| `setting`          | key/value. Studio-editable bits: notify address, phone, social links, pinned album                                                                                                                               |
+| `audit_log`        | actor_clerk_id, action, entity, entity_id, diff                                                                                                                                                                  |
 
 Conventions that apply everywhere:
 
@@ -181,6 +188,17 @@ Conventions that apply everywhere:
 - Nothing is hard-deleted except derivative rows during cleanup. Albums and
   enquiries move to an archived status.
 - Foreign keys are always declared, always with an explicit on-delete rule.
+
+**The album set is fixed at 22.** A migration inserts the rows, and nothing in
+the product creates one. The Studio fills them in. The database status is
+`draft | published | archived`; the Studio also shows _untouched_, which the API
+works out for a draft with no words and no photographs.
+
+**A photograph has a slot.** `position` 0 is the cover and 1 to 18 are the
+gallery, in reading order. One live photograph per slot is enforced by a unique
+index on `(album_id, position)` that leaves out rows with `removed_at` or
+`superseded_at` set — a replaced photograph keeps its position for the record,
+so an index over every row would refuse the replacement.
 
 **Nothing in the application deletes an album row.** There is no endpoint for it
 and no button in the Studio, which is why `cover_photo_id` is the only pointer
@@ -208,8 +226,14 @@ Status codes, and only these: 200, 201, 202, 204, 400, 401, 403, 404, 409, 422,
 Every failure uses one envelope:
 
 ```json
-{ "error": { "code": "album_missing_cover", "message": "…", "requestId": "req_…",
-             "fields": { "coverPhotoId": "Required" } } }
+{
+  "error": {
+    "code": "album_missing_cover",
+    "message": "…",
+    "requestId": "req_…",
+    "fields": { "coverPhotoId": "Required" }
+  }
+}
 ```
 
 `code` is a stable snake_case string the client may switch on. `message` is
@@ -217,9 +241,9 @@ written for the photographer, never containing a stack trace or a table name.
 `requestId` is on every response, including successes.
 
 Routes: `GET /v1/albums`, `GET /v1/albums/:slug`, `POST /v1/enquiries`, and
-under `/v1/studio/`: albums (list, create, patch, publish, order), photos
-(upload-url, uploaded, patch, delete), enquiries (list, patch). Plus `/healthz`
-and `/readyz`.
+under `/v1/studio/`: albums (list, get, patch, publish, unpublish, order),
+photos (list, upload-url, uploaded, patch, delete), enquiries (list, patch).
+Plus `/healthz` and `/readyz`. There is no create and no delete on an album.
 
 Pagination is cursor-based, never offset. Upload endpoints accept an
 `Idempotency-Key`. Every request body is parsed by its Zod schema from
@@ -287,16 +311,16 @@ database we already run. Enqueuing is an INSERT, so a job and the row it refers
 to are written in one transaction — the guarantee that makes this worth more
 than Redis.
 
-| Job | Enqueued by | Retries | Timeout |
-| --- | --- | --- | --- |
-| `photo.derive` | API, when an upload is confirmed | 3 | 5 min |
-| `album.revalidate` | API, on publish, unpublish or slug change | 5 | 30 s |
-| `enquiry.notify` | API, on a new enquiry | 5 | 30 s |
-| `photo.cleanup` | API, when a photograph is deleted, and after a publish | 3 | 2 min |
-| `album.sitemap` | Cron, 03:00 Asia/Colombo | 2 | 60 s |
-| `housekeeping.archive` | Cron, 03:30 Asia/Colombo | 1 | 60 s |
-| `housekeeping.orphans` | Cron, Sunday 04:00 Asia/Colombo | 1 | 10 min |
-| `db.backup` | Cron, Sunday 02:00 Asia/Colombo | 2 | 15 min |
+| Job                    | Enqueued by                                            | Retries | Timeout |
+| ---------------------- | ------------------------------------------------------ | ------- | ------- |
+| `photo.derive`         | API, when an upload is confirmed                       | 3       | 5 min   |
+| `album.revalidate`     | API, on publish, unpublish or slug change              | 5       | 30 s    |
+| `enquiry.notify`       | API, on a new enquiry                                  | 5       | 30 s    |
+| `photo.cleanup`        | API, when a photograph is deleted, and after a publish | 3       | 2 min   |
+| `album.sitemap`        | Cron, 03:00 Asia/Colombo                               | 2       | 60 s    |
+| `housekeeping.archive` | Cron, 03:30 Asia/Colombo                               | 1       | 60 s    |
+| `housekeeping.orphans` | Cron, Sunday 04:00 Asia/Colombo                        | 1       | 10 min  |
+| `db.backup`            | Cron, Sunday 02:00 Asia/Colombo                        | 2       | 15 min  |
 
 Retries back off 30 s, 2 m, 8 m, 32 m with jitter. A job that reaches `failed`
 is never retried automatically: it sits in the table with its error and alerts.
@@ -355,7 +379,8 @@ home page emits `LocalBusiness`.
 
 ## 13 · Enquiry flow
 
-Six fields, no account, no captcha. The form validates with the same Zod schema
+Six fields, no account, no captcha. Name, email, mobile and wedding date are
+required; place and notes are not. The form validates with the same Zod schema
 the API uses. The API checks a honeypot field is empty, that the form was open
 for more than three seconds, and that the IP hash has not sent five enquiries in
 the last hour. The row is written and `enquiry.notify` is enqueued in one
@@ -417,12 +442,12 @@ visitor chooses. See `design.md` and chapter 14 of the Figma page.
 
 Two processes, one codebase. Four layers, and what each may do:
 
-| Layer | May | May not |
-| --- | --- | --- |
-| Controller | Parse, authorise, call one service, shape the response | Contain business rules or touch the database |
-| Service | Business rules, transactions, enqueue jobs | Know about HTTP |
-| Repository | Drizzle queries | Decide anything |
-| Job handler | Call the same services | Duplicate a service's logic |
+| Layer       | May                                                    | May not                                      |
+| ----------- | ------------------------------------------------------ | -------------------------------------------- |
+| Controller  | Parse, authorise, call one service, shape the response | Contain business rules or touch the database |
+| Service     | Business rules, transactions, enqueue jobs             | Know about HTTP                              |
+| Repository  | Drizzle queries                                        | Decide anything                              |
+| Job handler | Call the same services                                 | Duplicate a service's logic                  |
 
 The worker imports the same Nest modules and is started without an HTTP
 listener. Neither process holds an HTTP client for our own API, and neither has
@@ -490,10 +515,10 @@ Postgres, R2 and the queue. A liveness check never touches the database.
 
 All six alerts are Sentry rules, and they arrive as a push notification on the
 phone through the Sentry mobile app. One tool runs the whole table: the error and
-error-rate rules read the events the three apps already send; *site is down* and
-*certificate expiry* are a Sentry uptime monitor on the home page, which checks
+error-rate rules read the events the three apps already send; _site is down_ and
+_certificate expiry_ are a Sentry uptime monitor on the home page, which checks
 the certificate on the same pass; the two queue rules are metric alerts on the
-counts the worker reports. Only the two *wake someone* rules send a push — the
+counts the worker reports. Only the two _wake someone_ rules send a push — the
 rest send email, so the phone stays quiet for what can wait until morning.
 
 ---
@@ -501,10 +526,13 @@ rest send email, so the phone stays quiet for what can wait until morning.
 ## 21 · Testing
 
 Enough tests that a refactor is not frightening, few enough that nobody deletes
-them in a hurry. No coverage percentage to hit. The journeys that must have an
-end-to-end test: publish an album and see it on the site, upload a photograph
-and watch it become ready, send an enquiry and receive both emails, sign in to
-the Studio, and a 404 for an album that does not exist.
+them in a hurry. No coverage percentage to hit. Eight journeys must have an
+end-to-end test: a visitor opens an album from the home page; a visitor sends an
+enquiry and both emails go out; an old album slug redirects; the photographer
+signs in, uploads a photograph and watches it become ready; publishing with a
+missing description is refused and names the photograph; a complete album is
+published and appears on the site; a signed-out visitor to a Studio URL is sent
+to sign in; and an album that does not exist is a real 404.
 
 ---
 
@@ -512,11 +540,11 @@ the Studio, and a 404 for an album that does not exist.
 
 Trunk-based, squash merges, linear history.
 
-| Branch | What it is |
-| --- | --- |
-| `main` | The released state. Receives release merges from `dev-v2` and nothing else |
-| `dev-v2` | The integration branch. Every pull request lands here first |
-| `type/short-description` | One piece of work, hours to three days |
+| Branch                   | What it is                                                                 |
+| ------------------------ | -------------------------------------------------------------------------- |
+| `main`                   | The released state. Receives release merges from `dev-v2` and nothing else |
+| `dev-v2`                 | The integration branch. Every pull request lands here first                |
+| `type/short-description` | One piece of work, hours to three days                                     |
 
 **During the v2 build** the loop is different, deliberately: the work happens in
 the `V2` worktree on the single long-lived branch `feat/implementation-v2`. That
@@ -626,11 +654,11 @@ in `apps/web/.claude/` would never be read.
 
 The three hooks, and what each one refuses:
 
-| Hook | When | What it stops |
-| --- | --- | --- |
-| `guard-generated.sh` | before a write | editing a generated file — `packages/tokens/css/*`, `packages/db/migrations/*`, anything with the generated banner |
-| `guard-commit.sh` | before a bash command | a commit whose message carries tool attribution, a filler word, or "this commit" |
-| `format-edited.sh` | after a write | nothing — it runs prettier on what was just written |
+| Hook                 | When                  | What it stops                                                                                                      |
+| -------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `guard-generated.sh` | before a write        | editing a generated file — `packages/tokens/css/*`, `packages/db/migrations/*`, anything with the generated banner |
+| `guard-commit.sh`    | before a bash command | a commit whose message carries tool attribution, a filler word, or "this commit"                                   |
+| `format-edited.sh`   | after a write         | nothing — it runs prettier on what was just written                                                                |
 
 Two standing rules that are not in any file because they are absolute: **no tool
 attribution anywhere** — not in a commit, a trailer, or a pull request body — and
@@ -642,23 +670,23 @@ attribution anywhere** — not in a commit, a trailer, or a pull request body �
 
 Fifteen decisions, each with a file in `docs/adr`:
 
-| # | Decision | Chosen over |
-| --- | --- | --- |
-| 001 | Clerk for authentication | Better Auth, Auth0, writing it ourselves |
-| 002 | pg-boss for the job queue | BullMQ with Redis, SQS |
-| 003 | Cloudflare R2 for storage | S3, Supabase Storage |
-| 004 | Drizzle over Prisma | Prisma, raw pg |
-| 005 | Static pages with on-demand rebuilds | Server rendering every request |
-| 006 | Derivatives built at upload | Resizing on request through a CDN worker |
-| 007 | Monorepo with pnpm and Turborepo | Separate repositories |
-| 008 | Cloudflare Web Analytics, no cookie banner | Plausible (paid), Google Analytics (banner) |
-| 009 | One API client, TanStack Query in the Studio only | A generic request() helper, axios interceptors |
-| 010 | Bitwarden as the source of truth for secrets | 1Password, Doppler, no readable copy |
-| 011 | Music, but only after the visitor asks for it | Autoplay, no music at all |
-| 012 | No way to delete an album, anywhere in the product | A delete button with a confirmation, a soft delete with an archive |
+| #   | Decision                                                  | Chosen over                                                            |
+| --- | --------------------------------------------------------- | ---------------------------------------------------------------------- |
+| 001 | Clerk for authentication                                  | Better Auth, Auth0, writing it ourselves                               |
+| 002 | pg-boss for the job queue                                 | BullMQ with Redis, SQS                                                 |
+| 003 | Cloudflare R2 for storage                                 | S3, Supabase Storage                                                   |
+| 004 | Drizzle over Prisma                                       | Prisma, raw pg                                                         |
+| 005 | Static pages with on-demand rebuilds                      | Server rendering every request                                         |
+| 006 | Derivatives built at upload                               | Resizing on request through a CDN worker                               |
+| 007 | Monorepo with pnpm and Turborepo                          | Separate repositories                                                  |
+| 008 | Cloudflare Web Analytics, no cookie banner                | Plausible (paid), Google Analytics (banner)                            |
+| 009 | One API client, TanStack Query in the Studio only         | A generic request() helper, axios interceptors                         |
+| 010 | Bitwarden as the source of truth for secrets              | 1Password, Doppler, no readable copy                                   |
+| 011 | Music, but only after the visitor asks for it             | Autoplay, no music at all                                              |
+| 012 | No way to delete an album, anywhere in the product        | A delete button with a confirmation, a soft delete with an archive     |
 | 013 | Weekly database backup; the photographs are not backed up | Backing up everything, backing up nothing, a copy at a second provider |
-| 014 | Rate limits are never counted in memory | An in-process counter, pinning the API to one machine, adding Redis |
-| 015 | Security headers ship after launch, not before | Shipping the drafted CSP now, shipping no headers at all |
+| 014 | Rate limits are never counted in memory                   | An in-process counter, pinning the API to one machine, adding Redis    |
+| 015 | Security headers ship after launch, not before            | Shipping the drafted CSP now, shipping no headers at all               |
 
 ---
 
@@ -672,7 +700,7 @@ the database restored from a backup; an album removed for good.
 
 Two of those are worth knowing before they are needed. **Restoring the
 database** stops writes first (`fly scale count 0` on both apps), restores into
-a *new* Neon branch rather than over the broken one, and ends by turning
+a _new_ Neon branch rather than over the broken one, and ends by turning
 `housekeeping.orphans` off until the photographer has re-uploaded — anything
 uploaded after the backup has files in R2 with no row, which is exactly what
 that sweep deletes. **Removing an album** starts by asking whether unpublish is
