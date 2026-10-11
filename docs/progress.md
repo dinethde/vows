@@ -47,7 +47,7 @@ at the end of each later milestone.
 | `vercel`            | Signed in as `dinethde`                                               |
 | `fly`               | Signed in as `dev.dinethde@gmail.com`                                 |
 | `neonctl`           | Signed in as `dev.dinethde@gmail.com`                                 |
-| `wrangler`          | Signed in to the `dev.dinethde@gmail.com` Cloudflare account          |
+| `wrangler`          | Signed in, but **R2 is not enabled** on the account (error 10042)     |
 | Bitwarden           | `bw` is signed in but **locked**. `bws` is not installed and not used |
 | Node                | 22.23.3 through nvm, as `.nvmrc` asks                                 |
 | Commit signing      | Works once the SSH key is in the agent (`ssh-add -l` lists it)        |
@@ -59,28 +59,34 @@ at the end of each later milestone.
    into the chat. Until then no secret can be created or pushed. That blocks
    milestone 7, and the parts of milestone 3 that need R2 keys, a Clerk key or
    a Resend key.
-2. **Clerk, Resend and Sentry keys.** Not checked, because the vault is locked.
+2. **Turn R2 on in the Cloudflare dashboard.** `wrangler r2 bucket list` fails
+   with error 10042, "Please enable R2 through the Cloudflare Dashboard".
+   Cloudflare asks for a payment card first. Until it is on, neither bucket
+   can be created, so uploads, `photo.derive` and `/readyz` cannot be run for
+   real. R2 also needs an S3 access key pair, made in the dashboard and stored
+   in the vault.
+3. **Clerk, Resend and Sentry keys.** Not checked, because the vault is locked.
    If they are not in the vault they have to come from each dashboard.
-3. **The Neon project is in `aws-us-east-2`.** Fly is set to Singapore, and
+4. **The Neon project is in `aws-us-east-2`.** Fly is set to Singapore, and
    chapter 04 picks Singapore to be close to the audience. A Neon project
    cannot change region. Say whether production should move to a new project
    in `aws-ap-southeast-1` before anything real goes into this one.
-4. **The music file.** Chapter 14 names "Romantic Saxophone" from Pixabay. The
+5. **The music file.** Chapter 14 names "Romantic Saxophone" from Pixabay. The
    navbar in Figma calls the track "First Light". The file and its
    `LICENCE.md` are not in the repository.
-5. **Screens that have no Figma frame:** the enquiry inbox and the settings
+6. **Screens that have no Figma frame:** the enquiry inbox and the settings
    page (both in chapter 14), and an albums index (`/albums`, chapter 12). The
    API routes for enquiries get built. The Studio pages wait for a design.
-6. **Figma needs four corrections to match what was decided:** chapter 16 (the
+7. **Figma needs four corrections to match what was decided:** chapter 16 (the
    token file layout), chapters 02 and 08 (22 fixed albums, no create),
    chapter 07 (the new columns, the partial slot index, `jpeg`), chapter 13
    (the duplicate index cannot be created, see below). I have not edited the
    Figma page.
-7. **`.claude/settings.json` still denies reads of the old token paths.** It is
+8. **`.claude/settings.json` still denies reads of the old token paths.** It is
    harmless. I left the permissions file alone.
-8. **`CODEOWNERS` names `@dinethdesilva`.** The GitHub account that is signed in
+9. **`CODEOWNERS` names `@dinethdesilva`.** The GitHub account that is signed in
    is `dinethde`. Tell me which is right.
-9. **`docs/implementation-brief.md`** is untracked and I have left it that way.
+10. **`docs/implementation-brief.md`** is untracked and I have left it that way.
 
 ## Settled by Dineth on 2026-10-12
 
