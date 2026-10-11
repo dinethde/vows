@@ -76,10 +76,9 @@ at the end of each later milestone.
    in the vault.
 3. **Clerk, Resend and Sentry keys.** Not checked, because the vault is locked.
    If they are not in the vault they have to come from each dashboard.
-4. **The Neon project is in `aws-us-east-2`.** Fly is set to Singapore, and
-   chapter 04 picks Singapore to be close to the audience. A Neon project
-   cannot change region. Say whether production should move to a new project
-   in `aws-ap-southeast-1` before anything real goes into this one.
+4. **The Ohio Neon project `Vows` is no longer used.** It holds an empty
+   `production` branch and my old `dev-claude` branch. Delete it when you
+   like; I will not.
 5. **The music file.** Chapter 14 names "Romantic Saxophone" from Pixabay. The
    navbar in Figma calls the track "First Light". The file and its
    `LICENCE.md` are not in the repository.
