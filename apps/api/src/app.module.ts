@@ -10,6 +10,7 @@ import type { Logger } from './common/logger';
 import { ENV, parseEnv } from './config/env';
 import type { Env } from './config/env';
 import { DatabaseModule } from './database/database.module';
+import { AlbumModule } from './modules/album/album.module';
 import { AuditModule } from './modules/audit/audit.module';
 import { EnquiryModule } from './modules/enquiry/enquiry.module';
 import { HealthModule } from './modules/health/health.module';
@@ -47,6 +48,7 @@ export class CoreModule {}
     AuditModule,
     HealthModule,
     EnquiryModule,
+    AlbumModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ClerkGuard },
