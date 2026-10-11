@@ -12,12 +12,15 @@ fresh build.
 ## The steps
 
 1. Export the variable collections from the Figma file: `vows/primitives` and
-   `vows/semantic` (two modes, Site and Studio).
+   `vows/semantic` (two modes, Site and Studio), and the text and effect
+   styles. Leave out the `Docs/*` text styles; they belong to the boards.
 2. Replace `packages/tokens/tokens.json` with the export. **Review the diff** —
    this is the moment a stray colour someone added in Figma becomes visible.
 3. `pnpm tokens:build`
 4. Check the three generated files changed as expected:
-   `tokens.css`, `tokens.ts`, `tailwind.preset.js`.
+   `css/primitives.css`, `css/semantic.css`, `src/index.ts`. If a token was
+   added or removed, map it in `packages/config/tailwind/vows.css` too — that
+   file is written by hand and is what turns a token into a Tailwind class.
 5. `pnpm typecheck` — a removed token becomes a type error at every use site,
    which is the point.
 6. Commit `tokens.json` **and** the generated output together. They are reviewed
@@ -25,9 +28,10 @@ fresh build.
 
 ## The naming rule
 
-`bg/surface-light` → `--bg-surface-light` → `token.bgSurfaceLight` →
+`bg/surface-light` → `--vows-bg-surface-light` → `token.bgSurfaceLight` →
 `bg-surface-light`. The transformation is mechanical and the generator is the
-only thing allowed to perform it. A token that needs a different name is
+only thing allowed to perform it. A text style becomes a utility the same way:
+`Heading/1` → `type-heading-1`. A token that needs a different name is
 renamed in Figma and re-exported.
 
 ## When something looks wrong
