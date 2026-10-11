@@ -14,7 +14,21 @@ module.exports = {
     'scope-enum': [
       2,
       'always',
-      ['web', 'api', 'worker', 'db', 'contracts', 'ui', 'tokens', 'mail', 'config', 'infra', 'ci', 'repo'],
+      [
+        'web',
+        'api',
+        'worker',
+        'server',
+        'db',
+        'contracts',
+        'ui',
+        'tokens',
+        'mail',
+        'config',
+        'infra',
+        'ci',
+        'repo',
+      ],
     ],
   },
 };

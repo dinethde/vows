@@ -47,3 +47,8 @@ export class RateLimitedError extends DomainError {
     super('rate_limited', message);
   }
 }
+
+/** A job that can never succeed: a file that is not an image will not become one. */
+export class PermanentJobError extends Error {
+  readonly retryable = false;
+}

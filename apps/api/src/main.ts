@@ -1,11 +1,9 @@
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
+import { AppModule, configure, LOGGER } from '@vows/server';
+import type { Logger } from '@vows/server';
 
-import { AppModule } from './app.module';
-import { configure } from './bootstrap';
-import { LOGGER } from './common/logger';
-import type { Logger } from './common/logger';
-
+/** The HTTP entry point. Everything it serves lives in @vows/server. */
 async function main(): Promise<void> {
   const app = await NestFactory.create(AppModule, { logger: ['error', 'warn'] });
   const env = await configure(app);
