@@ -2,27 +2,34 @@
   "name": "@vows/db",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./schema": "./src/schema/index.ts"
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    }
   },
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio",
     "db:seed": "tsx src/seed/index.ts",
+    "db:studio": "drizzle-kit studio",
+    "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@neondatabase/serverless": "0.10.4",
+    "@vows/contracts": "workspace:*",
     "drizzle-orm": "0.38.3",
     "pg": "8.13.1",
     "zod": "3.24.1"
   },
   "devDependencies": {
+    "@types/node": "22.10.2",
     "@types/pg": "8.11.10",
     "@vows/config": "workspace:*",
     "drizzle-kit": "0.30.1",
