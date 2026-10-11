@@ -24,3 +24,4 @@ npm-debug.log*
 
 # browser tool output
 .playwright-mcp/
+*.tsbuildinfo
