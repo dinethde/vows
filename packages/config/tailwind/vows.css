@@ -10,11 +10,18 @@
  * Nothing here is a value. Every line points at a token, so a colour that is
  * not in the Figma `vows/semantic` collection cannot be added here. Change it
  * in Figma, export, and run `pnpm tokens:build`.
+ *
+ * The tokens themselves are imported by the app, after this file:
+ *
+ *   @import '@vows/config/tailwind/vows.css';
+ *   @import '@vows/tokens/css/primitives.css';
+ *   @import '@vows/tokens/css/semantic.css';
+ *
+ * @vows/tokens lints with this package's presets, so this package cannot
+ * depend on it in return.
  */
 
 @import 'tailwindcss';
-@import '@vows/tokens/css/primitives.css';
-@import '@vows/tokens/css/semantic.css';
 
 @theme inline {
   /* The semantic tokens are the whole palette. Tailwind's own is switched off

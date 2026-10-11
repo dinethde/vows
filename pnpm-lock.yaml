@@ -251,9 +251,6 @@ importers:
       '@eslint/js':
         specifier: 9.17.0
         version: 9.17.0
-      '@vows/tokens':
-        specifier: workspace:*
-        version: link:../tokens
       eslint:
         specifier: ^9
         version: 9.39.5(jiti@2.7.0)
