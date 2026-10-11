@@ -1,0 +1,42 @@
+import { z } from 'zod';
+
+/**
+ * The only file that reads process.env. It parses at boot and throws before
+ * anything listens, so a missing variable is a crash in the first second.
+ */
+const schema = z.object({
+  APP_ENV: z.enum(['local', 'preview', 'staging', 'production']),
+  PORT: z.coerce.number().int().default(3001),
+  LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
+  DATABASE_URL: z.string().url(),
+  CLERK_ISSUER: z.string().url(),
+  CLERK_JWKS_URL: z.string().url(),
+  /** Our own web origins. A token minted for any other app is refused. */
+  WEB_ORIGINS: z
+    .string()
+    .min(1)
+    .transform((value) => value.split(',').map((origin) => origin.trim())),
+  SITE_URL: z.string().url(),
+  MEDIA_URL: z.string().url(),
+  R2_ACCOUNT_ID: z.string().min(1),
+  R2_ACCESS_KEY_ID: z.string().min(1),
+  R2_SECRET_ACCESS_KEY: z.string().min(1),
+  R2_BUCKET_ORIGINALS: z.string().min(1),
+  R2_BUCKET_PUBLIC: z.string().min(1),
+  REVALIDATE_SECRET: z.string().min(32),
+  IP_HASH_SALT: z.string().min(16),
+  SENTRY_DSN: z.string().url().optional(),
+});
+
+export type Env = z.infer<typeof schema>;
+
+export function parseEnv(source: NodeJS.ProcessEnv): Env {
+  const parsed = schema.safeParse(source);
+  if (!parsed.success) {
+    const missing = Object.keys(parsed.error.flatten().fieldErrors).join(', ');
+    throw new Error(`Invalid environment. Refusing to start. Check: ${missing}`);
+  }
+  return parsed.data;
+}
+
+export const ENV = Symbol('ENV');

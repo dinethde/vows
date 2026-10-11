@@ -10,6 +10,8 @@ export default [
       // NestJS decorators and pg-boss handlers both need this
       '@typescript-eslint/no-extraneous-class': 'off',
       '@typescript-eslint/unbound-method': 'off',
+      // A Nest constructor is its dependency list, not a call anyone writes out.
+      'max-params': ['error', 6],
     },
   },
 ];
