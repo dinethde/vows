@@ -21,3 +21,6 @@ test-results/
 npm-debug.log*
 .vercel
 .fly/
+
+# browser tool output
+.playwright-mcp/
