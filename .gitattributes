@@ -1,0 +1,5 @@
+# Generated files: collapsed in a diff, so the line count is what a person reads.
+pnpm-lock.yaml linguist-generated=true
+packages/tokens/css/*.css linguist-generated=true
+packages/tokens/src/index.ts linguist-generated=true
+packages/db/migrations/meta/** linguist-generated=true

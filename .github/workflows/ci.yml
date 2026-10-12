@@ -13,34 +13,16 @@ concurrency:
 env:
   TURBO_TELEMETRY_DISABLED: 1
   NEXT_TELEMETRY_DISABLED: 1
+  # The public pages are built ahead of time, so the build reads the staging
+  # API. None of these is a secret.
+  API_URL: ${{ vars.STAGING_API_URL }}
+  NEXT_PUBLIC_API_URL: ${{ vars.STAGING_API_URL }}
+  NEXT_PUBLIC_SITE_URL: ${{ vars.STAGING_SITE_URL }}
+  NEXT_PUBLIC_MEDIA_URL: ${{ vars.STAGING_MEDIA_URL }}
 
 jobs:
   verify:
-    name: lint · typecheck · test
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - run: pnpm install --frozen-lockfile
-
-      # Turbo only runs what the diff touched. A copy change does not rebuild
-      # the worker.
-      - run: pnpm turbo run lint typecheck test --filter=...[origin/${{ github.base_ref || 'dev-v2' }}]
-
-      - run: pnpm turbo run build --filter=...[origin/${{ github.base_ref || 'dev-v2' }}]
-
-  e2e:
-    name: playwright
+    name: tokens · lint · typecheck · unit · build
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -51,14 +33,97 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @vows/web exec playwright install --with-deps chromium
+
+      # A generated file edited by hand cannot merge: the rebuild must match.
+      - name: tokens are what the build writes
+        run: pnpm tokens:build && git diff --exit-code packages/tokens
+
+      - run: pnpm turbo run lint typecheck test
+      - run: pnpm exec prettier --check .
+      - run: pnpm turbo run build
+
+  integration:
+    name: integration, on its own Neon branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # A fork cannot read the secret, and must not be able to.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: create a database branch for this run
+        id: branch
+        uses: neondatabase/create-branch-action@v6
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          branch_name: ci-${{ github.run_id }}-${{ github.run_attempt }}
+          parent_branch: main
+          api_key: ${{ secrets.NEON_API_KEY }}
+
+      - name: migrate
+        env:
+          DATABASE_URL: ${{ steps.branch.outputs.db_url }}
+        run: pnpm db:migrate
+
+      - name: server tests, against real Postgres
+        env:
+          DATABASE_URL: ${{ steps.branch.outputs.db_url_pooled }}
+        run: pnpm turbo run test --filter=@vows/server
+
+      - name: drop the branch
+        if: always()
+        uses: neondatabase/delete-branch-action@v3
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          branch: ci-${{ github.run_id }}-${{ github.run_attempt }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+
+  e2e:
+    name: playwright and axe, against staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @vows/web exec playwright install --with-deps chromium webkit
       - run: pnpm --filter @vows/web test:e2e
+        env:
+          E2E_BASE_URL: ${{ vars.STAGING_SITE_URL }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: playwright-report
           path: apps/web/playwright-report
           retention-days: 7
+
+  audit:
+    name: dependencies and secrets
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm audit --prod --audit-level high
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   prose:
     name: commit and pull request prose
