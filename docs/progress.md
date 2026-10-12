@@ -510,31 +510,31 @@ pairs are in the session scratchpad under `design/`, not in the repository.
 
 ### Architecture audit: faults in the code
 
-- [ ] **A1. The enquiry limit counts Vercel, not the visitor.** The form posts
+- [x] **A1. The enquiry limit counts Vercel, not the visitor.** The form posts
       from a server action and no client address is forwarded, so `ip_hash`
       is the web server's address. Five enquiries from anyone block everyone
       for an hour. Also `trust proxy` is `true`, so a direct caller can pick
       any address with `X-Forwarded-For`. (`contact/actions.ts`,
       `lib/api/transport.ts`, `enquiry.controller.ts:38`, `bootstrap.ts:18`)
-- [ ] **A2. A photograph can stay `processing` for good.** A derive that
+- [x] **A2. A photograph can stay `processing` for good.** A derive that
       fails for any reason but "not an image" retries, fails, and leaves the
       row as it was. Nothing writes `processing_failed`.
-- [ ] **A3. The 60 MB cap is not checked.** The API trusts the size the
+- [x] **A3. The 60 MB cap is not checked.** The API trusts the size the
       browser states. `markUploaded` reads the real size and does not compare.
       Nothing writes `file_too_large`.
-- [ ] **A4. `album.revalidate` uses the slug from its payload**, not the
+- [x] **A4. `album.revalidate` uses the slug from its payload**, not the
       album's current one (chapter 11: trust only the id).
-- [ ] **A5. Errors outside the envelope.** Any `HttpException` other than
+- [x] **A5. Errors outside the envelope.** Any `HttpException` other than
       400/401/403/404 becomes a 500, so a 413 reads as our fault. Unique-index
       clashes on the slot, the idempotency key and the slug would be 500s;
       `photo_slot_taken` is declared and never thrown.
-- [ ] **A6. `process.env` outside the config module**: `VOWS_SERVICE`
+- [x] **A6. `process.env` outside the config module**: `VOWS_SERVICE`
       (`app.module.ts:33`, `apps/worker/src/main.ts:20`), `PATH`
       (`backup.service.ts:26`). And four variables the worker needs are
       optional, so it boots without them and fails at job time.
-- [ ] **A7. `/readyz` reports the queue from a flag set at boot.** It cannot
+- [x] **A7. `/readyz` reports the queue from a flag set at boot.** It cannot
       go red after start.
-- [ ] **A8. `infra/fly.api.toml` and `infra/fly.worker.toml` do not set
+- [x] **A8. `infra/fly.api.toml` and `infra/fly.worker.toml` do not set
       `APP_ENV`**; the schema requires it.
 - [ ] **A9. State checks sit outside their transactions** (publish, remove,
       reorder, confirm). A remove racing a publish can leave a live album with
@@ -542,6 +542,11 @@ pairs are in the session scratchpad under `design/`, not in the repository.
 - [ ] **A10. Readiness ties the contact form to R2.** An R2 outage takes the
       API out of rotation, including the enquiry route, which needs only
       Postgres. A question of what `/readyz` should mean; not changed.
+
+A1 to A8 are fixed, each with a test or a live check. Two things in A1 wait for
+staging: that Fly's proxy puts the client last in `X-Forwarded-For`, and that
+Vercel puts the visitor first. A deployed worker now refuses to start without
+`DATABASE_URL_UNPOOLED`, `R2_BUCKET_BACKUPS`, `RESEND_API_KEY` and `MAIL_FROM`.
 
 ### Architecture audit: promised and not built
 
