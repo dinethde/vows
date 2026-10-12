@@ -29,8 +29,8 @@ const DESCRIPTIONS = [
   'The couple kissing on the church steps, blurred by the movement of the crowd',
   'A slice of wedding cake on a plate, held between the couple',
   'Long tables set for the reception outdoors under strings of green bunting',
-  'The couple seen from above, both holding up two fingers and laughing',
   'The couple’s hands reaching for each other, their shadows on the grass',
+  'The couple seen from above, both holding up two fingers and laughing',
   'The couple drinking espresso martinis side by side against a dark background',
   'The groom lifting the bride in a field at dusk',
   'The couple walking hand in hand, seen from behind, in black and white',
@@ -39,6 +39,11 @@ const DESCRIPTIONS = [
   'Guests seated at long candlelit tables in a garden at night, turning to watch',
   'The couple leaving the church through a blur of guests',
 ];
+
+/** Figma lists the overlapping pair large then small. The page reads small then large. */
+const FILES: Record<number, number> = { 10: 11, 11: 10 };
+/** Where the couple is in the cover, so a phone crops around them and not the sky. */
+const COVER_FOCAL_POINT = { x: 62, y: 45 };
 
 async function putFile(url: string, body: Buffer): Promise<void> {
   const response = await fetch(url, {
@@ -61,7 +66,9 @@ async function main(): Promise<void> {
   const existing = (await photos.list(ALBUM)).data;
   for (const [position, alt] of DESCRIPTIONS.entries()) {
     if (existing.some((photo) => photo.position === position && photo.status === 'ready')) continue;
-    const body = readFileSync(join(folder, `${String(position).padStart(2, '0')}.jpg`));
+    const body = readFileSync(
+      join(folder, `${String(FILES[position] ?? position).padStart(2, '0')}.jpg`),
+    );
     const ticket = await photos.createUploadUrl(
       ALBUM,
       { position, contentType: 'image/jpeg', bytes: body.length },
@@ -85,6 +92,8 @@ async function main(): Promise<void> {
       throw new Error('The worker did not finish in five minutes. Is it running?');
     await new Promise((resolve) => setTimeout(resolve, 5000));
   }
+
+  await albums.update(ALBUM, { coverFocalPoint: COVER_FOCAL_POINT }, caller);
 
   if (flag === '--publish') {
     const published = await albums.publish(ALBUM, caller);
