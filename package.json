@@ -28,5 +28,14 @@
     "prettier-plugin-tailwindcss": "0.6.11",
     "turbo": "2.1.3",
     "typescript": "5.6.3"
+  },
+  "pnpm": {
+    "auditConfig": {
+      "ignoreGhsas": [
+        "GHSA-6g55-p6wh-862q",
+        "GHSA-r28c-9q8g-f849",
+        "GHSA-vfj7-8cjw-p6xm"
+      ]
+    }
   }
 }

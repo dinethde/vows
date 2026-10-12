@@ -12,6 +12,10 @@
     "./css/primitives.css": "./css/primitives.css",
     "./css/semantic.css": "./css/semantic.css"
   },
+  "files": [
+    "dist",
+    "css"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
