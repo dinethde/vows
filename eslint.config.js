@@ -3,7 +3,4 @@
 // which is what `turbo run lint` actually uses.
 import base from '@vows/config/eslint/base';
 
-export default [
-  { ignores: ['apps/**', 'packages/**', '**/dist/**', '**/.next/**'] },
-  ...base,
-];
+export default [{ ignores: ['apps/**', 'packages/**', '**/dist/**', '**/.next/**'] }, ...base];

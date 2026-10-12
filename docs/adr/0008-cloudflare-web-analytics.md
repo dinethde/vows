@@ -32,7 +32,7 @@ category of legal risk at once.
 ## What this costs us
 
 Shallow reporting: no funnels, no retention, no custom events worth the name. If
-the studio ever wants to know *why* an album underperforms, this will not tell
+the studio ever wants to know _why_ an album underperforms, this will not tell
 them.
 
 ## How we would undo it

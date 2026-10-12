@@ -39,7 +39,7 @@ the review, not during it.
 
 Then check the five that CI cannot:
 
-1. Does the description explain *why*, not *what*?
+1. Does the description explain _why_, not _what_?
 2. Does anything in the diff contradict `architecture.md`? If the architecture
    is wrong, say so in the description rather than quietly diverging.
 3. Did a design change land without the Figma file changing first?

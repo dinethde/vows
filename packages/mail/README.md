@@ -9,13 +9,13 @@ src/lib/         the Resend client, the from-addresses, the plain-text fallback
 
 The messages, from chapter 18:
 
-| Template | Trigger | To |
-|---|---|---|
-| `enquiry-received` | the contact form | the couple |
-| `enquiry-notify` | the contact form | the studio |
-| `album-ready` | an album is published | the couple |
-| `album-link` | the studio shares an album | whoever they name |
-| `download-ready` | a full-album zip finishes | whoever asked |
+| Template           | Trigger                    | To                |
+| ------------------ | -------------------------- | ----------------- |
+| `enquiry-received` | the contact form           | the couple        |
+| `enquiry-notify`   | the contact form           | the studio        |
+| `album-ready`      | an album is published      | the couple        |
+| `album-link`       | the studio shares an album | whoever they name |
+| `download-ready`   | a full-album zip finishes  | whoever asked     |
 
 Rules:
 

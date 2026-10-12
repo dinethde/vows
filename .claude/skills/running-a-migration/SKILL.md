@@ -35,11 +35,11 @@ between the API deploy and the web deploy.
 
 A rename is two releases, never one:
 
-| Release | What it does | Safe because |
-| --- | --- | --- |
-| 1 | Add the new column, write to both, read from the old | Old code still works |
-| 2 | Read from the new column | Both columns exist |
-| 3 | Drop the old column | Nothing reads it any more |
+| Release | What it does                                         | Safe because              |
+| ------- | ---------------------------------------------------- | ------------------------- |
+| 1       | Add the new column, write to both, read from the old | Old code still works      |
+| 2       | Read from the new column                             | Both columns exist        |
+| 3       | Drop the old column                                  | Nothing reads it any more |
 
 A migration that drops or renames in the same release as the code change cannot
 be rolled back, because rolling the code back leaves it talking to a column that

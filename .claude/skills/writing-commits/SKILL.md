@@ -18,33 +18,33 @@ the end are how you know you did it.
 
 ### In a commit message
 
-| Tell | What it looks like | Why it gives itself away |
-| --- | --- | --- |
-| It restates the diff | `fix: update photo-slot.tsx to add error state` | Git already knows which file changed. The message spent itself saying nothing |
-| Adjectives on plumbing | "comprehensive refactor", "robust error handling" | Nobody describes their own two-hour change as comprehensive |
-| The same shape every time | Subject, blank line, exactly three bullets of equal length | Real changes are not the same size. Real messages are not either |
-| "This commit…" | `This commit adds validation to the enquiry form` | A person writes `add validation to the enquiry form` |
-| A bullet per file | Five bullets that are `git diff --stat` with verbs attached | The file list is free. The reason is not |
-| A summary that summarises nothing | "These changes improve the overall maintainability of the codebase." | It fits every commit ever made, which is how you know it is empty |
-| No uncertainty, ever | Every message confident, every change complete | "the tablet case still looks wrong, following up" is the most human line in any history |
-| Nothing from outside the diff | No person, no decision, no chapter, no "as we discussed" | A human message is anchored to the world |
-| Unmeasured numbers | "significantly improves performance" | If you measured it, give the number |
-| Over-explaining a trivial change | Forty words on a typo fix | Effort should match the change |
-| Emoji, or gitmoji on every commit | `✨ feat: …` | Fine in some projects. Not this one |
-| Tool attribution | `Co-Authored-By: <a tool>`, `Generated with …` | Banned outright, and the loudest possible tell |
+| Tell                              | What it looks like                                                   | Why it gives itself away                                                                |
+| --------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| It restates the diff              | `fix: update photo-slot.tsx to add error state`                      | Git already knows which file changed. The message spent itself saying nothing           |
+| Adjectives on plumbing            | "comprehensive refactor", "robust error handling"                    | Nobody describes their own two-hour change as comprehensive                             |
+| The same shape every time         | Subject, blank line, exactly three bullets of equal length           | Real changes are not the same size. Real messages are not either                        |
+| "This commit…"                    | `This commit adds validation to the enquiry form`                    | A person writes `add validation to the enquiry form`                                    |
+| A bullet per file                 | Five bullets that are `git diff --stat` with verbs attached          | The file list is free. The reason is not                                                |
+| A summary that summarises nothing | "These changes improve the overall maintainability of the codebase." | It fits every commit ever made, which is how you know it is empty                       |
+| No uncertainty, ever              | Every message confident, every change complete                       | "the tablet case still looks wrong, following up" is the most human line in any history |
+| Nothing from outside the diff     | No person, no decision, no chapter, no "as we discussed"             | A human message is anchored to the world                                                |
+| Unmeasured numbers                | "significantly improves performance"                                 | If you measured it, give the number                                                     |
+| Over-explaining a trivial change  | Forty words on a typo fix                                            | Effort should match the change                                                          |
+| Emoji, or gitmoji on every commit | `✨ feat: …`                                                         | Fine in some projects. Not this one                                                     |
+| Tool attribution                  | `Co-Authored-By: <a tool>`, `Generated with …`                       | Banned outright, and the loudest possible tell                                          |
 
 ### In a pull request description
 
-| Tell | What it looks like |
-| --- | --- |
-| The template filled perfectly and emptily | Four headings and six lines of content |
-| "This PR introduces…" | The same opening on every pull request |
-| A bullet per file, again | The file tree with verbs attached |
-| "All tests pass" | No command, no test name, no screenshot. A claim, not evidence |
-| No trade-offs | Nothing considered and rejected, no risk named |
-| Checkbox theatre | Every box ticked, nothing checked |
-| Over-polite closing | "Please let me know if you have any questions!" |
-| Claims the diff does not support | "reduces re-renders" on a change that touches no rendering |
+| Tell                                      | What it looks like                                             |
+| ----------------------------------------- | -------------------------------------------------------------- |
+| The template filled perfectly and emptily | Four headings and six lines of content                         |
+| "This PR introduces…"                     | The same opening on every pull request                         |
+| A bullet per file, again                  | The file tree with verbs attached                              |
+| "All tests pass"                          | No command, no test name, no screenshot. A claim, not evidence |
+| No trade-offs                             | Nothing considered and rejected, no risk named                 |
+| Checkbox theatre                          | Every box ticked, nothing checked                              |
+| Over-polite closing                       | "Please let me know if you have any questions!"                |
+| Claims the diff does not support          | "reduces re-renders" on a change that touches no rendering     |
 
 The root of all of them: **the text describes the change instead of explaining
 it, and it is written to look complete rather than to be read.**

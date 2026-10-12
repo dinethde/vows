@@ -6,10 +6,10 @@ almost nothing else: a public site at `vows.lk`, and a signed-in Studio at
 
 ## Where the truth lives
 
-| Thing | Source of truth | Reflection in this repo |
-| --- | --- | --- |
-| Every technical decision | Figma page **Architecture.md** | `architecture.md` |
-| Every visual decision | The Figma **design file** | `design.md` |
+| Thing                    | Source of truth                | Reflection in this repo |
+| ------------------------ | ------------------------------ | ----------------------- |
+| Every technical decision | Figma page **Architecture.md** | `architecture.md`       |
+| Every visual decision    | The Figma **design file**      | `design.md`             |
 
 The two markdown files are copies kept so an agent working here can follow the
 rules without opening Figma. When a markdown file and Figma disagree, **Figma is
@@ -44,16 +44,16 @@ docs/incidents  what broke, and what stops it happening again
 
 ## Commands
 
-| Command | What it does |
-| --- | --- |
-| `pnpm dev` | Every app in watch mode |
-| `pnpm typecheck` | TypeScript across the workspace |
-| `pnpm lint` | ESLint across the workspace |
-| `pnpm test` | Vitest unit and integration |
-| `pnpm test:e2e` | Playwright |
-| `pnpm build` | Production build of everything |
-| `pnpm tokens:build` | Regenerate the design tokens from the Figma variables |
-| `pnpm db:migrate` | Apply migrations — **only ever against your own Neon branch** |
+| Command             | What it does                                                  |
+| ------------------- | ------------------------------------------------------------- |
+| `pnpm dev`          | Every app in watch mode                                       |
+| `pnpm typecheck`    | TypeScript across the workspace                               |
+| `pnpm lint`         | ESLint across the workspace                                   |
+| `pnpm test`         | Vitest unit and integration                                   |
+| `pnpm test:e2e`     | Playwright                                                    |
+| `pnpm build`        | Production build of everything                                |
+| `pnpm tokens:build` | Regenerate the design tokens from the Figma variables         |
+| `pnpm db:migrate`   | Apply migrations — **only ever against your own Neon branch** |
 
 ## Working here
 
