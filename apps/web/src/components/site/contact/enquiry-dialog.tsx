@@ -14,7 +14,7 @@ import type { ReactElement } from 'react';
 /** Shown for the moment it takes the form's code to arrive, so the dialog is never unnamed. */
 function Loading(): ReactElement {
   return (
-    <div role="status" className="flex flex-col gap-[56px]">
+    <div role="status" className="tablet:gap-[56px] flex flex-col gap-[36px]">
       <DialogTitle className="type-heading-3 tablet:type-heading-2 text-primary">
         Let’s talk.
       </DialogTitle>

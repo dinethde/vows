@@ -21,7 +21,7 @@ export function EnquiryFormBody(): ReactElement {
   if (sent) return <EnquiryThanks />;
 
   return (
-    <form onSubmit={submit} noValidate className="flex flex-col gap-[56px]">
+    <form onSubmit={submit} noValidate className="tablet:gap-[56px] flex flex-col gap-[36px]">
       <div className="flex items-center justify-between">
         <DialogTitle className="type-heading-3 tablet:type-heading-2 text-primary">
           Let’s talk.
@@ -50,15 +50,21 @@ export function EnquiryFormBody(): ReactElement {
           {failure}
         </p>
       ) : null}
-      <div className="gap-space-6 flex items-end justify-between">
-        <p className="type-body-xs text-secondary max-w-[290px]">
+      {/* Stacked on a phone, with Send the full width; side by side from a tablet up. */}
+      <div className="gap-space-5 tablet:flex-row tablet:items-end tablet:justify-between tablet:gap-space-6 flex flex-col">
+        <p className="type-body-xs text-secondary tablet:max-w-[290px]">
           By sending this, you agree that we may keep your details to reply to you. See our{' '}
           <Link href={routes.privacy.href} className="underline">
             Privacy Policy
           </Link>
           .
         </p>
-        <CtaButton type="submit" arrow={false} pending={sending}>
+        <CtaButton
+          type="submit"
+          arrow={false}
+          pending={sending}
+          className="tablet:w-auto w-full justify-center"
+        >
           {sending ? 'Sending…' : 'Send'}
         </CtaButton>
       </div>

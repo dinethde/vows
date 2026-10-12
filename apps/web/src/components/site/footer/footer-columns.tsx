@@ -30,7 +30,7 @@ export function FooterColumns(): ReactElement {
   return (
     <nav
       aria-label="Footer"
-      className="tablet:flex tablet:justify-between grid w-full grid-cols-[auto_auto] justify-between gap-y-[28px]"
+      className="tablet:flex tablet:justify-between relative z-10 grid w-full grid-cols-[auto_auto] justify-between gap-y-[28px] [&>*:nth-child(even)]:justify-self-end"
     >
       <Column title="Menu">
         <ul className="gap-space-3 flex flex-col">

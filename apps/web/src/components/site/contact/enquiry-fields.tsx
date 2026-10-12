@@ -22,7 +22,7 @@ export function EnquiryFieldList({ form }: EnquiryFieldsProps): ReactElement {
   const error = (name: keyof EnquiryFields): { error?: string } =>
     errorProp(formState.errors[name]?.message);
   return (
-    <div className="gap-space-8 flex flex-col">
+    <div className="tablet:gap-space-8 flex flex-col gap-[26px]">
       <Field
         surface="site"
         label="Your name"

@@ -62,8 +62,14 @@ export function FooterPhotos({ pictures }: FooterPhotosProps): ReactElement {
     };
   }, [revealed]);
 
+  // The field starts under the bar, as the columns do, so a photograph lands
+  // below the contact details and not on them.
   return (
-    <div ref={field} aria-hidden="true" className="pointer-events-none absolute inset-0">
+    <div
+      ref={field}
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-x-0 bottom-0 top-[56px]"
+    >
       <style>{footerPhotosCss()}</style>
       {pictures.map((picture, index) => (
         <div

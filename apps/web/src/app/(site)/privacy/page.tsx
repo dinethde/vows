@@ -23,10 +23,10 @@ export default function PrivacyPage(): ReactElement {
     <>
       <main
         id="main"
-        className="bg-page px-space-6 pb-space-12 relative z-10 flex justify-center pt-[152px]"
+        className="bg-page px-space-6 pb-space-12 tablet:pt-[152px] relative z-10 flex justify-center pt-[112px]"
       >
-        <article className="flex w-full max-w-[720px] flex-col gap-[42px]">
-          <header className="flex flex-col gap-[10px]">
+        <article className="tablet:gap-[42px] flex w-full max-w-[720px] flex-col gap-[34px]">
+          <header className="gap-space-2 tablet:gap-[10px] flex flex-col">
             <p className="type-body-xs text-muted tracking-[1.4px]">VOWS · LEGAL</p>
             <h1 className="type-heading-3 tablet:type-display-hero-s text-heading">Privacy</h1>
             <p className="type-body-xs text-muted">Last updated {LAST_UPDATED}</p>
@@ -36,13 +36,16 @@ export default function PrivacyPage(): ReactElement {
             <section
               key={section.id}
               id={section.id}
-              className="flex scroll-mt-[72px] flex-col gap-[10px]"
+              className="gap-space-2 tablet:gap-[10px] flex scroll-mt-[72px] flex-col"
             >
               <h2 className={heading}>{section.heading}</h2>
               <p className={text}>{section.body}</p>
             </section>
           ))}
-          <section id="getting-in-touch" className="flex scroll-mt-[72px] flex-col gap-[10px]">
+          <section
+            id="getting-in-touch"
+            className="gap-space-2 tablet:gap-[10px] flex scroll-mt-[72px] flex-col"
+          >
             <h2 className={heading}>Getting in touch</h2>
             <p className={text}>
               <EmailLink user={user} domain={domain} className="underline" /> — for anything on this
