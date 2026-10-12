@@ -13,6 +13,9 @@ export interface DialogContentProps extends ComponentProps<typeof DialogPrimitiv
   /** Where the dialog is portalled to. Tokens resolve from the nearest
    * `data-surface`, so a Studio dialog has to land inside the Studio's. */
   container?: DialogPortalProps['container'];
+  /** Classes for the scrim. The contact form dims the page less than a
+   * Studio confirmation does. */
+  overlayClassName?: string;
 }
 
 export type DialogHeaderProps = ComponentProps<'div'>;

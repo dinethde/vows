@@ -60,11 +60,12 @@ export function DialogContent({
   className,
   children,
   container,
+  overlayClassName,
   ...props
 }: DialogContentProps): ReactElement {
   return (
     <DialogPortal container={container}>
-      <DialogOverlay />
+      <DialogOverlay className={overlayClassName} />
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
