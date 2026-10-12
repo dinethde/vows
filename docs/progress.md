@@ -4,7 +4,7 @@ This file and the git log are how a new session picks up the work. Read it
 first. Update it when a milestone lands, when the plan changes, or when
 something joins the "needs Dineth" list.
 
-Last updated: 2026-10-12, public site built; Studio being built; staging half prepared.
+Last updated: 2026-10-12, public site and Studio built; Studio not yet run signed in against the real API; staging half prepared.
 
 ## Where things stand
 
@@ -26,13 +26,16 @@ Last updated: 2026-10-12, public site built; Studio being built; staging half pr
   with its reveal, colour change and falling photographs, and the 404 and 500
   pages. `/readyz` is green locally with Postgres, R2 and the queue.
 - **Left in milestone 5:** the calendar under the wedding date field (it is the
-  browser's own date input for now); the share card with the couple's names on
-  it (album pages use the plain crop, other pages the fallback card); the 403
-  page's route, which comes with the Studio; and a design pass against every
-  Figma frame with the screenshots kept for the pull request.
-- **Under way:** milestone 6. A subagent is building the Studio in its own git
-  worktree. Its branch has to be reviewed and merged when it reports. If a new
-  session finds no report, look for it with `git worktree list`.
+  browser's own date input for now; the Studio's date picker can be reused);
+  and a design pass against every Figma frame with the screenshots kept for
+  the pull request. The contact form's code now loads when the form is opened,
+  which took the page's first load from 184 kB to 141 kB.
+- **Built, one check missing:** milestone 6, the Studio. A subagent built it
+  and its five commits are on this branch: the Clerk gate with a real 403,
+  sign-in, the dashboard, the album editor, the date picker, the upload queue,
+  and four confirmation dialogs. It was checked in a browser at 1440, 834 and
+  390 against a stand-in API. **It has not been used signed in against the
+  real API.** See "The Studio and Clerk" below for why and what unblocks it.
 - **Started:** milestone 7. The workspace is clean from the root: typecheck,
   lint, test and build all pass, and `pnpm audit` has no high or critical
   advisory with a fix. 24 end-to-end tests pass locally in Chromium and
@@ -53,10 +56,6 @@ Last updated: 2026-10-12, public site built; Studio being built; staging half pr
   `https://pub-2b21405facd34cbd996583485c36af84.r2.dev`). Dineth made the
   buckets and the key; I set the CORS rule and turned the public address on.
   The older Ohio Neon project `Vows` is no longer used.
-- **The workspace checks are not clean yet.** `tokens`, `contracts`, `db` and
-  `config` pass typecheck, lint and tests. `api`, `worker`, `mail`, `ui` and
-  `web` fail because they have no source files. CI on the pull request will be
-  red until those milestones land.
 
 ## Milestones
 
@@ -70,8 +69,8 @@ Each one leaves something that runs.
 | 3   | API and worker: config, guard, envelope, routes, the eight jobs       | `/healthz`, `/readyz`, one job end to end locally      | done bar the backup write |
 | 4   | Component library in `packages/ui`                                    | each Figma component in every state, with visual tests | done                      |
 | 5   | Public site: loader, music gate, home, album, contact, footer, errors | the site locally against the seeded API                | nearly done               |
-| 6   | Studio: dashboard, album editor, confirmation scenarios               | sign in, edit, upload, publish locally                 | not started               |
-| 7   | CI, staging, the end-to-end journeys                                  | staging green, journeys passing against it             | not started               |
+| 6   | Studio: dashboard, album editor, confirmation scenarios               | sign in, edit, upload, publish locally                 | built, signed-in run owed |
+| 7   | CI, staging, the end-to-end journeys                                  | staging green, journeys passing against it             | started                   |
 
 One pull request into `dev-v2`, opened as a draft after milestone 2 and updated
 at the end of each later milestone.
@@ -100,9 +99,10 @@ In order. Items marked **you** need a dashboard only Dineth can use.
    fields as the dev one. One token for every `vows-*` bucket would also fix
    the dev backups bucket. Without it `/readyz` is red and Fly holds traffic
    off the API.
-2. **you** — Clerk: a development instance's publishable key, secret key,
-   issuer URL and JWKS URL, in the vault. The public site does not need them;
-   the Studio and the sign-in journey do.
+2. **you** — Clerk: a development instance, set up as "The Studio and Clerk"
+   describes, with its publishable key, secret key, issuer URL and JWKS URL in
+   the vault. The public site does not need them; the Studio and the sign-in
+   journey do.
 3. **you** — a Resend API key and a sender address, in the vault. Without them
    the enquiry is stored but neither email goes out, so the "receive both
    emails" journey cannot pass.
@@ -140,8 +140,9 @@ In order. Items marked **you** need a dashboard only Dineth can use.
    pairs as known exceptions, by name.
 2. **Clerk keys.** The vault's `vows` folder holds only `r2/dev-access-keys`.
    The Studio cannot sign anyone in without a Clerk development instance: its
-   publishable key, secret key, issuer URL and JWKS URL. This blocks milestone
-   6 and the sign-in journey. Server tests do not need it; they make their own
+   publishable key, secret key, issuer URL and JWKS URL. This blocks the
+   signed-in check of milestone 6 and the sign-in journey. The steps are in
+   "The Studio and Clerk". Server tests do not need it; they make their own
    signing keys.
 3. **A Resend key.** Without it `enquiry.notify` can be written and its emails
    rendered, but nothing can be sent.
@@ -212,6 +213,61 @@ _I would show `vows.lk/albums/`._
 journeys; `architecture.md` now says eight too. One of them, "an editor who
 opens the settings page gets 403", needs a settings page, which has no design
 (item 5 above). _I would test the 403 on the API route instead._
+
+## The Studio and Clerk
+
+**What works.** Signed out, or signed in with no role, every Studio address
+answers 403 with the "private" screen. Sign-in returns to the page that was
+asked for. Against a stand-in API, signed in as an owner: the dashboard, the
+editor's five form states, the calendar, uploads with real progress, alt text,
+reordering, and the publish, discard, delete-photograph and move-to-draft
+dialogs.
+
+**What is not checked.** Nobody has used the Studio signed in against the real
+API. The first attempt found a real fault: the Studio sent a token minted from
+a Clerk JWT template, a template token minted on the server has no `azp`
+claim, and the API refuses a token without one. Every server-side read came
+back 401. Fixed by sending Clerk's own session token instead, which carries
+`azp`. Checked: that token passes the API's signature, issuer and `azp`
+checks, and is then refused with 403 for having no role. The role cannot be
+added on the temporary keyless Clerk instance used for the build, so the run
+stops there until there is a real development instance.
+
+**Clerk setup, for Dineth.** This replaces the earlier note about a `vows-api`
+JWT template. No template is needed.
+
+1. Create the application. Put its publishable key, secret key, issuer URL
+   and JWKS URL in the vault.
+2. Sessions → Customize session token. Set the claims to
+   `{"public_metadata": "{{user.public_metadata}}"}`. Without this every
+   account gets the 403, by design.
+3. On your user, set public metadata to `{"role": "owner"}`.
+4. Turn public sign-ups off. The Studio has no customer accounts.
+
+`WEB_ORIGINS` on the API must hold the Studio's origin exactly as the browser
+sends it, because that is what Clerk writes into `azp`.
+
+**API gaps the Studio found.** None is fixed yet. The first three can lose or
+strand a photograph and should be fixed before launch.
+
+1. Retrying a photograph the worker failed does nothing with the same
+   idempotency key. The Studio works around it with a new key.
+2. A replacement supersedes the old photograph before the new file arrives. If
+   the upload fails the slot has lost its picture, and a published album can
+   point at a pending cover.
+3. A failed or abandoned `pending` row can only be cleared by uploading over
+   it.
+4. There is no slug-availability route, so the address is checked on save, not
+   on blur as the design notes ask.
+5. `PATCH /photos/:id` and the upload confirmation return the photograph with
+   no derivatives.
+6. `slug_taken` puts its suggestion in `message`, not in `fields.slug`.
+7. Save and publish are two requests. If publish is refused the edits are
+   already saved while the form still shows them as unsaved.
+
+**Not built in the Studio.** Drag to reorder (two buttons move a photograph one
+place). A warning on the browser's back button with unsaved edits. The enquiry
+inbox and settings, which have no design.
 
 ## Figma mismatches to fix after the build
 
@@ -291,6 +347,42 @@ Design page:
   footer note. Navbar padding is 64 / 24 / 16 in one note, 40 / 24 / 16 in two.
 - **Footer.** "Rates (PDF)" and "Cookies Policy" have nothing behind them.
 - **404.** "Back to the albums" points at `/albums`, which has no screen.
+
+Studio screens (design page):
+
+- **Field order.** Figma puts story before address on desktop and phone, and
+  type left of time on tablet. Built in one order at every width (names, date,
+  time, type, location, address, story) so Tab follows the screen.
+- **Alt text and reordering** are named in the notes (`2476:2353`) but not
+  drawn. Built: a description field under each filled slot, and two move
+  buttons under each gallery slot.
+- **Cover slot on tablet and phone** is missing from `2224:976` and
+  `2225:1086`. Built first in the grid.
+- **Tablet slot grid.** Frame `2224:976` draws 7 across; note `2227:1197` says 4. Built 4. Phone gutter is 20 in the frame and 12 in the note; built 20.
+- **Move back to draft** (`2473:2352`) and **Preview below 1024**
+  (`2227:1197`) have no trigger drawn. Built: a button on a published card,
+  and a Preview link beside the title of a published album.
+- **Account chip** has no menu drawn. Built a one-item menu, "Sign out".
+- **Publish button** is full orange in `2318:9590` with an empty cover but
+  faded elsewhere. Built faded whenever the album cannot be published.
+- **Calendar** `2317:8807` draws January 2027 starting on a Monday with five
+  rows. The real month starts on a Friday and needs six.
+- **Dates.** The Saved frame writes "07 January 2025". Built "7 January 2025",
+  as the site writes dates.
+- **Draft button on a published album** says "Draft" in Figma. Built "Move to
+  draft", which is what it does.
+- **Empty cover slot** says "Add cover photo" in Figma. Built "Add photo":
+  `PhotoSlot` has no label prop.
+- **Delete-photograph copy** (`2473:2524`) says the photograph is "removed
+  from vows.lk", but removal from a live album is refused. Copy kept; the
+  refusal shows in the dialog.
+- **Notes list five confirmations** including delete-album (`2476:2353`). Four
+  are built, as decided.
+- **Helper line** stays until another field is entered. The notes ask for it
+  to go on click elsewhere, which moved the form under the pointer.
+- **Colours with no semantic token** (overline, card meta, calendar greys, the
+  content ground) use the nearest token. The 4 px outer frame is not drawn.
+  The calendar and menu use `shadow-card`, not Figma's 0 8 24 −4.
 
 ## What the component library reported
 
@@ -421,3 +513,13 @@ These are known and not yet fixed.
   then `pnpm exec next dev --turbopack -p 3000` in `apps/web`.
 - App stylesheets import `@vows/config/tailwind/vows.css` first, then the two
   token stylesheets from `@vows/tokens/css/`.
+- With no Clerk keys, `next dev` starts Clerk in keyless mode: a temporary
+  instance whose key is in `apps/web/.clerk/` (ignored by git). It also
+  appends a line to `apps/web/.gitignore`; restore that file before
+  committing. The keyless instance cannot customise the session token, so no
+  account on it can have a role.
+- The Studio subagent's worktree is at
+  `../.claude/worktrees/agent-a9baf666be5427046`. Its five commits are on this
+  branch; the worktree can be removed.
+- After a Playwright upgrade, run `pnpm exec playwright install chromium webkit`
+  in `apps/web`, or every browser test fails at launch.
