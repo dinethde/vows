@@ -38,12 +38,13 @@ export function MusicGate({ children }: MusicGateProps): ReactElement {
             if (event.key === 'Escape') choose('off');
           }}
         >
-          {/* The whole screen is the target, but a keyboard and a screen reader need a real button. */}
+          {/* The whole screen is the target, but a keyboard and a screen reader need a real button.
+              Figma sets it a little above the middle, at 48.5 per cent of the height. */}
           <button
             type="button"
             autoFocus
             aria-label="Turn on the music"
-            className="bg-surface/86 border-hairline shadow-modal rounded-pill tablet:type-nav-legal type-body-xs text-primary gap-space-3 px-space-5 tablet:tracking-[1.4px] flex min-h-[44px] items-center border uppercase tracking-[1.2px]"
+            className="bg-surface/86 border-hairline shadow-modal rounded-pill tablet:type-nav-legal type-body-xs text-primary tablet:gap-space-3 tablet:min-h-[51px] tablet:pr-[26px] tablet:pl-space-6 tablet:tracking-[1.4px] relative -top-[1.5svh] flex min-h-[46px] items-center gap-[10px] border pl-[21px] pr-[22px] uppercase tracking-[1.2px]"
           >
             <span aria-hidden="true" className="flex h-[16px] items-center gap-[2px]">
               {BARS.map((height, index) => (
@@ -54,8 +55,8 @@ export function MusicGate({ children }: MusicGateProps): ReactElement {
                 />
               ))}
             </span>
-            <span className="tablet:inline hidden">Click anywhere to turn on the music</span>
-            <span className="tablet:hidden">Tap anywhere to turn on the music</span>
+            <span className="desktop:inline hidden">Click anywhere to turn on the music</span>
+            <span className="desktop:hidden">Tap anywhere to turn on the music</span>
           </button>
           <button
             type="button"
@@ -63,7 +64,7 @@ export function MusicGate({ children }: MusicGateProps): ReactElement {
               event.stopPropagation();
               choose('off');
             }}
-            className="type-body-xs text-secondary tablet:bottom-[8svh] absolute bottom-[14svh] flex min-h-[44px] items-center uppercase tracking-[1.2px] underline"
+            className="type-body-xs text-secondary tablet:bottom-[72px] absolute bottom-[46px] flex min-h-[46px] items-center uppercase tracking-[1.2px] underline"
           >
             Continue without the music
           </button>
