@@ -4,7 +4,7 @@ This file and the git log are how a new session picks up the work. Read it
 first. Update it when a milestone lands, when the plan changes, or when
 something joins the "needs Dineth" list.
 
-Last updated: 2026-10-12, milestone 5 nearly done; 6 next.
+Last updated: 2026-10-12, public site built; Studio being built; staging half prepared.
 
 ## Where things stand
 
@@ -30,10 +30,21 @@ Last updated: 2026-10-12, milestone 5 nearly done; 6 next.
   it (album pages use the plain crop, other pages the fallback card); the 403
   page's route, which comes with the Studio; and a design pass against every
   Figma frame with the screenshots kept for the pull request.
-- **Next:** milestone 6, the Studio. Its screens can be built now. Signing in
-  needs Clerk keys.
+- **Under way:** milestone 6. A subagent is building the Studio in its own git
+  worktree. Its branch has to be reviewed and merged when it reports. If a new
+  session finds no report, look for it with `git worktree list`.
+- **Started:** milestone 7. The workspace is clean from the root: typecheck,
+  lint, test and build all pass, and `pnpm audit` has no high or critical
+  advisory with a fix. 24 end-to-end tests pass locally in Chromium and
+  WebKit. CI and a staging deploy workflow are written. Staging has its Neon
+  branch (migrated) and its three buckets. It has no Fly apps, no Vercel
+  project and no secrets yet: see "What staging still needs".
 - **Seeded and published:** album `alb_000001` (`benali-yasiru`) on the dev
   branch, with the cover and all 18 photographs from the Figma album page.
+- **Staging resources made so far:** Neon branch `staging` in `vows-sg`
+  (both migrations applied, no content), and the buckets
+  `vows-originals-staging`, `vows-media-staging`, `vows-backups-staging`
+  (empty, no CORS, not public yet).
 - **Cloud resources in use:** Neon project `vows-sg` in Singapore
   (`plain-fog-47201137`, Postgres 18), branch `dev-claude`. R2 buckets
   `vows-originals-dev` (CORS allows `PUT` from `http://localhost:3000`) and
@@ -79,6 +90,38 @@ at the end of each later milestone.
 | Bitwarden           | Unlocked when Claude Code is started with `BW_SESSION` exported     |
 | Node                | 22.23.3 through nvm, as `.nvmrc` asks                               |
 | Commit signing      | Works once the SSH key is in the agent (`ssh-add -l` lists it)      |
+
+## What staging still needs
+
+In order. Items marked **you** need a dashboard only Dineth can use.
+
+1. **you** — an R2 access key that can read and write the three staging
+   buckets, stored in the vault as `r2/staging-access-keys` with the same four
+   fields as the dev one. One token for every `vows-*` bucket would also fix
+   the dev backups bucket. Without it `/readyz` is red and Fly holds traffic
+   off the API.
+2. **you** — Clerk: a development instance's publishable key, secret key,
+   issuer URL and JWKS URL, in the vault. The public site does not need them;
+   the Studio and the sign-in journey do.
+3. **you** — a Resend API key and a sender address, in the vault. Without them
+   the enquiry is stored but neither email goes out, so the "receive both
+   emails" journey cannot pass.
+4. **you** — a Neon API key, in the vault, for CI to make a database branch per
+   run.
+5. me — make the values that are ours to make (`REVALIDATE_SECRET`,
+   `IP_HASH_SALT`) as vault items, create `vows-api-staging` and
+   `vows-worker-staging` on Fly, push every secret from the vault, deploy.
+6. me — create the Vercel project from `apps/web`, set its variables, point it
+   at the staging API, deploy.
+7. me — set the repository's variables (`STAGING_API_URL`, `STAGING_SITE_URL`,
+   `STAGING_MEDIA_URL`, `NEON_PROJECT_ID`) and secrets (`FLY_API_TOKEN`,
+   `NEON_API_KEY`, `DATABASE_URL_UNPOOLED`) from the vault, so CI and the
+   deploy workflow can run.
+8. me — seed the first album on staging, run the end-to-end suite against it,
+   and run one job from start to finish.
+9. **you** — `staging.vows.lk`, `api-staging.vows.lk` and a media hostname are
+   DNS records, which are yours. Until then staging uses the addresses Vercel,
+   Fly and R2 hand out.
 
 ## Needs Dineth
 
