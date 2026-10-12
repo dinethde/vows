@@ -88,38 +88,45 @@ at the end of each later milestone.
    bucket to the token, or make a second token and store it in the vault.
    Until then the backup cannot be written and the restore cannot be
    rehearsed.
-1. **Clerk keys.** The vault's `vows` folder holds only `r2/dev-access-keys`.
+1. **Two Figma colours fail the contrast rule in chapter 17.** `text/accent`
+   (`blue/500`) on `bg/page` is 3.27:1, and `text/muted` (`ink/500`) on
+   `bg/page` is 4.21:1. WCAG AA needs 4.5:1 for text this size. They are the
+   small blue column labels, and the captions and legal lines. Chapter 17 says
+   the token pairs were pre-checked; these two were not. Pick darker values in
+   Figma and I will re-export. Until then the accessibility test lists the two
+   pairs as known exceptions, by name.
+2. **Clerk keys.** The vault's `vows` folder holds only `r2/dev-access-keys`.
    The Studio cannot sign anyone in without a Clerk development instance: its
    publishable key, secret key, issuer URL and JWKS URL. This blocks milestone
    6 and the sign-in journey. Server tests do not need it; they make their own
    signing keys.
-2. **A Resend key.** Without it `enquiry.notify` can be written and its emails
+3. **A Resend key.** Without it `enquiry.notify` can be written and its emails
    rendered, but nothing can be sent.
-3. **A Sentry DSN**, when you want error reporting on. Nothing waits on it.
-4. **The Ohio Neon project `Vows` is no longer used.** It holds an empty
+4. **A Sentry DSN**, when you want error reporting on. Nothing waits on it.
+5. **The Ohio Neon project `Vows` is no longer used.** It holds an empty
    `production` branch and my old `dev-claude` branch. Delete it when you
    like; I will not.
-5. **The music file.** Chapter 14 names "Romantic Saxophone" from Pixabay. The
+6. **The music file.** Chapter 14 names "Romantic Saxophone" from Pixabay. The
    navbar in Figma calls the track "First Light". The file and its
    `LICENCE.md` are not in the repository.
-6. **Screens that have no Figma frame:** the enquiry inbox and the settings
+7. **Screens that have no Figma frame:** the enquiry inbox and the settings
    page (both in chapter 14), and an albums index (`/albums`, chapter 12). The
    API routes for enquiries get built. The Studio pages wait for a design.
-7. **Figma needs four corrections to match what was decided:** chapter 16 (the
+8. **Figma needs four corrections to match what was decided:** chapter 16 (the
    token file layout), chapters 02 and 08 (22 fixed albums, no create),
    chapter 07 (the new columns, the partial slot index, `jpeg`), chapter 13
    (the duplicate index cannot be created, see below). I have not edited the
    Figma page.
-8. **`.claude/settings.json` still denies reads of the old token paths.** It is
+9. **`.claude/settings.json` still denies reads of the old token paths.** It is
    harmless. I left the permissions file alone.
-9. **`CODEOWNERS` names `@dinethdesilva`.** The GitHub account that is signed in
-   is `dinethde`. Tell me which is right.
-10. **The seed photographs are other people's.** The nineteen images in the
+10. **`CODEOWNERS` names `@dinethdesilva`.** The GitHub account that is signed in
+    is `dinethde`. Tell me which is right.
+11. **The seed photographs are other people's.** The nineteen images in the
     Figma album page are placeholders from elsewhere (one is a magazine cover).
     They are in `.seed-photos/`, which git ignores, and in the dev R2 buckets.
     They are fine for development. Say if they may go on staging, which is a
     public address, or give me the studio's own.
-11. **`docs/implementation-brief.md`** is untracked and I have left it that way.
+12. **`docs/implementation-brief.md`** is untracked and I have left it that way.
 
 ## Settled by Dineth on 2026-10-12
 
@@ -302,6 +309,13 @@ From the subagent that built `packages/ui`. These are for the design pass.
   draft" modal and the upload poll each need one.
 
 ## Still to correct
+
+- **JavaScript on a public route is over the budget in chapter 18.** The budget
+  is 120 KB gzipped. Next 15 and React 19 alone are 103 KB before any page
+  code. The build reports 114 KB for privacy, 136 for an album, 152 for home
+  and 184 for contact, where the form library and the dialog load with the
+  page. The contact form can be split off so it loads on the first click; the
+  103 KB floor cannot be removed.
 
 These are known and not yet fixed.
 
