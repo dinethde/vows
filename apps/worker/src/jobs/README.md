@@ -12,16 +12,16 @@ photo-derive/
   index.ts     { queue, schema, handler, options }
 ```
 
-| Folder | Queue | Runs when |
-|---|---|---|
-| `photo-derive` | `photo.derive` | an upload is confirmed |
-| `album-revalidate` | `album.revalidate` | publish, unpublish or a slug change |
-| `enquiry-notify` | `enquiry.notify` | a new enquiry arrives |
-| `photo-cleanup` | `photo.cleanup` | a photograph is removed, and after a publish |
-| `album-sitemap` | `album.sitemap` | cron, 03:00 Asia/Colombo |
-| `housekeeping-archive` | `housekeeping.archive` | cron, 03:30 Asia/Colombo |
+| Folder                 | Queue                  | Runs when                                           |
+| ---------------------- | ---------------------- | --------------------------------------------------- |
+| `photo-derive`         | `photo.derive`         | an upload is confirmed                              |
+| `album-revalidate`     | `album.revalidate`     | publish, unpublish or a slug change                 |
+| `enquiry-notify`       | `enquiry.notify`       | a new enquiry arrives                               |
+| `photo-cleanup`        | `photo.cleanup`        | a photograph is removed, and after a publish        |
+| `album-sitemap`        | `album.sitemap`        | cron, 03:00 Asia/Colombo                            |
+| `housekeeping-archive` | `housekeeping.archive` | cron, 03:30 Asia/Colombo                            |
 | `housekeeping-orphans` | `housekeeping.orphans` | cron, Sunday 04:00 — deletes R2 objects with no row |
-| `db-backup` | `db.backup` | cron, Sunday 02:00 — pg_dump to the backups bucket |
+| `db-backup`            | `db.backup`            | cron, Sunday 02:00 — pg_dump to the backups bucket  |
 
 Four rules, from chapter 11:
 
@@ -36,7 +36,7 @@ Four rules, from chapter 11:
 4. **Retries, timeout and concurrency are declared in `index.ts`,** not
    scattered through the handler.
 
-A scheduled job reports to the dead-man's switch *after* the work. One that
+A scheduled job reports to the dead-man's switch _after_ the work. One that
 stops running produces no error, only silence, and the heartbeat is the only
 thing that notices.
 
