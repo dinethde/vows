@@ -158,4 +158,38 @@ describe.skipIf(!live)('a photograph, from an upload URL to ready', () => {
     );
     expect(jobs.rows[0]).toMatchObject({ state: 'failed', retry_count: 0 });
   });
+
+  it('takes a failed photograph back when the same key tries again', async () => {
+    const key = 'it-retry-after-failure';
+    const body = { position: 8, contentType: 'image/jpeg', bytes: 20 };
+    const ask = () =>
+      request(http)
+        .post(`/v1/studio/albums/${ALBUM}/photos/upload-url`)
+        .set(auth)
+        .set('idempotency-key', key)
+        .send(body);
+    const { photo: created, uploadUrl } = (await ask()).body as UploadTicket;
+    await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: { 'content-type': 'image/jpeg' },
+      body: 'this is not a photograph',
+    });
+    await request(http).post(`/v1/studio/photos/${created.id}/uploaded`).set(auth);
+    await waitFor(created.id, 'failed');
+
+    const again = (await ask()).body as UploadTicket;
+    expect(again.photo.id).toBe(created.id);
+    expect(again.photo.status).toBe('pending');
+    expect(again.photo.errorCode).toBeNull();
+
+    const file = readFileSync(join(__dirname, 'fixtures', 'photo.jpg'));
+    await fetch(again.uploadUrl, {
+      method: 'PUT',
+      headers: { 'content-type': 'image/jpeg' },
+      body: file,
+    });
+    await request(http).post(`/v1/studio/photos/${created.id}/uploaded`).set(auth);
+    const ready = await waitFor(created.id, 'ready');
+    expect(ready.errorCode).toBeNull();
+  });
 });

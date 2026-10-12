@@ -64,7 +64,7 @@ export class PhotoService {
       ? await this.repo.findByIdempotencyKey(idempotencyKey)
       : undefined;
     const row =
-      repeat ??
+      (repeat ? await this.reopen(repeat) : undefined) ??
       (await this.db.transaction(async (tx) => {
         const old = await this.repo.findInSlot(tx, albumId, body.position);
         if (old) await this.repo.update(tx, old.id, { supersededAt: new Date() });
@@ -201,6 +201,15 @@ export class PhotoService {
       if (album.status === 'published') await this.revalidate(tx, album, caller);
     });
     return this.list(albumId);
+  }
+
+  /**
+   * The same key asking again gets the same row. A row the worker gave up on
+   * goes back to waiting for its file, or the retry would change nothing.
+   */
+  private async reopen(row: PhotoRow): Promise<PhotoRow> {
+    if (row.status !== 'failed') return row;
+    return this.repo.update(this.db, row.id, { status: 'pending', errorCode: null });
   }
 
   private present(row: PhotoRow): Photo {
