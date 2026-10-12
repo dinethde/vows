@@ -3,6 +3,11 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule, LOGGER, QueueService } from '@vows/server';
 import type { Logger } from '@vows/server';
 
+import { albumRevalidate } from './jobs/album-revalidate/handler';
+import { albumSitemap } from './jobs/album-sitemap/handler';
+import { housekeepingArchive } from './jobs/housekeeping-archive/handler';
+import { housekeepingOrphans } from './jobs/housekeeping-orphans/handler';
+import { photoCleanup } from './jobs/photo-cleanup/handler';
 import { photoDerive } from './jobs/photo-derive/handler';
 
 /**
@@ -17,6 +22,11 @@ async function main(): Promise<void> {
   const queue = app.get(QueueService);
   await queue.start();
   await queue.work('photo.derive', photoDerive(app));
+  await queue.work('album.revalidate', albumRevalidate(app));
+  await queue.work('photo.cleanup', photoCleanup(app));
+  await queue.work('album.sitemap', albumSitemap(app));
+  await queue.work('housekeeping.archive', housekeepingArchive(app));
+  await queue.work('housekeeping.orphans', housekeepingOrphans(app));
 
   app.get<Logger>(LOGGER).info('worker started');
 }
