@@ -114,6 +114,29 @@ export class StorageService {
     }
   }
 
+  /** The backups bucket is a third, private bucket. Nothing but db.backup uses it. */
+  async writeBackup(bucket: string, key: string, body: Buffer): Promise<void> {
+    await this.client.send(
+      new PutObjectCommand({
+        Bucket: bucket,
+        Key: key,
+        Body: body,
+        ContentType: 'application/octet-stream',
+      }),
+    );
+  }
+
+  async listBackups(bucket: string): Promise<string[]> {
+    const page = await this.client.send(
+      new ListObjectsV2Command({ Bucket: bucket, Prefix: 'backups/' }),
+    );
+    return (page.Contents ?? []).flatMap((object) => (object.Key ? [object.Key] : [])).sort();
+  }
+
+  async deleteBackups(bucket: string, keys: string[]): Promise<void> {
+    await this.deleteFrom(bucket, keys);
+  }
+
   publicUrl(key: string): string {
     return `${this.env.MEDIA_URL.replace(/\/$/, '')}/${key}`;
   }

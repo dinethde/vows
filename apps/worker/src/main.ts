@@ -5,6 +5,7 @@ import type { Logger } from '@vows/server';
 
 import { albumRevalidate } from './jobs/album-revalidate/handler';
 import { albumSitemap } from './jobs/album-sitemap/handler';
+import { dbBackup } from './jobs/db-backup/handler';
 import { enquiryNotify } from './jobs/enquiry-notify/handler';
 import { housekeepingArchive } from './jobs/housekeeping-archive/handler';
 import { housekeepingOrphans } from './jobs/housekeeping-orphans/handler';
@@ -29,6 +30,7 @@ async function main(): Promise<void> {
   await queue.work('album.sitemap', albumSitemap(app));
   await queue.work('housekeeping.archive', housekeepingArchive(app));
   await queue.work('housekeeping.orphans', housekeepingOrphans(app));
+  await queue.work('db.backup', dbBackup(app));
 
   app.get<Logger>(LOGGER).info('worker started');
 }

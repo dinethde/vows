@@ -25,6 +25,9 @@ const schema = z.object({
   R2_BUCKET_PUBLIC: z.string().min(1),
   REVALIDATE_SECRET: z.string().min(32),
   IP_HASH_SALT: z.string().min(16),
+  /** Worker only. db.backup needs a direct connection and somewhere to put the dump. */
+  DATABASE_URL_UNPOOLED: z.string().url().optional(),
+  R2_BUCKET_BACKUPS: z.string().min(1).optional(),
   /** Worker only. Without them enquiry.notify fails and retries, and says why. */
   RESEND_API_KEY: z.string().min(1).optional(),
   MAIL_FROM: z.string().min(3).optional(),

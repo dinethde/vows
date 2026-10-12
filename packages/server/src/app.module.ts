@@ -12,6 +12,7 @@ import type { Env } from './config/env';
 import { DatabaseModule } from './database/database.module';
 import { AlbumModule } from './modules/album/album.module';
 import { AuditModule } from './modules/audit/audit.module';
+import { BackupModule } from './modules/backup/backup.module';
 import { EnquiryModule } from './modules/enquiry/enquiry.module';
 import { HealthModule } from './modules/health/health.module';
 import { HousekeepingModule } from './modules/housekeeping/housekeeping.module';
@@ -55,6 +56,7 @@ export class CoreModule {}
     PhotoModule,
     HousekeepingModule,
     RevalidateModule,
+    BackupModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ClerkGuard },
