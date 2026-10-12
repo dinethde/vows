@@ -11,14 +11,16 @@ import type { ErrorScreenProps } from './error-screen.types';
  * digit. A phone uses the 200 numeral and the 72 card; the desktop the 460
  * numeral and the 164 card. Between 640 and 1024 the desktop box is drawn at
  * 65 per cent, which is "scale the numeral between the two sizes" without a
- * one-off font size. */
+ * one-off font size. The numeral is centred by its own width, not by the
+ * box: on a phone it is wider than the box, and text that overflows a centred
+ * box starts at the left edge, not the middle. */
 const zone = cn(
   'relative h-[179px] w-full max-w-[342px]',
   'tablet:h-[381px] tablet:w-[860px] tablet:max-w-none tablet:[zoom:0.65] desktop:[zoom:1]',
 );
 
 const numeral = cn(
-  'absolute inset-x-0 top-[18px] pl-space-3 text-center whitespace-nowrap text-ghost tablet:pl-[28px]',
+  'absolute left-1/2 top-[18px] w-max -translate-x-1/2 pl-space-3 whitespace-nowrap text-ghost tablet:pl-[28px]',
   'type-display-error-code-mobile tablet:top-[15px] tablet:type-display-error-code',
 );
 
