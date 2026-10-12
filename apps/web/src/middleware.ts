@@ -2,15 +2,10 @@ import { clerkMiddleware } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-import {
-  API_TOKEN_TEMPLATE,
-  FORBIDDEN_PATH,
-  GATE_HEADER,
-  RETURN_TO_PARAM,
-} from '@/lib/auth/constants';
+import { FORBIDDEN_PATH, GATE_HEADER, RETURN_TO_PARAM } from '@/lib/auth/constants';
 import type { GateVerdict } from '@/lib/auth/constants';
 import { decide } from '@/lib/auth/gate';
-import { roleFromToken } from '@/lib/auth/role';
+import { roleFromClaims } from '@/lib/auth/role';
 
 function withGate(request: NextRequest, verdict: GateVerdict): Headers {
   const headers = new Headers(request.headers);
@@ -38,17 +33,6 @@ function refuse(request: NextRequest): NextResponse {
   });
 }
 
-/** A missing template is a setup fault, not a reason to let anyone in. */
-async function tokenFor(
-  getToken: (options: { template: string }) => Promise<string | null>,
-): Promise<string | null> {
-  try {
-    return await getToken({ template: API_TOKEN_TEMPLATE });
-  } catch {
-    return null;
-  }
-}
-
 /**
  * Clerk says who is asking; this decides whether they get in. A signed-out
  * visitor and a signed-in account with no role both get the 403 screen. Nobody
@@ -57,11 +41,10 @@ async function tokenFor(
 export default clerkMiddleware(async (auth, request) => {
   const session = await auth();
   const signedIn = session.userId !== null;
-  const token = signedIn ? await tokenFor(session.getToken) : null;
   const decision = decide({
     pathname: request.nextUrl.pathname,
     signedIn,
-    role: roleFromToken(token),
+    role: signedIn ? roleFromClaims(session.sessionClaims) : null,
   });
 
   if (decision === 'forbid') return sealed(refuse(request));

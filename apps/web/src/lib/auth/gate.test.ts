@@ -1,13 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { decide, signInHref } from './gate';
-import { roleFromToken } from './role';
-
-function token(payload: unknown): string {
-  const encode = (value: unknown): string =>
-    btoa(JSON.stringify(value)).replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '');
-  return `${encode({ alg: 'RS256' })}.${encode(payload)}.signature`;
-}
+import { roleFromClaims } from './role';
 
 describe('who gets into the Studio', () => {
   it('lets in a signed-in owner or editor', () => {
@@ -48,16 +42,16 @@ describe('the way back after signing in', () => {
   });
 });
 
-describe('reading the role from the vows-api token', () => {
+describe('reading the role from the session claims', () => {
   it('reads owner and editor from public_metadata', () => {
-    expect(roleFromToken(token({ public_metadata: { role: 'owner' } }))).toBe('owner');
-    expect(roleFromToken(token({ public_metadata: { role: 'editor' } }))).toBe('editor');
+    expect(roleFromClaims({ public_metadata: { role: 'owner' } })).toBe('owner');
+    expect(roleFromClaims({ public_metadata: { role: 'editor' } })).toBe('editor');
   });
 
-  it('finds no role in a token without one, an unknown one, or no token', () => {
-    expect(roleFromToken(token({ sub: 'user_1' }))).toBeNull();
-    expect(roleFromToken(token({ public_metadata: { role: 'admin' } }))).toBeNull();
-    expect(roleFromToken('not-a-token')).toBeNull();
-    expect(roleFromToken(null)).toBeNull();
+  it('finds no role in claims without one, an unknown one, or no claims', () => {
+    expect(roleFromClaims({ sub: 'user_1' })).toBeNull();
+    expect(roleFromClaims({ public_metadata: { role: 'admin' } })).toBeNull();
+    expect(roleFromClaims({ public_metadata: 'owner' })).toBeNull();
+    expect(roleFromClaims(null)).toBeNull();
   });
 });

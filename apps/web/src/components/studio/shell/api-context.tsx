@@ -6,7 +6,6 @@ import type { ReactElement, ReactNode } from 'react';
 
 import { authedApi } from '@/lib/api';
 import type { ApiClient } from '@/lib/api';
-import { API_TOKEN_TEMPLATE } from '@/lib/auth/constants';
 
 const ApiContext = createContext<ApiClient | null>(null);
 
@@ -21,10 +20,7 @@ export interface ApiProviderProps {
  */
 export function ApiProvider({ children }: ApiProviderProps): ReactElement {
   const { getToken } = useAuth();
-  const api = useMemo(
-    () => authedApi(() => getToken({ template: API_TOKEN_TEMPLATE })),
-    [getToken],
-  );
+  const api = useMemo(() => authedApi(() => getToken()), [getToken]);
   return <ApiContext.Provider value={api}>{children}</ApiContext.Provider>;
 }
 

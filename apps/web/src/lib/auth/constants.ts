@@ -1,11 +1,14 @@
 /**
- * The Clerk JWT template the API's guard needs. Clerk's own session token does
- * not carry `public_metadata`, and the guard reads the role from there, so
- * every token sent to the API is minted from this template:
+ * The Studio sends Clerk's own session token to the API. The API's guard reads
+ * the role from `public_metadata`, which that token only carries once the
+ * instance's session token is customised (Clerk Dashboard, Sessions):
  *
  *   { "public_metadata": "{{user.public_metadata}}" }
+ *
+ * A token minted from a JWT template on the server has no `azp` claim, and the
+ * guard refuses a token without one, so a template cannot be used here.
  */
-export const API_TOKEN_TEMPLATE = 'vows-api';
+export const ROLE_CLAIM = 'public_metadata';
 
 /** The roles the API lets into the Studio. Anything else is a 403. */
 export const STUDIO_ROLES = ['owner', 'editor'] as const;
