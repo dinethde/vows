@@ -501,6 +501,115 @@ busy afternoon. _I would have the staging journey send from a test address
 that the limit does not count, set by an environment variable on staging only.
 Not done: it adds a way round a protection, so it is Dineth's call._
 
+## Review findings, 2026-10-12
+
+Two project agents each made their one pass: the architecture auditor on the
+API and worker, the design reviewer on the public site (19 screens, Figma
+beside the build). Tick a line when it is fixed. Scripts, crops and the image
+pairs are in the session scratchpad under `design/`, not in the repository.
+
+### Architecture audit: faults in the code
+
+- [ ] **A1. The enquiry limit counts Vercel, not the visitor.** The form posts
+      from a server action and no client address is forwarded, so `ip_hash`
+      is the web server's address. Five enquiries from anyone block everyone
+      for an hour. Also `trust proxy` is `true`, so a direct caller can pick
+      any address with `X-Forwarded-For`. (`contact/actions.ts`,
+      `lib/api/transport.ts`, `enquiry.controller.ts:38`, `bootstrap.ts:18`)
+- [ ] **A2. A photograph can stay `processing` for good.** A derive that
+      fails for any reason but "not an image" retries, fails, and leaves the
+      row as it was. Nothing writes `processing_failed`.
+- [ ] **A3. The 60 MB cap is not checked.** The API trusts the size the
+      browser states. `markUploaded` reads the real size and does not compare.
+      Nothing writes `file_too_large`.
+- [ ] **A4. `album.revalidate` uses the slug from its payload**, not the
+      album's current one (chapter 11: trust only the id).
+- [ ] **A5. Errors outside the envelope.** Any `HttpException` other than
+      400/401/403/404 becomes a 500, so a 413 reads as our fault. Unique-index
+      clashes on the slot, the idempotency key and the slug would be 500s;
+      `photo_slot_taken` is declared and never thrown.
+- [ ] **A6. `process.env` outside the config module**: `VOWS_SERVICE`
+      (`app.module.ts:33`, `apps/worker/src/main.ts:20`), `PATH`
+      (`backup.service.ts:26`). And four variables the worker needs are
+      optional, so it boots without them and fails at job time.
+- [ ] **A7. `/readyz` reports the queue from a flag set at boot.** It cannot
+      go red after start.
+- [ ] **A8. `infra/fly.api.toml` and `infra/fly.worker.toml` do not set
+      `APP_ENV`**; the schema requires it.
+- [ ] **A9. State checks sit outside their transactions** (publish, remove,
+      reorder, confirm). A remove racing a publish can leave a live album with
+      17 photographs. The idempotency key is looked up with no album or slot.
+- [ ] **A10. Readiness ties the contact form to R2.** An R2 outage takes the
+      API out of rotation, including the enquiry route, which needs only
+      Postgres. A question of what `/readyz` should mean; not changed.
+
+### Architecture audit: promised and not built
+
+- [ ] **A11. Sentry is not initialised anywhere** (chapter 20). None of the
+      six alerts can fire.
+- [ ] **A12. No dead-man's switch** on the four scheduled jobs (chapter 11).
+      A backup that silently stops is not noticed.
+- [ ] **A13. No test rolls a transaction back and checks the job is gone.**
+
+### Architecture audit: the document is wrong, the code is right
+
+- [ ] Ch 07: enquiries are deleted after 24 months and photo rows after
+      cleanup, so "nothing is hard-deleted" and "readable a year later" are
+      untrue. `error_code` is text, not an enum. Ids also use `rdr_`, `aud_`.
+- [ ] Ch 08: `/healthz` and `/readyz` answer outside the envelope and with 503. "albums (… order)" is photo order; album order is fixed.
+- [ ] Ch 10: the cover is cleared by code, not by the foreign key.
+- [ ] Ch 11: the back-off series (pg-boss doubles; "30 s, 2 m, 8 m, 32 m" is
+      ×4); who enqueues `album.revalidate` and `photo.cleanup`.
+- [ ] Ch 12: a signed rebuild call can be replayed for five minutes.
+- [ ] Ch 14: client names are `publicApi`, `authedApi`, `serverApi`, `useApi`.
+- [ ] Ch 15: small services query without a repository; the health controller
+      runs `select 1`.
+- [ ] Ch 21: a signed-out visitor gets the 403, not a redirect to sign-in.
+- [ ] Ch 30 and `apps/worker/src/jobs/README.md`: the orphan sweep only
+      counts and logs. The worker READMEs describe files that do not exist.
+- [ ] Ch 03: the development seed in `packages/db` writes directly.
+- [ ] `.env.example` lists `STUDIO_NOTIFY_EMAIL` and `WORKER_CONCURRENCY`,
+      which nothing reads.
+
+### Design review: clear mismatches
+
+- [ ] **D1. Enquiry sheet on a phone.** Figma: padding 24, 36 between title,
+      fields and foot, 26 between fields, legal text full width with a
+      full-width Send under it. Built: 56 and 40, and one row.
+- [ ] **D2. Privacy on a phone** is 124 px taller. Figma: body starts at 112,
+      8 between every line of the stack, an 18 spacer between sections,
+      headings 18/26, body 14/22.
+- [ ] **D3. Footer on a phone: falling photographs cover the phone number.**
+      They paint above the columns and the legal row.
+- [ ] **D4. Footer on a phone: the Socials column is 22 px left**; Figma
+      right-aligns it. At 1440 Socials is +11 and Contacts +22.
+- [ ] **D5. Contact heading.** Figma centres the arrow and the first line as
+      one unit; built hangs the arrow outside (41 px off at 1440, ~30 at 834,
+      ~21 at 390). "Say hello" should be one weight with one underline.
+- [ ] **D6. Contact at 834**: hero 20 px low, columns 13–15 px right, bottom
+      margin 61 against 73. At 390: 8 px off above and below the heading.
+- [ ] **D7. 404 and 403 on a phone**: the ghost number sits 5–7 px right. The
+      button label is 18 px where these two frames draw 16 (the contact frame
+      draws 18; Figma disagrees with itself).
+- [ ] **D8. Footer wordmark** sits 20 px lower than Figma beyond the known 56.
+- [ ] **D9. Music gate was not compared.** The capture caught the loader.
+
+### Design review: smaller, or Figma is unclear
+
+- The 1440 form frame shows five different fields from the 834 and 390
+  frames. Built to the six.
+- Figma centres the form card 20–24 px above the middle; built in the middle.
+- "Privacy Policy" in the form and the email on the privacy page are
+  underlined in the build and not in Figma. Kept: a link needs a mark.
+- "Rates (PDF)" is missing from the legal row (Q8).
+- The error card's shadow spreads wider than Figma's.
+- Field underlines look soft at 834 and 1440: a 1.5 px rule on a half pixel.
+- No white wash under the navbar on contact; Figma has it there and not on
+  404 or privacy.
+- The cover on tablet and phone shows less sky: the seeded file is landscape.
+- Many one-off sizes in the site's classes (`gap-[56px]`, `pt-[152px]`,
+  `rounded-[24px]`). A token pass is owed.
+
 ## Notes for the next session
 
 - Use Node 22: `source ~/.nvm/nvm.sh && nvm use 22` before any `pnpm` command.
