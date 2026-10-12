@@ -22,6 +22,16 @@ export class AlbumRepository {
     return tx.query.album.findFirst({ where: eq(album.id, id) });
   }
 
+  /**
+   * The album as it is now, held until the transaction ends. Publishing and
+   * removing a photograph both start here, so one waits for the other and
+   * neither decides on a state the other is about to change.
+   */
+  async lock(tx: DbOrTx, id: string): Promise<AlbumRow | undefined> {
+    const [row] = await tx.select().from(album).where(eq(album.id, id)).for('update');
+    return row;
+  }
+
   findBySlug(slug: string, tx: DbOrTx = this.db): Promise<AlbumRow | undefined> {
     return tx.query.album.findFirst({ where: eq(album.slug, slug) });
   }

@@ -117,8 +117,10 @@ export class AlbumService {
   }
 
   async publish(id: string, caller: Caller): Promise<StudioAlbum> {
-    const album = await this.load(id);
+    await this.load(id);
     const row = await this.db.transaction(async (tx) => {
+      const album = await this.repo.lock(tx, id);
+      if (!album) throw new NotFoundError('album_not_found', 'We could not find that album.');
       await this.assertPublishable(tx, album);
       const next = await this.repo.update(tx, id, {
         status: 'published',

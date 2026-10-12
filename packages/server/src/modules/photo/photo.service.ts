@@ -158,14 +158,17 @@ export class PhotoService {
   async remove(id: string, caller: Caller): Promise<void> {
     const row = await this.load(id);
     if (row.removedAt) return;
-    const album = await this.loadAlbum(row.albumId);
-    if (album.status === 'published') {
-      throw new DomainError(
-        'album_not_publishable',
-        'This album is on the website and needs every photograph. Replace this one, or move the album back to draft first.',
-      );
-    }
     await this.db.transaction(async (tx) => {
+      // Decided on the locked row: a publish that is under way finishes first,
+      // and then this is refused, so a live album never loses a photograph.
+      const album = await this.albums.lock(tx, row.albumId);
+      if (!album) throw new NotFoundError('album_not_found', 'We could not find that album.');
+      if (album.status === 'published') {
+        throw new DomainError(
+          'album_not_publishable',
+          'This album is on the website and needs every photograph. Replace this one, or move the album back to draft first.',
+        );
+      }
       await this.repo.update(tx, id, { removedAt: new Date() });
       if (album.coverPhotoId === id) await this.repo.setCover(tx, album.id, null);
       await this.audit.record(tx, caller.actor, {
