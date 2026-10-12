@@ -40,7 +40,6 @@ export async function generateMetadata({ params }: AlbumPageProps): Promise<Meta
   const album = await load((await params).slug);
   const title = album.seoTitle ?? album.coupleNames ?? album.title;
   const description = album.seoDescription ?? firstSentence(album.story);
-  const image = album.shareCardUrl ?? `${env.SITE_URL}/share/fallback.png`;
   return {
     title,
     description,
@@ -50,7 +49,6 @@ export async function generateMetadata({ params }: AlbumPageProps): Promise<Meta
       title: `${title} · Vows`,
       description,
       url: `${env.SITE_URL}/albums/${album.slug}`,
-      images: [{ url: image, width: 1200, height: 630 }],
     },
     twitter: { card: 'summary_large_image' },
   };
