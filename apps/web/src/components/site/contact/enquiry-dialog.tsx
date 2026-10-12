@@ -32,7 +32,7 @@ const EnquiryFormBody = dynamic(
 );
 
 const card =
-  'gap-[56px] p-space-6 tablet:p-space-8 inset-x-0! bottom-0! max-h-[calc(100svh-56px)] overflow-y-auto rounded-t-[24px] rounded-b-none tablet:w-[560px] tablet:rounded-[24px] tablet:max-h-[calc(100svh-48px)] shadow-[0_16px_48px_0_color-mix(in_srgb,var(--vows-color-ink-900)_12%,transparent)] tablet:inset-x-auto! tablet:bottom-auto!';
+  'gap-[56px] p-space-6 tablet:p-space-8 inset-x-0! bottom-0! max-h-[calc(100svh-56px)] overflow-y-auto rounded-t-[24px] rounded-b-none tablet:w-[560px] tablet:rounded-[24px] tablet:max-h-[calc(100svh-48px)] shadow-[0_16px_48px_0_color-mix(in_srgb,var(--vows-color-ink-900)_12%,transparent)] tablet:right-auto! tablet:left-1/2! tablet:bottom-auto!';
 
 /**
  * "Let's talk" does not go to another page. The page dims and the form sits on
