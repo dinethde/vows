@@ -1,6 +1,6 @@
 {
   "extends": "@vows/config/tsconfig/nest.json",
   "compilerOptions": {},
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "vitest.config.ts"],
   "exclude": ["node_modules", "dist"]
 }
