@@ -1,6 +1,8 @@
 import react from './react.js';
 
 export default [
+  // Written by Next on every build.
+  { ignores: ['next-env.d.ts'] },
   ...react,
   {
     files: ['src/**/*.{ts,tsx}'],

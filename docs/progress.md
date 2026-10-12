@@ -4,7 +4,7 @@ This file and the git log are how a new session picks up the work. Read it
 first. Update it when a milestone lands, when the plan changes, or when
 something joins the "needs Dineth" list.
 
-Last updated: 2026-10-12, milestone 3 done bar the backup write; 4 and 5 under way.
+Last updated: 2026-10-12, milestones 0 to 4 done (3 bar the backup write); 5 under way.
 
 ## Where things stand
 
@@ -16,14 +16,17 @@ Last updated: 2026-10-12, milestone 3 done bar the backup write; 4 and 5 under w
   `enquiry.notify` is tested with a recording mailer; nothing has gone through
   Resend. `db.backup` dumps the database but could not write the file: the R2
   key is refused on `vows-backups-dev`.
-- **Under way:** milestone 4. A subagent is building `packages/ui` in its own
-  git worktree, from the Figma components board. Its branch has to be reviewed
-  and merged into `feat/implementation-v2` when it reports. If a new session
-  finds no report, look for the branch with `git worktree list` and
-  `git branch -a`.
-- **Started:** milestone 5. `apps/web` has its environment parsing, the single
-  API client, fonts, global styles, the signed rebuild endpoint, `robots` and
-  `sitemap`. No page exists yet; pages wait for the components.
+- **Done:** milestone 4. `packages/ui` has 15 components and 93 tests, built
+  by a subagent from the Figma components board and merged here. Its three
+  checks pass on this branch. The date picker is not built: Figma has it as
+  plain frames, not a component.
+- **Under way:** milestone 5. `apps/web` has its environment parsing, the
+  single API client, fonts, styles, the signed rebuild endpoint, `robots`,
+  `sitemap`, the site shell with the music provider, and the 404 and 500
+  pages. The 404 was compared with its Figma frame at 1440 and matches.
+- **Next, in this order:** privacy, contact and its form, the footer, the
+  album page, the home page with the loader and the music gate, share cards.
+  Then milestone 6.
 - **Seeded:** album `alb_000001` (`benali-yasiru`) on the dev branch holds the
   cover and all 18 photographs from the Figma album page, ready, each with a
   description. It is a draft. Publishing it enqueues a rebuild call, so that
@@ -51,8 +54,8 @@ Each one leaves something that runs.
 | 1   | Tokens from Figma, `config`, `contracts`                              | `pnpm tokens:build`; 34 tests                          | done                      |
 | 2   | Database schema, migrations, seed                                     | a seeded Neon branch with 22 albums                    | done                      |
 | 3   | API and worker: config, guard, envelope, routes, the eight jobs       | `/healthz`, `/readyz`, one job end to end locally      | done bar the backup write |
-| 4   | Component library in `packages/ui`                                    | each Figma component in every state, with visual tests | not started               |
-| 5   | Public site: loader, music gate, home, album, contact, footer, errors | the site locally against the seeded API                | not started               |
+| 4   | Component library in `packages/ui`                                    | each Figma component in every state, with visual tests | done                      |
+| 5   | Public site: loader, music gate, home, album, contact, footer, errors | the site locally against the seeded API                | under way                 |
 | 6   | Studio: dashboard, album editor, confirmation scenarios               | sign in, edit, upload, publish locally                 | not started               |
 | 7   | CI, staging, the end-to-end journeys                                  | staging green, journeys passing against it             | not started               |
 
@@ -223,6 +226,29 @@ Design page:
 - **Footer.** "Rates (PDF)" and "Cookies Policy" have nothing behind them.
 - **404.** "Back to the albums" points at `/albums`, which has no screen.
 
+## What the component library reported
+
+From the subagent that built `packages/ui`. These are for the design pass.
+
+- Import `@vows/ui/styles.css` after the token stylesheets, or nothing is
+  styled. `ConfirmationModal` is portalled to `body`, so the Studio layout must
+  put `data-surface="studio"` on `body`.
+- State names are Figma's, capitalised (`'Published'`, `'Uploading'`). The
+  API's lower-case values are mapped in the app.
+- The black pill is its own component, `CtaButton`. In Figma it is a plain
+  frame, drawn two ways on a phone; the contact page's version was built.
+- Navbar padding is built as 64 / 24 / 16, as the component has it.
+- Studio fields, pills, banners and slots are square. The board text says the
+  Studio has rounded corners; the components have radius 0.
+- Five things in Figma use a primitive or a raw value where a semantic token
+  is missing: the required asterisk (`red/700`), the slot glyph (`sand/400`),
+  the slot badge (`ink/0`), the 500 card's gradient, and the modal and error
+  card shadows, which do not match `Elevation/modal`.
+- Many paddings and gaps are not on the spacing scale (14, 10, 6, 22, 28 and
+  so on). They are written as exact values taken from the named nodes.
+- Not drawn in Figma, so chosen: disabled and pending buttons, the black
+  pill's hover and pressed states, the error line inside the modal.
+
 ## Decisions I made that are worth knowing
 
 - **Slots.** `photo.position` 0 is the cover and 1 to 18 the gallery. Removing
@@ -314,5 +340,11 @@ These are known and not yet fixed.
 - The web app's variables: `API_URL`, `NEXT_PUBLIC_API_URL` (browser calls from
   the Studio; not in chapter 06), `NEXT_PUBLIC_SITE_URL`,
   `NEXT_PUBLIC_MEDIA_URL`, `REVALIDATE_SECRET`.
+- The Playwright browser tool is often "already in use". Screenshots are taken
+  with a small script instead: `@playwright/test` from `apps/web` driving its
+  own Chromium. `pnpm exec playwright install chromium` has been run.
+- Run the web app with `API_URL`, `NEXT_PUBLIC_API_URL`,
+  `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_MEDIA_URL` and `REVALIDATE_SECRET` set,
+  then `pnpm exec next dev --turbopack -p 3000` in `apps/web`.
 - App stylesheets import `@vows/config/tailwind/vows.css` first, then the two
   token stylesheets from `@vows/tokens/css/`.
