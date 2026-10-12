@@ -4,6 +4,8 @@ import request from 'supertest';
 import type { App } from 'supertest/types';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
+import { signVisitor } from '../src/modules/enquiry/visitor';
+
 import { hasDatabase, startApp } from './harness';
 import type { Harness } from './harness';
 
@@ -97,5 +99,36 @@ describe.skipIf(!hasDatabase)('POST /v1/enquiries', () => {
     expect(sixth.status).toBe(429);
     expect(sixth.headers['retry-after']).toBe('3600');
     expect((sixth.body as { error: { code: string } }).error.code).toBe('rate_limited');
+  });
+
+  it('counts each visitor the web app vouches for, not the web server they all arrive through', async () => {
+    const secret = process.env.REVALIDATE_SECRET ?? '';
+    const from = (visitor: string, signature = signVisitor(visitor, secret)) =>
+      request(http)
+        .post('/v1/enquiries')
+        .set('x-forwarded-for', '203.0.113.200')
+        .set('x-vows-visitor-ip', visitor)
+        .set('x-vows-visitor-signature', signature)
+        .send(body());
+
+    for (let count = 0; count < 5; count += 1)
+      expect((await from('198.51.100.20')).status).toBe(202);
+    expect((await from('198.51.100.20')).status).toBe(429);
+    // Someone else, through the same web server, is not held up by them.
+    expect((await from('198.51.100.21')).status).toBe(202);
+  });
+
+  it('does not let a caller name an address the web app never signed', async () => {
+    const from = (visitor: string) =>
+      request(http)
+        .post('/v1/enquiries')
+        .set('x-forwarded-for', '203.0.113.201')
+        .set('x-vows-visitor-ip', visitor)
+        .set('x-vows-visitor-signature', 'not-a-signature')
+        .send(body());
+
+    for (let count = 0; count < 5; count += 1)
+      expect((await from(`198.51.100.${String(30 + count)}`)).status).toBe(202);
+    expect((await from('198.51.100.99')).status).toBe(429);
   });
 });

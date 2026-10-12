@@ -3,6 +3,8 @@
 import { createEnquiry } from '@vows/contracts';
 import type { CreateEnquiry } from '@vows/contracts';
 
+import { visitorHeaders } from './visitor';
+
 import { ApiError, publicApi } from '@/lib/api';
 
 export type SendEnquiryResult =
@@ -24,7 +26,7 @@ export async function sendEnquiry(input: CreateEnquiry): Promise<SendEnquiryResu
     return { ok: false, message: 'Check the marked fields.', fields };
   }
   try {
-    await publicApi().enquiries.create(parsed.data);
+    await publicApi().enquiries.create(parsed.data, await visitorHeaders());
     return { ok: true };
   } catch (error) {
     if (error instanceof ApiError)

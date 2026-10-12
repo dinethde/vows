@@ -14,8 +14,10 @@ export async function configure(app: INestApplication): Promise<Env> {
   const env = app.get<Env>(ENV);
   const express = app as NestExpressApplication;
 
-  // Fly and Cloudflare sit in front, so the client address is in a header.
-  express.set('trust proxy', true);
+  // One proxy sits in front: Fly's. It appends the address that connected to
+  // it, so that last entry is the one to believe. Trusting the whole header
+  // would let a caller write their own address at its start.
+  express.set('trust proxy', 1);
   express.disable('x-powered-by');
   app.use(attachRequestId);
   app.useGlobalFilters(new DomainExceptionFilter(app.get<Logger>(LOGGER)));

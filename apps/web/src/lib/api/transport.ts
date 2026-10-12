@@ -15,6 +15,8 @@ export interface RequestOptions<Output> {
   /** The reply is parsed here, so a renamed field fails at the boundary. */
   schema?: ZodType<Output, ZodTypeDef, unknown>;
   idempotencyKey?: string;
+  /** Extra headers for one call, such as the visitor's signed address. */
+  headers?: Record<string, string>;
   /** Cache tags for a public read. Ignored whenever a token is present. */
   next?: { tags?: string[]; revalidate?: number | false };
 }
@@ -43,7 +45,7 @@ function headersFor<Output>(
   token: string | null,
   options: RequestOptions<Output>,
 ): Record<string, string> {
-  const headers: Record<string, string> = { 'x-request-id': requestId() };
+  const headers: Record<string, string> = { ...options.headers, 'x-request-id': requestId() };
   if (token) headers.authorization = `Bearer ${token}`;
   if (options.body !== undefined) headers['content-type'] = 'application/json';
   if (options.idempotencyKey) headers['idempotency-key'] = options.idempotencyKey;

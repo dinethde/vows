@@ -11,14 +11,21 @@ import type {
 import type { Transport } from './transport';
 
 export interface EnquiriesApi {
-  create: (body: CreateEnquiry) => Promise<EnquiryAccepted>;
+  /** `visitor` is the signed address headers; without them the API counts the caller. */
+  create: (body: CreateEnquiry, visitor?: Record<string, string>) => Promise<EnquiryAccepted>;
   list: (query?: Partial<EnquiryListQuery>) => Promise<EnquiryList>;
   setStatus: (id: string, status: EnquiryStatus) => Promise<Enquiry>;
 }
 
 export function enquiriesApi(request: Transport): EnquiriesApi {
   return {
-    create: (body) => request('/v1/enquiries', { method: 'POST', body, schema: enquiryAccepted }),
+    create: (body, visitor) =>
+      request('/v1/enquiries', {
+        method: 'POST',
+        body,
+        schema: enquiryAccepted,
+        ...(visitor ? { headers: visitor } : {}),
+      }),
     list: (query = {}) => {
       const params = new URLSearchParams(
         Object.entries(query).flatMap(([key, value]) =>

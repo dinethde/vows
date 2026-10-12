@@ -25,6 +25,7 @@ import { ZodPipe } from '../../common/pipes/zod.pipe';
 import type { Actor } from '../../common/request';
 
 import { EnquiryService } from './enquiry.service';
+import { VISITOR_IP_HEADER, VISITOR_SIGNATURE_HEADER } from './visitor';
 
 @Controller('v1')
 export class EnquiryController {
@@ -35,11 +36,20 @@ export class EnquiryController {
   @HttpCode(202)
   create(
     @Body(new ZodPipe(createEnquiry)) body: CreateEnquiry,
-    @Ip() ip: string,
-    @Headers('user-agent') userAgent: string | undefined,
+    @Ip() connection: string,
+    @Headers() headers: Record<string, string | undefined>,
     @RequestId() requestId: string,
   ): Promise<EnquiryAccepted> {
-    return this.enquiries.create(body, { ip, userAgent, requestId });
+    const visitor = {
+      connection,
+      claimed: headers[VISITOR_IP_HEADER],
+      signature: headers[VISITOR_SIGNATURE_HEADER],
+    };
+    return this.enquiries.create(body, {
+      visitor,
+      userAgent: headers['user-agent'],
+      requestId,
+    });
   }
 
   @Get('studio/enquiries')

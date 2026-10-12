@@ -22,6 +22,8 @@ import { AuditService } from '../audit/audit.service';
 
 import { EnquiryRepository } from './enquiry.repository';
 import type { EnquiryRow } from './enquiry.repository';
+import { visitorAddress } from './visitor';
+import type { VisitorClaim } from './visitor';
 
 export const ENQUIRIES_PER_HOUR = 5;
 const HOUR_MS = 60 * 60 * 1000;
@@ -29,7 +31,7 @@ const DUPLICATE_WINDOW_MS = 10 * 60 * 1000;
 const USER_AGENT_MAX = 255;
 
 export interface Sender {
-  ip: string;
+  visitor: VisitorClaim;
   userAgent: string | undefined;
   requestId: string;
 }
@@ -68,7 +70,9 @@ export class EnquiryService {
       throw new ValidationError({ form: 'That was sent too quickly. Please try again.' });
     }
     const ipHash = createHash('sha256')
-      .update(`${this.env.IP_HASH_SALT}:${sender.ip}`)
+      .update(
+        `${this.env.IP_HASH_SALT}:${visitorAddress(sender.visitor, this.env.REVALIDATE_SECRET)}`,
+      )
       .digest('hex');
     const notes = input.notes ?? null;
 
