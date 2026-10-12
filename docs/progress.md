@@ -25,11 +25,11 @@ Last updated: 2026-10-12, public site and Studio built; Studio not yet run signe
   prompt, the album page, the contact page and its form, privacy, the footer
   with its reveal, colour change and falling photographs, and the 404 and 500
   pages. `/readyz` is green locally with Postgres, R2 and the queue.
-- **Left in milestone 5:** the calendar under the wedding date field (it is the
-  browser's own date input for now; the Studio's date picker can be reused);
-  and a design pass against every Figma frame with the screenshots kept for
-  the pull request. The contact form's code now loads when the form is opened,
-  which took the page's first load from 184 kB to 141 kB.
+- **Left in milestone 5:** a design pass against every Figma frame, with the
+  screenshots kept for the pull request. The contact form now has its
+  calendar, and its code loads when the form is opened (first load 184 kB
+  down to 142 kB). The form's card was sitting half off the left edge on
+  tablet and desktop; that is fixed and a test now checks where it sits.
 - **Built, one check missing:** milestone 6, the Studio. A subagent built it
   and its five commits are on this branch: the Clerk gate with a real 403,
   sign-in, the dashboard, the album editor, the date picker, the upload queue,
@@ -337,8 +337,9 @@ Design page:
 - **Footer.** Top padding is 40 / 32 / 20; built with the bar's 56 added, or
   the navbar sits on the column labels. The bounce lands at each photograph's
   resting place, not on the measured top of the wordmark.
-- **Contact form, state 05.** A calendar under the field; built as the
-  browser's own date input for now.
+- **Contact form, state 05.** Figma lets the month hang over the bottom edge
+  of the card, with a 0 8 24 −4 shadow. Built: the month stays inside the
+  card, which scrolls to show its last row, and uses `shadow-card`.
 - **Album bar on a phone.** The notes say names, paragraph, then details. The
   frame draws names, details, then paragraph. Built as the frame.
 - **Album band 7.** Figma lists the large photograph first. The page reads
@@ -483,6 +484,16 @@ These are known and not yet fixed.
   variant; the navbar padding is 64 / 24 / 16 in one note and 40 / 24 / 16 in
   two others; the `Display/Wordmark L` style is 184 where the footer note
   says 200.
+
+### The enquiry journey and the rate limit
+
+The API allows five enquiries an hour from one connection. The end-to-end
+suite sends two per run (desktop and phone). A third run inside the hour gets
+the "several messages from this connection" notice and the journey fails. It
+happened locally on 2026-10-12. On staging, CI would fail the same way on a
+busy afternoon. _I would have the staging journey send from a test address
+that the limit does not count, set by an environment variable on staging only.
+Not done: it adds a way round a protection, so it is Dineth's call._
 
 ## Notes for the next session
 
