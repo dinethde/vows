@@ -25,3 +25,6 @@ npm-debug.log*
 # browser tool output
 .playwright-mcp/
 *.tsbuildinfo
+
+# staging seed photographs, exported from Figma. Not ours to publish in git.
+.seed-photos/
