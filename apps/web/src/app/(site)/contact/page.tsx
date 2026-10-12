@@ -36,7 +36,7 @@ function Group({ title, className, children }: GroupProps): ReactElement {
 /** The four groups along the bottom: one row on a desktop, stacked on a phone. */
 function ContactDetails(): ReactElement {
   return (
-    <div className="tablet:grid-cols-3 desktop:flex desktop:justify-between gap-x-space-6 gap-y-space-5 tablet:gap-y-space-8 grid w-full grid-cols-1">
+    <div className="gap-y-space-5 tablet:grid-cols-[230px_240px_250px] tablet:justify-between tablet:gap-y-space-9 desktop:flex desktop:justify-between grid w-full grid-cols-1">
       <div className="gap-space-5 tablet:col-span-3 desktop:w-[320px] flex flex-col items-start">
         <Image src="/icons/arrow-40.svg" alt="" width={40} height={14} />
         <p className={value}>
@@ -93,22 +93,25 @@ export default function ContactPage(): ReactElement {
     <>
       <main
         id="main"
-        className="bg-page px-space-5 tablet:px-space-8 desktop:px-space-10 gap-space-6 tablet:gap-space-10 pb-space-7 tablet:pb-[60px] desktop:pb-[100px] tablet:pt-[148px] relative z-10 flex min-h-svh flex-col items-center justify-between pt-[104px] [@media(max-height:620px)]:min-h-0"
+        className="bg-page px-space-5 tablet:px-space-8 desktop:px-space-10 gap-space-6 tablet:gap-space-10 tablet:pb-[72px] desktop:pb-[100px] tablet:pt-[128px] desktop:pt-[148px] relative z-10 flex min-h-svh flex-col items-center justify-between pb-[36px] pt-[96px] [@media(max-height:620px)]:min-h-0"
       >
-        <div className="gap-space-6 tablet:gap-space-8 flex flex-col items-center">
+        <div className="tablet:gap-space-8 gap-space-7 flex flex-col items-center">
           <p className="type-ui-caption text-secondary px-space-4 py-[6px]">
-            Say <span className="font-medium underline">hello</span>
+            <span className="underline underline-offset-2">Say hello</span>
           </p>
-          <h1 className="type-display-hero-s tablet:type-display-hero-m desktop:type-display-hero-l text-primary relative text-center">
-            <Image
-              src="/icons/arrow-56.svg"
-              alt=""
-              width={56}
-              height={14}
-              className="tablet:mr-[20px] tablet:w-[40px] desktop:mr-[28px] desktop:w-[56px] absolute right-full top-[0.6em] mr-[12px] w-[30px] -translate-y-1/2"
-            />
-            Let’s talk about <br />
-            your day.
+          <h1 className="type-display-hero-s tablet:type-display-hero-m desktop:type-display-hero-l text-primary flex flex-col items-center text-center">
+            {/* The arrow and the first line are centred together, as one line. */}
+            <span className="tablet:gap-[22px] desktop:gap-[28px] flex items-center gap-[12px] whitespace-nowrap">
+              <Image
+                src="/icons/arrow-56.svg"
+                alt=""
+                width={56}
+                height={14}
+                className="tablet:w-[40px] desktop:w-[56px] w-[30px] shrink-0"
+              />
+              Let’s talk about
+            </span>
+            <span>your day.</span>
           </h1>
           <EnquiryDialog />
         </div>
