@@ -536,9 +536,10 @@ pairs are in the session scratchpad under `design/`, not in the repository.
       go red after start.
 - [x] **A8. `infra/fly.api.toml` and `infra/fly.worker.toml` do not set
       `APP_ENV`**; the schema requires it.
-- [ ] **A9. State checks sit outside their transactions** (publish, remove,
+- [x] **A9. State checks sit outside their transactions** (publish, remove,
       reorder, confirm). A remove racing a publish can leave a live album with
       17 photographs. The idempotency key is looked up with no album or slot.
+      _Publish against remove is fixed with a row lock. The key lookup is not._
 - [ ] **A10. Readiness ties the contact form to R2.** An R2 outage takes the
       API out of rotation, including the enquiry route, which needs only
       Postgres. A question of what `/readyz` should mean; not changed.
@@ -554,7 +555,7 @@ Vercel puts the visitor first. A deployed worker now refuses to start without
       six alerts can fire.
 - [ ] **A12. No dead-man's switch** on the four scheduled jobs (chapter 11).
       A backup that silently stops is not noticed.
-- [ ] **A13. No test rolls a transaction back and checks the job is gone.**
+- [x] **A13. No test rolls a transaction back and checks the job is gone.**
 
 ### Architecture audit: the document is wrong, the code is right
 
