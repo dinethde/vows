@@ -3,8 +3,8 @@
 @import '@vows/tokens/css/primitives.css';
 @import '@vows/tokens/css/semantic.css';
 
-/* @vows/ui is used as source, so its classes have to be scanned too. */
-@source '../../../../packages/ui/src';
+/* Registers @vows/ui's source with Tailwind and brings its one animation. */
+@import '@vows/ui/styles.css';
 
 @layer base {
   html {
