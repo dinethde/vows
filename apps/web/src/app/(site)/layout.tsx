@@ -1,7 +1,7 @@
 import type { ReactElement, ReactNode } from 'react';
 
 import { MusicProvider } from '@/components/site/music/music-provider';
-import { SiteNavbar } from '@/components/site/site-navbar';
+import { SiteHeader } from '@/components/site/site-header';
 
 export interface SiteLayoutProps {
   children: ReactNode;
@@ -17,9 +17,7 @@ export default function SiteLayout({ children }: SiteLayoutProps): ReactElement 
       >
         Skip to the content
       </a>
-      <header className="fixed inset-x-0 top-0 z-40">
-        <SiteNavbar />
-      </header>
+      <SiteHeader />
       {children}
     </MusicProvider>
   );
