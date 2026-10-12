@@ -446,7 +446,13 @@ From the subagent that built `packages/ui`. These are for the design pass.
   uses it), `WEB_ORIGINS` (the allowed `azp` values and CORS origins) and
   `IP_HASH_SALT` (chapter 07 says the IP hash is salted). `MEDIA_URL` and
   `SITE_URL` are the API's names for the media and site origins. They still
-  need adding to `.env.example` and the chapter 06 table.
+  need adding to `.env.example` and the chapter 06 table. I cannot do the
+  first: the permission settings deny me `.env.example`, and I have left that
+  as it is. The names it needs, with empty values: for the API and worker,
+  `CLERK_ISSUER`, `CLERK_JWKS_URL`, `WEB_ORIGINS`, `SITE_URL`, `MEDIA_URL`,
+  `IP_HASH_SALT`; for the web app, `API_URL`, `NEXT_PUBLIC_API_URL`,
+  `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_MEDIA_URL`, `REVALIDATE_SECRET`,
+  `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`.
 - **An edit that would leave a published album incomplete is refused**, with
   the same 422 as publish.
 - **Routes added to chapter 08:** `GET /v1/studio/albums/:id`,

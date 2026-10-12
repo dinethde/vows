@@ -260,6 +260,19 @@ token; the token travels in the `Authorization` header; the API verifies the
 signature against cached JWKS and checks the claims; the role comes out of the
 verified payload. Roles: `owner`, `editor`. There are no customer accounts.
 
+The token is Clerk's own session token, not one minted from a JWT template. The
+instance's session token is customised to carry
+`{"public_metadata": "{{user.public_metadata}}"}`, and the role is
+`public_metadata.role`. The API checks four things on every request, with no
+session cache: the signature, the issuer (`CLERK_ISSUER`), that `azp` is one of
+`WEB_ORIGINS`, and the role. The `azp` check is what refuses a token meant for
+another application on the same Clerk instance. A template token minted on the
+server carries no `azp`, which is why templates are not used.
+
+The web app gates `/studio` in middleware: a signed-out visitor and a signed-in
+account with no role both get the 403 screen with a real 403 status. That gate
+only decides what to draw. The API guards the data.
+
 ---
 
 ## 10 · Image pipeline
