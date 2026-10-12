@@ -23,8 +23,14 @@ export interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps): ReactElement {
   return (
-    <html lang="en" className={fontVariables}>
-      <body>{children}</body>
+    <html lang="en" className={fontVariables} suppressHydrationWarning>
+      <body>
+        {/* Marks the page as scripted before it paints, so a reveal never flashes. */}
+        <script
+          dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

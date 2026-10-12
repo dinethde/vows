@@ -4,11 +4,30 @@ import type { ReactElement } from 'react';
 import { galleryCss, sizesFor } from './gallery-css';
 import { BAND_SIZES } from './gallery-layout';
 
+import { FloatGroup } from '@/components/site/motion/float-group';
 import { Photo } from '@/components/site/photo/photo';
 
 export interface AlbumGalleryProps {
   /** The eighteen photographs, in slot order. */
   photos: PhotoData[];
+}
+
+interface SlotProps {
+  slot: number;
+  photo: PhotoData | undefined;
+}
+
+/** The outer box arrives once; the inner one floats. Two elements, so the two never fight over a transform. */
+function Slot({ slot, photo }: SlotProps): ReactElement {
+  return (
+    <div data-reveal className={`slot-${String(slot)} relative shrink-0`}>
+      <div data-float className="size-full will-change-transform">
+        {photo ? (
+          <Photo photo={photo} sizes={sizesFor(slot)} className="size-full object-cover" />
+        ) : null}
+      </div>
+    </div>
+  );
 }
 
 /**
@@ -21,29 +40,21 @@ export function AlbumGallery({ photos }: AlbumGalleryProps): ReactElement {
   const bySlot = new Map(photos.map((photo) => [photo.position, photo]));
   let slot = 0;
   return (
-    <section aria-label="Photographs" className="gallery bg-page flex flex-col overflow-clip">
+    <section aria-label="Photographs" className="bg-page overflow-clip">
       <style>{galleryCss()}</style>
-      {BAND_SIZES.map((size, index) => (
-        <div
-          key={`band-${String(index + 1)}`}
-          className={`band-${String(index + 1)} flex items-start`}
-        >
-          {Array.from({ length: size }, () => {
-            slot += 1;
-            const photo = bySlot.get(slot);
-            return (
-              <div
-                key={`slot-${String(slot)}`}
-                className={`slot-${String(slot)} relative shrink-0`}
-              >
-                {photo ? (
-                  <Photo photo={photo} sizes={sizesFor(slot)} className="size-full object-cover" />
-                ) : null}
-              </div>
-            );
-          })}
-        </div>
-      ))}
+      <FloatGroup className="gallery flex flex-col">
+        {BAND_SIZES.map((size, index) => (
+          <div
+            key={`band-${String(index + 1)}`}
+            className={`band-${String(index + 1)} flex items-start`}
+          >
+            {Array.from({ length: size }, () => {
+              slot += 1;
+              return <Slot key={`slot-${String(slot)}`} slot={slot} photo={bySlot.get(slot)} />;
+            })}
+          </div>
+        ))}
+      </FloatGroup>
     </section>
   );
 }
