@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { COVER_POSITION } from '@vows/contracts';
+import { COVER_POSITION, MAX_UPLOAD_BYTES } from '@vows/contracts';
 import type {
   CreateUploadUrl,
   Photo,
@@ -104,6 +104,15 @@ export class PhotoService {
     const bytes = await this.storage.originalSize(row.originalKey);
     if (bytes === null) {
       throw new DomainError('photo_not_uploaded', 'The file did not arrive. Try the upload again.');
+    }
+    // The size asked for was the browser's word. This is the file's.
+    if (bytes > MAX_UPLOAD_BYTES) {
+      const refused = await this.repo.update(this.db, id, {
+        status: 'failed',
+        bytes,
+        errorCode: 'file_too_large',
+      });
+      return this.present(refused);
     }
     const next = await this.db.transaction(async (tx) => {
       const updated = await this.repo.update(tx, id, {
