@@ -6,8 +6,8 @@ import { useState, useTransition } from 'react';
 import type { ReactElement } from 'react';
 
 import { unpublishAlbum } from '@/app/studio/actions';
+import { focusRing } from '@/components/shared/focus';
 import { CONFIRMATIONS } from '@/components/studio/confirmations';
-import { focusRing } from '@/components/studio/focus';
 import { usePortalContainer } from '@/components/studio/shell/studio-providers';
 
 export interface MoveToDraftProps {

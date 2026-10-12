@@ -8,7 +8,7 @@ import { ADDRESS_PREFIX } from './details-copy';
 import { useEditor } from './editor-context';
 import { blockedNote } from './publish-problems';
 
-import { focusRing } from '@/components/studio/focus';
+import { focusRing } from '@/components/shared/focus';
 import { env } from '@/config/env';
 import { fullDate } from '@/lib/format/dates';
 

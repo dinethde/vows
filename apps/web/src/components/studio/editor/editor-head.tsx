@@ -6,7 +6,7 @@ import { useWatch } from 'react-hook-form';
 
 import { useEditor } from './editor-context';
 
-import { focusRing } from '@/components/studio/focus';
+import { focusRing } from '@/components/shared/focus';
 import { env } from '@/config/env';
 
 /**

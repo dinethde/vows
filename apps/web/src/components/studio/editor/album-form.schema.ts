@@ -1,7 +1,7 @@
 import type { StudioAlbum, UpdateAlbum } from '@vows/contracts';
 import { z } from 'zod';
 
-import { formatDateText, parseDateText } from '@/components/studio/date/date-text';
+import { formatDateText, parseDateText } from '@/components/shared/date/date-text';
 
 const text = (max: number, what: string): z.ZodString =>
   z.string().max(max, `Keep ${what} to ${String(max)} characters or fewer.`);

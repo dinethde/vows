@@ -11,7 +11,7 @@ import type { TextFieldSpec } from './details-copy';
 import type { HelpedProps, TextFieldProps } from './details-form.types';
 import { useEditor } from './editor-context';
 
-import { DatePicker } from '@/components/studio/date/date-picker';
+import { DatePicker } from '@/components/shared/date/date-picker';
 
 interface FieldHelp {
   error: string | undefined;

@@ -53,6 +53,10 @@ export function EnquiryDialog(): ReactElement {
         onOpenAutoFocus={(event) => {
           event.preventDefault();
         }}
+        // With the month open under the date field, Escape closes the month.
+        onEscapeKeyDown={(event) => {
+          if (document.querySelector('[data-month-open="true"]')) event.preventDefault();
+        }}
       >
         <EnquiryFormBody />
       </DialogContent>

@@ -10,7 +10,7 @@ import { PhotoNotices } from './photo-notices';
 import { galleryStyle, previewBands } from './preview-layout';
 import { SlotCard } from './slot-card';
 
-import { formatDateText, parseDateText } from '@/components/studio/date/date-text';
+import { formatDateText, parseDateText } from '@/components/shared/date/date-text';
 
 const BANDS = previewBands();
 

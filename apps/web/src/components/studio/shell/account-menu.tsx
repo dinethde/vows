@@ -5,8 +5,8 @@ import { cn } from '@vows/ui';
 import { useId, useRef } from 'react';
 import type { ReactElement } from 'react';
 
-import { focusRing } from '@/components/studio/focus';
-import { useDismiss } from '@/components/studio/use-dismiss';
+import { focusRing } from '@/components/shared/focus';
+import { useDismiss } from '@/components/shared/use-dismiss';
 import { SIGN_IN_PATH } from '@/lib/auth/constants';
 
 export interface AccountMenuProps {

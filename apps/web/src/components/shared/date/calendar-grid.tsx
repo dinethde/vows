@@ -14,7 +14,7 @@ import {
 } from './calendar';
 import type { CalendarGridProps, DayCellProps, MonthStepProps } from './date-picker.types';
 
-import { focusRing } from '@/components/studio/focus';
+import { focusRing } from '@/components/shared/focus';
 import { fullDate } from '@/lib/format/dates';
 
 /* The chevron is 6 × 10 as drawn; the button around it is 44 so a finger can land. */

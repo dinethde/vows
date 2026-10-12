@@ -1,7 +1,7 @@
 import { COVER_POSITION, GALLERY_SIZE } from '@vows/contracts';
 import type { Photo } from '@vows/contracts';
 
-import { parseDateText } from '@/components/studio/date/date-text';
+import { parseDateText } from '@/components/shared/date/date-text';
 
 /**
  * Why an album cannot go out, keyed the way the API keys its 422:

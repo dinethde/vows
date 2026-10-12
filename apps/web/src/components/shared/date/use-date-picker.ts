@@ -5,8 +5,8 @@ import { todayIso } from './calendar';
 import type { DatePickerProps } from './date-picker.types';
 import { formatDateText, parseDateText } from './date-text';
 
-import { useDismiss } from '@/components/studio/use-dismiss';
-import type { Dismissable } from '@/components/studio/use-dismiss';
+import { useDismiss } from '@/components/shared/use-dismiss';
+import type { Dismissable } from '@/components/shared/use-dismiss';
 
 interface GridFocus {
   day: string;

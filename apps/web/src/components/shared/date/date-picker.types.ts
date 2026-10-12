@@ -1,6 +1,10 @@
 import type { Ref } from 'react';
 
 export interface DatePickerProps {
+  /** Which Figma field draws the box. The Studio's, unless told otherwise. */
+  surface?: 'site' | 'studio';
+  /** Marks the field as one that must be filled in. */
+  required?: boolean;
   /** The label above the box: "Wedding date". */
   label: string;
   /** What is in the box, as the person typed it or as a picked day is written. */

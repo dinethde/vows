@@ -5,14 +5,10 @@ import type { ReactElement } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
 import type { EnquiryFields } from './enquiry-form.schema';
+import { WeddingDateField } from './wedding-date-field';
 
 export interface EnquiryFieldsProps {
   form: UseFormReturn<EnquiryFields>;
-}
-
-/** Tomorrow at the earliest: a wedding date in the past is a typing mistake. */
-function today(): string {
-  return new Date().toISOString().slice(0, 10);
 }
 
 /** Field has no `error` prop at all when there is nothing wrong. */
@@ -57,15 +53,7 @@ export function EnquiryFieldList({ form }: EnquiryFieldsProps): ReactElement {
         {...register('phone')}
         {...error('phone')}
       />
-      <Field
-        surface="site"
-        label="Wedding date"
-        required
-        type="date"
-        min={today()}
-        {...register('weddingDate')}
-        {...error('weddingDate')}
-      />
+      <WeddingDateField control={form.control} />
       <Field
         surface="site"
         label="Wedding place"

@@ -5,7 +5,7 @@ import type { ReactElement } from 'react';
 
 import { MoveToDraft } from './move-to-draft';
 
-import { focusRing } from '@/components/studio/focus';
+import { focusRing } from '@/components/shared/focus';
 import { thumbFor } from '@/components/studio/photo-thumb';
 import { isLive, pillFor } from '@/components/studio/stage';
 import { albumPath } from '@/lib/auth/constants';

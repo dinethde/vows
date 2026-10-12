@@ -8,7 +8,7 @@ import type { ChangeEvent, ReactElement } from 'react';
 import { canMove } from './reorder';
 import { useSlots } from './slots-context';
 
-import { focusRing } from '@/components/studio/focus';
+import { focusRing } from '@/components/shared/focus';
 
 export interface SlotCaptionProps {
   photo: Photo;
