@@ -1,9 +1,9 @@
 {
   "_comment": [
-    "Applied with: npx wrangler r2 bucket cors put vows-photographs --file infra/r2-bucket-policy.json",
+    "Applied with: wrangler r2 bucket cors set vows-originals --file infra/r2-bucket-policy.json",
     "The browser PUTs directly to a presigned URL, so R2 must accept PUT from our",
     "origins and nowhere else. Originals are never public — only the derivatives",
-    "bucket sits behind cdn.vows.lk. Chapter 16."
+    "bucket sits behind media.vows.lk. Chapter 10."
   ],
   "rules": [
     {

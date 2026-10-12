@@ -34,7 +34,7 @@ primary_region = "sin"
   interval = "15s"
   method = "GET"
   timeout = "5s"
-  path = "/health"
+  path = "/readyz"
 
 [[vm]]
   size = "shared-cpu-1x"

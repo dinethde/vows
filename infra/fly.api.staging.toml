@@ -1,0 +1,44 @@
+# fly deploy -c infra/fly.api.staging.toml --dockerfile apps/api/Dockerfile
+#
+# The staging API, in Singapore beside the database. It stops when nobody is
+# calling it and starts on the next request: the Studio is used in bursts, and
+# a public page never touches it. Chapter 32. Secrets are pushed from the
+# Bitwarden vault, never typed: see infra/README.md.
+
+app = "vows-api-staging"
+primary_region = "sin"
+
+[env]
+  APP_ENV = "staging"
+  NODE_ENV = "production"
+  PORT = "8080"
+  LOG_LEVEL = "info"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [http_service.concurrency]
+    type = "requests"
+    hard_limit = 250
+    soft_limit = 200
+
+  # Readiness: Postgres, R2 and the queue all answer. Fly holds traffic off a
+  # machine that fails it. Liveness is /healthz, which touches nothing.
+  [[http_service.checks]]
+    grace_period = "20s"
+    interval = "15s"
+    method = "GET"
+    timeout = "8s"
+    path = "/readyz"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
+
+[deploy]
+  # Migrations run in the deploy workflow, before this starts.
+  strategy = "rolling"

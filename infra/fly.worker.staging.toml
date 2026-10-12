@@ -1,0 +1,21 @@
+# fly deploy -c infra/fly.worker.staging.toml --dockerfile apps/worker/Dockerfile
+#
+# The staging worker. No http_service: nothing calls it. It stays awake to hold
+# the queue. 512 MB to start with; raise it only if sharp runs out of memory on
+# the largest files, and measure before paying. Chapter 32.
+
+app = "vows-worker-staging"
+primary_region = "sin"
+
+[env]
+  APP_ENV = "staging"
+  NODE_ENV = "production"
+  LOG_LEVEL = "info"
+  VOWS_SERVICE = "worker"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
+
+[deploy]
+  strategy = "immediate"
