@@ -4,7 +4,7 @@ This file and the git log are how a new session picks up the work. Read it
 first. Update it when a milestone lands, when the plan changes, or when
 something joins the "needs Dineth" list.
 
-Last updated: 2026-10-12, milestones 0 to 4 done (3 bar the backup write); 5 under way.
+Last updated: 2026-10-12, milestone 5 nearly done; 6 next.
 
 ## Where things stand
 
@@ -20,17 +20,20 @@ Last updated: 2026-10-12, milestones 0 to 4 done (3 bar the backup write); 5 und
   by a subagent from the Figma components board and merged here. Its three
   checks pass on this branch. The date picker is not built: Figma has it as
   plain frames, not a component.
-- **Under way:** milestone 5. `apps/web` has its environment parsing, the
-  single API client, fonts, styles, the signed rebuild endpoint, `robots`,
-  `sitemap`, the site shell with the music provider, and the 404 and 500
-  pages. The 404 was compared with its Figma frame at 1440 and matches.
-- **Next, in this order:** privacy, contact and its form, the footer, the
-  album page, the home page with the loader and the music gate, share cards.
-  Then milestone 6.
-- **Seeded:** album `alb_000001` (`benali-yasiru`) on the dev branch holds the
-  cover and all 18 photographs from the Figma album page, ready, each with a
-  description. It is a draft. Publishing it enqueues a rebuild call, so that
-  waits until the web app runs.
+- **Nearly done:** milestone 5, the public site. Built and checked in a
+  browser at 1440, 834 and 390: the home canvas with the loader and the music
+  prompt, the album page, the contact page and its form, privacy, the footer
+  with its reveal, colour change and falling photographs, and the 404 and 500
+  pages. `/readyz` is green locally with Postgres, R2 and the queue.
+- **Left in milestone 5:** the calendar under the wedding date field (it is the
+  browser's own date input for now); the share card with the couple's names on
+  it (album pages use the plain crop, other pages the fallback card); the 403
+  page's route, which comes with the Studio; and a design pass against every
+  Figma frame with the screenshots kept for the pull request.
+- **Next:** milestone 6, the Studio. Its screens can be built now. Signing in
+  needs Clerk keys.
+- **Seeded and published:** album `alb_000001` (`benali-yasiru`) on the dev
+  branch, with the cover and all 18 photographs from the Figma album page.
 - **Cloud resources in use:** Neon project `vows-sg` in Singapore
   (`plain-fog-47201137`, Postgres 18), branch `dev-claude`. R2 buckets
   `vows-originals-dev` (CORS allows `PUT` from `http://localhost:3000`) and
@@ -55,7 +58,7 @@ Each one leaves something that runs.
 | 2   | Database schema, migrations, seed                                     | a seeded Neon branch with 22 albums                    | done                      |
 | 3   | API and worker: config, guard, envelope, routes, the eight jobs       | `/healthz`, `/readyz`, one job end to end locally      | done bar the backup write |
 | 4   | Component library in `packages/ui`                                    | each Figma component in every state, with visual tests | done                      |
-| 5   | Public site: loader, music gate, home, album, contact, footer, errors | the site locally against the seeded API                | under way                 |
+| 5   | Public site: loader, music gate, home, album, contact, footer, errors | the site locally against the seeded API                | nearly done               |
 | 6   | Studio: dashboard, album editor, confirmation scenarios               | sign in, edit, upload, publish locally                 | not started               |
 | 7   | CI, staging, the end-to-end journeys                                  | staging green, journeys passing against it             | not started               |
 
@@ -212,6 +215,19 @@ Architecture page:
   has 60 and package scopes, plus `server`.
 
 Design page:
+
+- **Home.** One tile per album. With fewer than 22 published, the canvas is
+  filled with other photographs from the published albums. Tiles keep their
+  drawn pixel sizes; only their positions scale with the window.
+- **Footer.** Top padding is 40 / 32 / 20; built with the bar's 56 added, or
+  the navbar sits on the column labels. The bounce lands at each photograph's
+  resting place, not on the measured top of the wordmark.
+- **Contact form, state 05.** A calendar under the field; built as the
+  browser's own date input for now.
+- **Album bar on a phone.** The notes say names, paragraph, then details. The
+  frame draws names, details, then paragraph. Built as the frame.
+- **Album band 7.** Figma lists the large photograph first. The page reads
+  left to right, small then large, so slot 10 is the small one.
 
 - **CMS notes.** "Deleting an album" is listed as a fifth confirmation.
   The frames have four. Built four.
