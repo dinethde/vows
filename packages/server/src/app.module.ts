@@ -14,7 +14,9 @@ import { AlbumModule } from './modules/album/album.module';
 import { AuditModule } from './modules/audit/audit.module';
 import { EnquiryModule } from './modules/enquiry/enquiry.module';
 import { HealthModule } from './modules/health/health.module';
+import { HousekeepingModule } from './modules/housekeeping/housekeeping.module';
 import { PhotoModule } from './modules/photo/photo.module';
+import { RevalidateModule } from './modules/revalidate/revalidate.module';
 import { QueueModule } from './queue/queue.module';
 import { StorageModule } from './storage/storage.module';
 
@@ -51,6 +53,8 @@ export class CoreModule {}
     EnquiryModule,
     AlbumModule,
     PhotoModule,
+    HousekeepingModule,
+    RevalidateModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ClerkGuard },

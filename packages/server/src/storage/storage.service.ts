@@ -1,7 +1,9 @@
 import {
+  DeleteObjectsCommand,
   GetObjectCommand,
   HeadBucketCommand,
   HeadObjectCommand,
+  ListObjectsV2Command,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
@@ -13,6 +15,7 @@ import type { Env } from '../config/env';
 
 export const PRESIGN_SECONDS = 300;
 const TIMEOUT_MS = 5000;
+const DELETE_BATCH = 500;
 
 /**
  * R2 through its S3 API. Two buckets: originals, private and never served; and
@@ -73,6 +76,42 @@ export class StorageService {
         CacheControl: 'public, max-age=31536000, immutable',
       }),
     );
+  }
+
+  /** Deleting is the one step with no undo. Callers check before they call. */
+  async deletePublic(keys: string[]): Promise<void> {
+    await this.deleteFrom(this.env.R2_BUCKET_PUBLIC, keys);
+  }
+
+  async deleteOriginals(keys: string[]): Promise<void> {
+    await this.deleteFrom(this.env.R2_BUCKET_ORIGINALS, keys);
+  }
+
+  /** Every key under a prefix in the public bucket, a page at a time. */
+  async listPublic(prefix: string): Promise<string[]> {
+    const keys: string[] = [];
+    let token: string | undefined;
+    do {
+      const page = await this.client.send(
+        new ListObjectsV2Command({
+          Bucket: this.env.R2_BUCKET_PUBLIC,
+          Prefix: prefix,
+          ContinuationToken: token,
+        }),
+      );
+      for (const object of page.Contents ?? []) if (object.Key) keys.push(object.Key);
+      token = page.IsTruncated ? page.NextContinuationToken : undefined;
+    } while (token);
+    return keys;
+  }
+
+  private async deleteFrom(bucket: string, keys: string[]): Promise<void> {
+    for (let start = 0; start < keys.length; start += DELETE_BATCH) {
+      const batch = keys.slice(start, start + DELETE_BATCH).map((Key) => ({ Key }));
+      await this.client.send(
+        new DeleteObjectsCommand({ Bucket: bucket, Delete: { Objects: batch } }),
+      );
+    }
   }
 
   publicUrl(key: string): string {
