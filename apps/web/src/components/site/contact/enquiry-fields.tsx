@@ -31,6 +31,8 @@ export function EnquiryFieldList({ form }: EnquiryFieldsProps): ReactElement {
         surface="site"
         label="Your name"
         required
+        // Safe here: this field only ever exists inside an open dialog.
+        autoFocus
         autoComplete="name"
         {...register('name')}
         {...error('name')}
