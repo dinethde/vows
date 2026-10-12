@@ -558,21 +558,21 @@ Vercel puts the visitor first. A deployed worker now refuses to start without
 
 ### Architecture audit: the document is wrong, the code is right
 
-- [ ] Ch 07: enquiries are deleted after 24 months and photo rows after
+- [x] Ch 07: enquiries are deleted after 24 months and photo rows after
       cleanup, so "nothing is hard-deleted" and "readable a year later" are
       untrue. `error_code` is text, not an enum. Ids also use `rdr_`, `aud_`.
-- [ ] Ch 08: `/healthz` and `/readyz` answer outside the envelope and with 503. "albums (… order)" is photo order; album order is fixed.
-- [ ] Ch 10: the cover is cleared by code, not by the foreign key.
-- [ ] Ch 11: the back-off series (pg-boss doubles; "30 s, 2 m, 8 m, 32 m" is
+- [x] Ch 08: `/healthz` and `/readyz` answer outside the envelope and with 503. "albums (… order)" is photo order; album order is fixed.
+- [x] Ch 10: the cover is cleared by code, not by the foreign key.
+- [x] Ch 11: the back-off series (pg-boss doubles; "30 s, 2 m, 8 m, 32 m" is
       ×4); who enqueues `album.revalidate` and `photo.cleanup`.
-- [ ] Ch 12: a signed rebuild call can be replayed for five minutes.
-- [ ] Ch 14: client names are `publicApi`, `authedApi`, `serverApi`, `useApi`.
+- [x] Ch 12: a signed rebuild call can be replayed for five minutes.
+- [x] Ch 14: client names are `publicApi`, `authedApi`, `serverApi`, `useApi`.
 - [ ] Ch 15: small services query without a repository; the health controller
       runs `select 1`.
-- [ ] Ch 21: a signed-out visitor gets the 403, not a redirect to sign-in.
-- [ ] Ch 30 and `apps/worker/src/jobs/README.md`: the orphan sweep only
+- [x] Ch 21: a signed-out visitor gets the 403, not a redirect to sign-in.
+- [x] Ch 30 (the READMEs are still stale) and `apps/worker/src/jobs/README.md`: the orphan sweep only
       counts and logs. The worker READMEs describe files that do not exist.
-- [ ] Ch 03: the development seed in `packages/db` writes directly.
+- [x] Ch 03: the development seed in `packages/db` writes directly.
 - [ ] `.env.example` lists `STUDIO_NOTIFY_EMAIL` and `WORKER_CONCURRENCY`,
       which nothing reads.
 

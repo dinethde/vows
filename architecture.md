@@ -58,7 +58,8 @@ Five rules hold the shape together:
 
 1. A visitor's request never reaches Postgres. Public pages are files.
 2. Only the API writes to the database. Not the web app, not a script, not a
-   hand-run migration against production.
+   hand-run migration against production. The one exception is the development
+   seed in `packages/db`, which fills a developer's own branch and nothing else.
 3. Photographs never pass through the API. The browser uploads straight to R2;
    the worker reads straight from R2.
 4. Anything slower than ~300 ms becomes a job.
@@ -182,13 +183,16 @@ Seven tables of ours, plus whatever pg-boss creates for itself.
 Conventions that apply everywhere:
 
 - Primary keys are prefixed text ids generated in the application: `alb_`,
-  `pho_`, `drv_`, `enq_`.
+  `pho_`, `drv_`, `enq_`, `rdr_`, `aud_`.
 - Every table carries `created_at` and `updated_at`, both `timestamptz`, always
   UTC. Converting to Colombo time happens in the view layer and nowhere else.
 - snake_case, singular table names. Drizzle maps to camelCase in TypeScript.
-- Postgres enum types, not free text with a check constraint.
-- Nothing is hard-deleted except derivative rows during cleanup. Albums and
-  enquiries move to an archived status.
+- Postgres enum types, not free text with a check constraint. `photo.error_code`
+  is the exception: it is text, checked by the contract.
+- Three things are hard-deleted, each by a job and nothing else: derivative rows
+  and then the photo row when `photo.cleanup` deletes the files, and an enquiry
+  twenty-four months after it arrived, as the privacy page promises. Albums are
+  never deleted; they move to an archived status.
 - Foreign keys are always declared, always with an explicit on-delete rule.
 
 **The album set is fixed at 22.** A migration inserts the rows, and nothing in
@@ -210,8 +214,9 @@ chapter 30, with a backup taken first — the cascade on `photo.album_id` means
 that one row carries every photograph with it.
 
 `replaces_photo_id` is set on the new row when a photograph replaces another. It
-makes the history readable a year later, and it is what lets the album cover
-follow the replacement in the same transaction.
+is what lets the album cover follow the replacement in the same transaction. It
+is not a lasting history: the replaced row is deleted with its files thirty days
+later, and the column then empties. The lasting record is `audit_log`.
 
 ---
 
@@ -223,7 +228,9 @@ camelCase JSON. Dates as ISO 8601 in UTC. Collections are always wrapped
 object as it now is.
 
 Status codes, and only these: 200, 201, 202, 204, 400, 401, 403, 404, 409, 422,
-429, 500.
+429, 500. A request that is too large to read is a 400. The two health routes
+are the exception to both rules: they answer a bare object, and `/readyz`
+answers 503 when something it checks is down, because that is what Fly reads.
 
 Every failure uses one envelope:
 
@@ -243,7 +250,8 @@ written for the photographer, never containing a stack trace or a table name.
 `requestId` is on every response, including successes.
 
 Routes: `GET /v1/albums`, `GET /v1/albums/:slug`, `POST /v1/enquiries`, and
-under `/v1/studio/`: albums (list, get, patch, publish, unpublish, order),
+under `/v1/studio/`: albums (list, get, patch, publish, unpublish, and the order
+of the photographs inside one; the order of the albums is fixed by migration),
 photos (list, upload-url, uploaded, patch, delete), enquiries (list, patch).
 Plus `/healthz` and `/readyz`. There is no create and no delete on an album.
 
@@ -313,9 +321,10 @@ are not:
   and that is the point of no return. A photograph that never finished processing
   is cleaned after seven days instead, because there is nothing to look at.
 
-If the removed photograph was the cover, `cover_photo_id` empties — it is `on
-delete set null` — and the publish checks refuse an album with no cover, so a
-coverless album cannot go out by accident.
+If the removed photograph was the cover, the API clears `cover_photo_id` in the
+same transaction. Removal is a soft delete, so the foreign key's `on delete set
+null` only acts later, when cleanup deletes the row. The publish checks refuse
+an album with no cover, so a coverless album cannot go out by accident.
 
 ---
 
@@ -326,19 +335,21 @@ database we already run. Enqueuing is an INSERT, so a job and the row it refers
 to are written in one transaction — the guarantee that makes this worth more
 than Redis.
 
-| Job                    | Enqueued by                                            | Retries | Timeout |
-| ---------------------- | ------------------------------------------------------ | ------- | ------- |
-| `photo.derive`         | API, when an upload is confirmed                       | 3       | 5 min   |
-| `album.revalidate`     | API, on publish, unpublish or slug change              | 5       | 30 s    |
-| `enquiry.notify`       | API, on a new enquiry                                  | 5       | 30 s    |
-| `photo.cleanup`        | API, when a photograph is deleted, and after a publish | 3       | 2 min   |
-| `album.sitemap`        | Cron, 03:00 Asia/Colombo                               | 2       | 60 s    |
-| `housekeeping.archive` | Cron, 03:30 Asia/Colombo                               | 1       | 60 s    |
-| `housekeeping.orphans` | Cron, Sunday 04:00 Asia/Colombo                        | 1       | 10 min  |
-| `db.backup`            | Cron, Sunday 02:00 Asia/Colombo                        | 2       | 15 min  |
+| Job                    | Enqueued by                                                                             | Retries | Timeout |
+| ---------------------- | --------------------------------------------------------------------------------------- | ------- | ------- |
+| `photo.derive`         | API, when an upload is confirmed                                                        | 3       | 5 min   |
+| `album.revalidate`     | API, on any change to a published album; worker, when a photograph on one becomes ready | 5       | 30 s    |
+| `enquiry.notify`       | API, on a new enquiry                                                                   | 5       | 30 s    |
+| `photo.cleanup`        | API, when a photograph is removed; nightly, inside `housekeeping.archive`               | 3       | 2 min   |
+| `album.sitemap`        | Cron, 03:00 Asia/Colombo                                                                | 2       | 60 s    |
+| `housekeeping.archive` | Cron, 03:30 Asia/Colombo                                                                | 1       | 60 s    |
+| `housekeeping.orphans` | Cron, Sunday 04:00 Asia/Colombo                                                         | 1       | 10 min  |
+| `db.backup`            | Cron, Sunday 02:00 Asia/Colombo                                                         | 2       | 15 min  |
 
-Retries back off 30 s, 2 m, 8 m, 32 m with jitter. A job that reaches `failed`
-is never retried automatically: it sits in the table with its error and alerts.
+Retries back off from 30 seconds, doubling each time, with jitter. A job that
+reaches `failed` is never retried automatically: it sits in the table with its
+error. A photograph whose last retry fails is marked `failed` with
+`processing_failed`, so the Studio can show it and try again.
 
 Rules every handler follows:
 
@@ -348,8 +359,8 @@ Rules every handler follows:
 - **Payloads carry ids, never objects.**
 - **Throwing is how a handler reports failure.** Never catch and return quietly.
 - A permanent failure throws `PermanentJobError` and is not retried.
-- Scheduled jobs report to a dead-man's-switch after the work, so silence is
-  detectable.
+- Scheduled jobs are meant to report to a dead-man's-switch after the work, so
+  silence is detectable. **Not built yet**: see `docs/progress.md`, A12.
 
 ### What gets backed up, and what does not
 
@@ -377,7 +388,8 @@ they get run in the first week, from a real backup file into a fresh Neon branch
 Public pages are files on a CDN, rebuilt when the photographer publishes and at
 no other time. Publishing calls `album.revalidate`, which calls the rebuild
 endpoint in Next with a shared secret plus an `issuedAt` inside a five-minute
-window, so the call cannot be replayed.
+window. A captured call can be replayed inside those five minutes, which only
+rebuilds the same pages again.
 
 Studio pages are dynamic and never cached. Every authenticated fetch carries
 `cache: 'no-store'` — the client sets it automatically whenever a token is
@@ -432,8 +444,9 @@ apps/web/src/app/
 **One API client.** `apps/web/src/lib/api` — transport plus one typed method per
 endpoint. It mounts the base URL, the Authorization header, `no-store` when a
 token is present, the idempotency key, the request id, the Zod parse and the
-error envelope. `serverApi()` and `browserApi()` differ only in where the token
-comes from. Nothing else calls `fetch` against the API; a lint rule enforces it.
+error envelope. `publicApi()` sends no token; `serverApi()` (server components
+and actions) and `useApi()` (client components) differ only in where the token
+comes from, and both are built on `authedApi()`. Nothing else calls `fetch` against the API; a lint rule enforces it.
 
 **TanStack Query is a cache, not a transport.** It never makes a request — every
 `queryFn` calls the client above. It is mounted in the Studio layout only,
@@ -527,7 +540,9 @@ a ticket.
 One log format (pino, JSON lines, to stdout), one request id threaded through
 every line and into every job payload, and six alerts that are allowed to
 interrupt someone. `/healthz` says the process is alive; `/readyz` checks
-Postgres, R2 and the queue. A liveness check never touches the database.
+Postgres, R2 and the queue, each with a real call every time it is asked. A
+liveness check never touches the database. **Sentry is not wired in yet**, so
+none of the six alerts can fire: see `docs/progress.md`, A11.
 
 All six alerts are Sentry rules, and they arrive as a push notification on the
 phone through the Sentry mobile app. One tool runs the whole table: the error and
@@ -547,8 +562,9 @@ end-to-end test: a visitor opens an album from the home page; a visitor sends an
 enquiry and both emails go out; an old album slug redirects; the photographer
 signs in, uploads a photograph and watches it become ready; publishing with a
 missing description is refused and names the photograph; a complete album is
-published and appears on the site; a signed-out visitor to a Studio URL is sent
-to sign in; and an album that does not exist is a real 404.
+published and appears on the site; a signed-out visitor to a Studio URL gets the
+403 screen with a real 403 and a way to sign in; and an album that does not
+exist is a real 404.
 
 ---
 
@@ -716,10 +732,9 @@ the database restored from a backup; an album removed for good.
 
 Two of those are worth knowing before they are needed. **Restoring the
 database** stops writes first (`fly scale count 0` on both apps), restores into
-a _new_ Neon branch rather than over the broken one, and ends by turning
-`housekeeping.orphans` off until the photographer has re-uploaded — anything
-uploaded after the backup has files in R2 with no row, which is exactly what
-that sweep deletes. **Removing an album** starts by asking whether unpublish is
+a _new_ Neon branch rather than over the broken one. Anything uploaded after
+the backup then has files in R2 with no row. `housekeeping.orphans` only counts
+and reports such files; it deletes nothing, so it can stay on. **Removing an album** starts by asking whether unpublish is
 enough, takes a manual `db.backup` first, and decides what happens to the files
 before the row goes, because the cascade removes the photograph rows without
 enqueuing any cleanup.
