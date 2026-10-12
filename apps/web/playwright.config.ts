@@ -14,7 +14,10 @@ export default defineConfig({
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
     { name: 'mobile', use: { ...devices['iPhone 13'] } },
   ],
-  webServer: process.env.E2E_BASE_URL
-    ? undefined
-    : { command: 'pnpm dev', url: 'http://localhost:3000', reuseExistingServer: true },
+  // Against a deployed URL there is nothing to start.
+  ...(process.env.E2E_BASE_URL
+    ? {}
+    : {
+        webServer: { command: 'pnpm dev', url: 'http://localhost:3000', reuseExistingServer: true },
+      }),
 });

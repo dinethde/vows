@@ -1,0 +1,35 @@
+/* The order matters: Tailwind and the token map first, then the tokens. */
+@import '@vows/config/tailwind/vows.css';
+@import '@vows/tokens/css/primitives.css';
+@import '@vows/tokens/css/semantic.css';
+
+/* @vows/ui is used as source, so its classes have to be scanned too. */
+@source '../../../../packages/ui/src';
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-page text-primary type-body-m;
+    min-height: 100svh;
+  }
+
+  /* Every interactive element gets the same ring, from focus/ring. */
+  :focus-visible {
+    outline: 2px solid var(--vows-focus-ring);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
