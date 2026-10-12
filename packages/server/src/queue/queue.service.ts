@@ -41,6 +41,12 @@ export class QueueService implements OnApplicationShutdown {
     @Inject(LOGGER) private readonly log: Logger,
   ) {
     this.boss = new PgBoss({ connectionString: env.DATABASE_URL, schema: 'pgboss', max: 2 });
+    // pg-boss emits `error` from its own timers. With no listener Node treats
+    // that as an uncaught exception, so one failed DNS lookup would end the
+    // process. It retries on its next tick; `/readyz` reports the outage.
+    this.boss.on('error', (error) => {
+      this.log.error({ err: error }, 'queue error');
+    });
   }
 
   /** Creates the schema and the queues on first run. Safe to call twice. */
