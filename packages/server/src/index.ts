@@ -6,7 +6,7 @@ export { AppModule } from './app.module';
 export { configure } from './bootstrap';
 export { PermanentJobError } from './common/errors/domain-error';
 export { LOGGER } from './common/logger';
-export { ENV } from './config/env';
+export { declareService, ENV } from './config/env';
 export { BackupService } from './modules/backup/backup.service';
 export { AlbumService } from './modules/album/album.service';
 export { MAILER, NotifyService } from './modules/enquiry/notify.service';

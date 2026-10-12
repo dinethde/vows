@@ -4,7 +4,9 @@ import { z } from 'zod';
  * The only file that reads process.env. It parses at boot and throws before
  * anything listens, so a missing variable is a crash in the first second.
  */
-const schema = z.object({
+const fields = z.object({
+  /** Which of the two processes this is. The worker says so before it starts. */
+  VOWS_SERVICE: z.enum(['api', 'worker']).default('api'),
   APP_ENV: z.enum(['local', 'preview', 'staging', 'production']),
   PORT: z.coerce.number().int().default(3001),
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
@@ -32,6 +34,28 @@ const schema = z.object({
   RESEND_API_KEY: z.string().min(1).optional(),
   MAIL_FROM: z.string().min(3).optional(),
   SENTRY_DSN: z.string().url().optional(),
+  /** Passed on to pg_dump, which has to be found somewhere. */
+  PATH: z.string().default(''),
+});
+
+const WORKER_ONLY = [
+  'DATABASE_URL_UNPOOLED',
+  'R2_BUCKET_BACKUPS',
+  'RESEND_API_KEY',
+  'MAIL_FROM',
+] as const;
+
+/**
+ * A deployed worker cannot do its job without these four, so it refuses to
+ * start without them. On a laptop or a preview they stay optional: a backup
+ * or an email there fails when it runs, and says why.
+ */
+const schema = fields.superRefine((env, context) => {
+  const deployed = env.APP_ENV === 'staging' || env.APP_ENV === 'production';
+  if (env.VOWS_SERVICE !== 'worker' || !deployed) return;
+  for (const name of WORKER_ONLY) {
+    if (!env[name]) context.addIssue({ code: 'custom', path: [name], message: 'Required' });
+  }
 });
 
 export type Env = z.infer<typeof schema>;
@@ -43,6 +67,11 @@ export function parseEnv(source: NodeJS.ProcessEnv): Env {
     throw new Error(`Invalid environment. Refusing to start. Check: ${missing}`);
   }
   return parsed.data;
+}
+
+/** The worker's one line of configuration, kept here with the rest of it. */
+export function declareService(name: Env['VOWS_SERVICE']): void {
+  process.env.VOWS_SERVICE = name;
 }
 
 export const ENV = Symbol('ENV');

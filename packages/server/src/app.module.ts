@@ -29,8 +29,7 @@ import { StorageModule } from './storage/storage.module';
     {
       provide: LOGGER,
       inject: [ENV],
-      useFactory: (env: Env): Logger =>
-        createLogger(process.env.VOWS_SERVICE ?? 'api', env.APP_ENV, env.LOG_LEVEL),
+      useFactory: (env: Env): Logger => createLogger(env.VOWS_SERVICE, env.APP_ENV, env.LOG_LEVEL),
     },
     {
       // Cached, and refetched once when a token names a key we have not seen.

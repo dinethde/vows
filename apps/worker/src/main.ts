@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
-import { AppModule, LOGGER, QueueService } from '@vows/server';
+import { AppModule, declareService, LOGGER, QueueService } from '@vows/server';
 import type { Logger } from '@vows/server';
 
 import { albumRevalidate } from './jobs/album-revalidate/handler';
@@ -17,7 +17,7 @@ import { photoDerive } from './jobs/photo-derive/handler';
  * registers a handler per job, and on SIGTERM finishes what it holds.
  */
 async function main(): Promise<void> {
-  process.env.VOWS_SERVICE = 'worker';
+  declareService('worker');
   const app = await NestFactory.createApplicationContext(AppModule, { logger: ['error', 'warn'] });
   app.enableShutdownHooks();
 

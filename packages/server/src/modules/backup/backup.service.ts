@@ -18,12 +18,12 @@ export function expired(keys: string[], keep = BACKUPS_KEPT): string[] {
  * Every table, in pg_dump's compressed custom format. The URL goes in through
  * the environment, not the arguments, so it never shows in a process list.
  */
-function dump(databaseUrl: string): Promise<Buffer> {
+function dump(databaseUrl: string, path: string): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const url = new URL(databaseUrl);
     const child = spawn('pg_dump', ['--format=custom', '--no-owner', '--no-privileges'], {
       env: {
-        PATH: process.env.PATH ?? '',
+        PATH: path,
         PGHOST: url.hostname,
         PGPORT: url.port || '5432',
         PGUSER: decodeURIComponent(url.username),
@@ -57,7 +57,7 @@ export class BackupService {
     if (!url || !bucket)
       throw new Error('DATABASE_URL_UNPOOLED and R2_BUCKET_BACKUPS are not set.');
 
-    const body = await dump(url);
+    const body = await dump(url, this.env.PATH);
     // One file per day: a second run the same day overwrites the first.
     const key = `backups/${now.toISOString().slice(0, 10)}.dump`;
     await this.storage.writeBackup(bucket, key, body);
