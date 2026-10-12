@@ -4,7 +4,7 @@ This file and the git log are how a new session picks up the work. Read it
 first. Update it when a milestone lands, when the plan changes, or when
 something joins the "needs Dineth" list.
 
-Last updated: 2026-10-12, milestone 3 mostly done: uploads run end to end.
+Last updated: 2026-10-12, milestone 3 done bar the backup write; 4 and 5 under way.
 
 ## Where things stand
 
@@ -16,7 +16,18 @@ Last updated: 2026-10-12, milestone 3 mostly done: uploads run end to end.
   `enquiry.notify` is tested with a recording mailer; nothing has gone through
   Resend. `db.backup` dumps the database but could not write the file: the R2
   key is refused on `vows-backups-dev`.
-- **Next:** milestone 4, the component library, then 5, the public site.
+- **Under way:** milestone 4. A subagent is building `packages/ui` in its own
+  git worktree, from the Figma components board. Its branch has to be reviewed
+  and merged into `feat/implementation-v2` when it reports. If a new session
+  finds no report, look for the branch with `git worktree list` and
+  `git branch -a`.
+- **Started:** milestone 5. `apps/web` has its environment parsing, the single
+  API client, fonts, global styles, the signed rebuild endpoint, `robots` and
+  `sitemap`. No page exists yet; pages wait for the components.
+- **Seeded:** album `alb_000001` (`benali-yasiru`) on the dev branch holds the
+  cover and all 18 photographs from the Figma album page, ready, each with a
+  description. It is a draft. Publishing it enqueues a rebuild call, so that
+  waits until the web app runs.
 - **Cloud resources in use:** Neon project `vows-sg` in Singapore
   (`plain-fog-47201137`, Postgres 18), branch `dev-claude`. R2 buckets
   `vows-originals-dev` (CORS allows `PUT` from `http://localhost:3000`) and
@@ -97,7 +108,12 @@ at the end of each later milestone.
    harmless. I left the permissions file alone.
 9. **`CODEOWNERS` names `@dinethdesilva`.** The GitHub account that is signed in
    is `dinethde`. Tell me which is right.
-10. **`docs/implementation-brief.md`** is untracked and I have left it that way.
+10. **The seed photographs are other people's.** The nineteen images in the
+    Figma album page are placeholders from elsewhere (one is a magazine cover).
+    They are in `.seed-photos/`, which git ignores, and in the dev R2 buckets.
+    They are fine for development. Say if they may go on staging, which is a
+    public address, or give me the studio's own.
+11. **`docs/implementation-brief.md`** is untracked and I have left it that way.
 
 ## Settled by Dineth on 2026-10-12
 
@@ -292,5 +308,11 @@ These are known and not yet fixed.
   read-only `use_figma` script that returns `characters` gets the full text,
   up to about 20 KB a call. Screens and their node ids are listed in the
   `get_metadata` output for page `0:1`.
+- To seed the first album: run a worker, then
+  `node apps/worker/dist/scripts/seed-album.js "$PWD/.seed-photos"` with the
+  same variables. Add `--publish` once the web app is running.
+- The web app's variables: `API_URL`, `NEXT_PUBLIC_API_URL` (browser calls from
+  the Studio; not in chapter 06), `NEXT_PUBLIC_SITE_URL`,
+  `NEXT_PUBLIC_MEDIA_URL`, `REVALIDATE_SECRET`.
 - App stylesheets import `@vows/config/tailwind/vows.css` first, then the two
   token stylesheets from `@vows/tokens/css/`.
