@@ -214,6 +214,15 @@ journeys; `architecture.md` now says eight too. One of them, "an editor who
 opens the settings page gets 403", needs a settings page, which has no design
 (item 5 above). _I would test the 403 on the API route instead._
 
+**Q11 — When a replacement takes the slot.** Today the old photograph is
+superseded the moment a replacement is asked for, before the new file has
+arrived. If that upload fails, the slot has lost its picture, and a published
+album points at a cover that is not ready. Its page keeps the old picture only
+until it is next rebuilt. _I would make the swap when the new photograph is
+ready: the old one stays in the slot until then, and a failed replacement
+leaves it untouched. That needs a change to the slot index and to what the
+Studio shows over a slot while a replacement uploads, so I have not done it._
+
 ## The Studio and Clerk
 
 **What works.** Signed out, or signed in with no role, every Studio address
@@ -247,11 +256,11 @@ JWT template. No template is needed.
 `WEB_ORIGINS` on the API must hold the Studio's origin exactly as the browser
 sends it, because that is what Clerk writes into `azp`.
 
-**API gaps the Studio found.** None is fixed yet. The first three can lose or
-strand a photograph and should be fixed before launch.
+**API gaps the Studio found.** The first is fixed. The second is open question
+Q11, because the fix changes what a slot shows.
 
-1. Retrying a photograph the worker failed does nothing with the same
-   idempotency key. The Studio works around it with a new key.
+1. Fixed: retrying a photograph the worker failed did nothing with the same
+   idempotency key. The row now goes back to waiting for its file.
 2. A replacement supersedes the old photograph before the new file arrives. If
    the upload fails the slot has lost its picture, and a published album can
    point at a pending cover.
