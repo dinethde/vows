@@ -6,7 +6,7 @@
     "moduleResolution": "Node10",
     "outDir": "./dist",
     "rootDir": "./src",
-    "declaration": false,
+    "declaration": true,
     "sourceMap": true,
     "declarationMap": false
   },
