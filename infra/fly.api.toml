@@ -12,6 +12,7 @@ primary_region = "sin"
   dockerfile = "../apps/api/Dockerfile"
 
 [env]
+  APP_ENV = "production"
   NODE_ENV = "production"
   PORT = "8080"
   LOG_LEVEL = "info"
