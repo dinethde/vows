@@ -35,11 +35,11 @@ export class HealthController {
   /** Every dependency answers, each one reported. 503 holds traffic off this machine. */
   @Get('readyz')
   async readyz(@Res({ passthrough: true }) response: Response): Promise<Record<string, Check>> {
-    const [postgres, r2] = await Promise.all([
+    const [postgres, r2, queue] = await Promise.all([
       check(() => this.db.execute(sql`select 1`)),
       check(() => this.storage.ping()),
+      check(() => this.queue.ping()),
     ]);
-    const queue: Check = this.queue.isStarted ? 'ok' : 'down';
     const checks = { postgres, r2, queue };
     if (Object.values(checks).includes('down')) response.status(503);
     return checks;

@@ -76,6 +76,12 @@ export class QueueService implements OnApplicationShutdown {
     return this.started;
   }
 
+  /** Whether the queue can be reached now, not whether it once started. */
+  async ping(): Promise<void> {
+    if (!this.started) throw new Error('The queue has not started.');
+    await this.db.execute(sql`select 1 from pgboss.queue limit 1`);
+  }
+
   async send<Name extends JobName>(tx: Tx, name: Name, payload: JobPayload<Name>): Promise<void> {
     const data = JOBS[name].parse(payload) as object;
     await this.boss.send(name, data, {
