@@ -4,7 +4,7 @@ This file and the git log are how a new session picks up the work. Read it
 first. Update it when a milestone lands, when the plan changes, or when
 something joins the "needs Dineth" list.
 
-Last updated: 2026-10-12, public site and Studio built; Studio not yet run signed in against the real API; staging half prepared.
+Last updated: 2026-10-12, public site and Studio built and both reviewed; Studio not yet run signed in against the real API; staging half prepared.
 
 ## Where things stand
 
@@ -578,26 +578,38 @@ Vercel puts the visitor first. A deployed worker now refuses to start without
 
 ### Design review: clear mismatches
 
-- [ ] **D1. Enquiry sheet on a phone.** Figma: padding 24, 36 between title,
+- [x] **D1. Enquiry sheet on a phone.** Figma: padding 24, 36 between title,
       fields and foot, 26 between fields, legal text full width with a
       full-width Send under it. Built: 56 and 40, and one row.
-- [ ] **D2. Privacy on a phone** is 124 px taller. Figma: body starts at 112,
+- [x] **D2. Privacy on a phone** is 124 px taller. Figma: body starts at 112,
       8 between every line of the stack, an 18 spacer between sections,
       headings 18/26, body 14/22.
-- [ ] **D3. Footer on a phone: falling photographs cover the phone number.**
+- [x] **D3. Footer on a phone: falling photographs cover the phone number.**
       They paint above the columns and the legal row.
 - [ ] **D4. Footer on a phone: the Socials column is 22 px left**; Figma
       right-aligns it. At 1440 Socials is +11 and Contacts +22.
-- [ ] **D5. Contact heading.** Figma centres the arrow and the first line as
+- [x] **D5. Contact heading.** Figma centres the arrow and the first line as
       one unit; built hangs the arrow outside (41 px off at 1440, ~30 at 834,
       ~21 at 390). "Say hello" should be one weight with one underline.
-- [ ] **D6. Contact at 834**: hero 20 px low, columns 13–15 px right, bottom
+- [x] **D6. Contact at 834**: hero 20 px low, columns 13–15 px right, bottom
       margin 61 against 73. At 390: 8 px off above and below the heading.
 - [ ] **D7. 404 and 403 on a phone**: the ghost number sits 5–7 px right. The
       button label is 18 px where these two frames draw 16 (the contact frame
       draws 18; Figma disagrees with itself).
 - [ ] **D8. Footer wordmark** sits 20 px lower than Figma beyond the known 56.
-- [ ] **D9. Music gate was not compared.** The capture caught the loader.
+- [x] **D9. Music gate was not compared.** The capture caught the loader.
+
+D1, D2, D3, D5, D6 and D9 are fixed and re-measured against the frames. Of D4,
+the phone columns are fixed; the 1440 offsets (+11 and +22) are not. Of D7, the
+number is centred; the button label is left at 18 px until Figma says which of
+its two sizes is right. D8 is open.
+
+Three places where the fix does not copy the frame exactly:
+
+- The enquiry sheet draws the legal line touching Send. Built with the
+  frame's own declared gap of 20, so the sheet is 23 px taller than drawn.
+- The music prompt is within 5 px at 834 and 3 px at 390, exact at 1440.
+- The footer's photo field starts 56 px lower than drawn, with the columns.
 
 ### Design review: smaller, or Figma is unclear
 
