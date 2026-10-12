@@ -4,25 +4,26 @@ This file and the git log are how a new session picks up the work. Read it
 first. Update it when a milestone lands, when the plan changes, or when
 something joins the "needs Dineth" list.
 
-Last updated: 2026-10-12, milestones 0 to 2 done, milestone 3 part done.
+Last updated: 2026-10-12, milestone 3 mostly done: uploads run end to end.
 
 ## Where things stand
 
 - **Done:** milestones 0, 1 and 2. Tokens, the Tailwind mapping, the contracts,
   the database schema, two migrations and the seed are committed.
-- **Part done:** milestone 3. The API runs: environment parsing, the error
-  envelope, request ids, the Clerk guard, `/healthz`, `/readyz`, the enquiry
-  routes and the album routes. 25 tests pass, 14 of them against the Neon
-  branch through the real app.
-- **Next, in this order:** the photograph routes (upload URL, uploaded,
-  update, remove, reorder, list); then the worker and its eight jobs; then
-  `packages/mail`. The upload path and `photo.derive` cannot be run for real
-  until R2 is on. The worker goes in `apps/worker` and starts `@vows/server`.
-- **Cloud resources created so far:** a Neon project in Singapore, `vows-sg`
-  (`plain-fog-47201137`, Postgres 18), with a `dev-claude` branch that has both
-  migrations and the seed. That is the one in use. There is also a `dev-claude`
-  branch in the older Ohio project `Vows` (`icy-cell-66519183`), no longer
-  used. Nothing else exists yet.
+- **Mostly done:** milestone 3. The API serves health, enquiries, albums and
+  photographs. The worker runs `photo.derive` for real: a 3000 × 2000 JPEG went
+  from an upload URL to ready in 12 seconds, with ten files and a share card in
+  R2. 30 server tests, 5 of them the live upload path.
+- **Next, in this order:** the other seven jobs (`album.revalidate`,
+  `photo.cleanup`, `enquiry.notify`, the four scheduled ones), then
+  `packages/mail` with its two templates, then milestone 4.
+- **Cloud resources in use:** Neon project `vows-sg` in Singapore
+  (`plain-fog-47201137`, Postgres 18), branch `dev-claude`. R2 buckets
+  `vows-originals-dev` (CORS allows `PUT` from `http://localhost:3000`) and
+  `vows-media-dev` (public at
+  `https://pub-2b21405facd34cbd996583485c36af84.r2.dev`). Dineth made the
+  buckets and the key; I set the CORS rule and turned the public address on.
+  The older Ohio Neon project `Vows` is no longer used.
 - **The workspace checks are not clean yet.** `tokens`, `contracts`, `db` and
   `config` pass typecheck, lint and tests. `api`, `worker`, `mail`, `ui` and
   `web` fail because they have no source files. CI on the pull request will be
@@ -48,34 +49,29 @@ at the end of each later milestone.
 
 ## Tools
 
-| Tool                | State                                                                 |
-| ------------------- | --------------------------------------------------------------------- |
-| Figma               | Connected. Both pages open                                            |
-| Browser screenshots | Works. Saves into `.playwright-mcp/` only, which is in `.gitignore`   |
-| `gh`                | Signed in as `dinethde`. No `workflow` scope; pushes go over SSH      |
-| `vercel`            | Signed in as `dinethde`                                               |
-| `fly`               | Signed in as `dev.dinethde@gmail.com`                                 |
-| `neonctl`           | Signed in as `dev.dinethde@gmail.com`                                 |
-| `wrangler`          | Signed in, but **R2 is not enabled** on the account (error 10042)     |
-| Bitwarden           | `bw` is signed in but **locked**. `bws` is not installed and not used |
-| Node                | 22.23.3 through nvm, as `.nvmrc` asks                                 |
-| Commit signing      | Works once the SSH key is in the agent (`ssh-add -l` lists it)        |
+| Tool                | State                                                               |
+| ------------------- | ------------------------------------------------------------------- |
+| Figma               | Connected. Both pages open                                          |
+| Browser screenshots | Works. Saves into `.playwright-mcp/` only, which is in `.gitignore` |
+| `gh`                | Signed in as `dinethde`. No `workflow` scope; pushes go over SSH    |
+| `vercel`            | Signed in as `dinethde`                                             |
+| `fly`               | Signed in as `dev.dinethde@gmail.com`                               |
+| `neonctl`           | Signed in as `dev.dinethde@gmail.com`                               |
+| `wrangler`          | Signed in. R2 is on                                                 |
+| Bitwarden           | Unlocked when Claude Code is started with `BW_SESSION` exported     |
+| Node                | 22.23.3 through nvm, as `.nvmrc` asks                               |
+| Commit signing      | Works once the SSH key is in the agent (`ssh-add -l` lists it)      |
 
 ## Needs Dineth
 
-1. **Unlock Bitwarden for the session.** Start Claude Code from a shell where
-   `export BW_SESSION="$(bw unlock --raw)"` has been run. Do not paste the key
-   into the chat. Until then no secret can be created or pushed. That blocks
-   milestone 7, and the parts of milestone 3 that need R2 keys, a Clerk key or
-   a Resend key.
-2. **Turn R2 on in the Cloudflare dashboard.** `wrangler r2 bucket list` fails
-   with error 10042, "Please enable R2 through the Cloudflare Dashboard".
-   Cloudflare asks for a payment card first. Until it is on, neither bucket
-   can be created, so uploads, `photo.derive` and `/readyz` cannot be run for
-   real. R2 also needs an S3 access key pair, made in the dashboard and stored
-   in the vault.
-3. **Clerk, Resend and Sentry keys.** Not checked, because the vault is locked.
-   If they are not in the vault they have to come from each dashboard.
+1. **Clerk keys.** The vault's `vows` folder holds only `r2/dev-access-keys`.
+   The Studio cannot sign anyone in without a Clerk development instance: its
+   publishable key, secret key, issuer URL and JWKS URL. This blocks milestone
+   6 and the sign-in journey. Server tests do not need it; they make their own
+   signing keys.
+2. **A Resend key.** Without it `enquiry.notify` can be written and its emails
+   rendered, but nothing can be sent.
+3. **A Sentry DSN**, when you want error reporting on. Nothing waits on it.
 4. **The Ohio Neon project `Vows` is no longer used.** It holds an empty
    `production` branch and my old `dev-claude` branch. Delete it when you
    like; I will not.
@@ -137,6 +133,72 @@ _I would show `vows.lk/albums/`._
 journeys; `architecture.md` now says eight too. One of them, "an editor who
 opens the settings page gets 403", needs a settings page, which has no design
 (item 5 above). _I would test the 403 on the API route instead._
+
+## Figma mismatches to fix after the build
+
+Dineth asked on 2026-10-12 for no Figma edits until the build is done, and for
+every mismatch to be noted. This is the list. Each line says what Figma has and
+what was built.
+
+Architecture page:
+
+- **Ch 02, 08.** 40 albums growing to 500, and `POST /v1/studio/albums`. Built:
+  22 fixed albums, no create route.
+- **Ch 04.** Postgres 17; Next 15, Tailwind 4.x unstated. Built: Postgres 18 in
+  Singapore, Tailwind 4.3.3. Also lists `bws`; built with `bw`.
+- **Ch 05, 15.** Three apps and six packages, with the worker importing the
+  API's module. Built: a seventh package, `packages/server`, which both apps
+  start. Module folders are singular (`album`, `photo`), as chapter 15 has them.
+- **Ch 06.** No `CLERK_ISSUER`, `WEB_ORIGINS`, `IP_HASH_SALT`, `SITE_URL` or
+  `MEDIA_URL` in the table. Built with all five. `CLERK_SECRET_KEY` is in the
+  chapter's schema for the API; the API does not use it.
+- **Ch 07.** No `time_of_day`, `wedding_type`, `cover_focal_x/y` on album; no
+  `idempotency_key` on photo; `image_format` is `avif | webp`; the slot index
+  covers every row; `audit_log` has no `updated_at`. Built with the four
+  columns, `jpeg`, a partial slot index, and both timestamps on every table.
+- **Ch 08.** Routes table lacks `GET /v1/studio/albums/:id`, `POST
+…/unpublish`, `GET …/albums/:id/photos`. Built. The enquiry schema has phone
+  and date optional and no `openedAt`; built required, with `openedAt` for the
+  time trap.
+- **Ch 09.** The role table lists archive, settings and audit routes that
+  chapter 08 does not have. Not built: no screen exists for any of them.
+- **Ch 10.** Positions "close up" after a removal; derivatives go "within the
+  minute" in chapter 08 and after thirty days here. Built: 18 fixed slots, a
+  removed photograph leaves its slot empty, files stay thirty days. Chapter 10
+  says twelve objects and eleven rows; built eleven objects for a gallery
+  photograph and twelve for a cover (ten files, plus the share card on a
+  cover, plus the original).
+- **Ch 10, 12.** The share card carries the names and date and is made at
+  upload. Built: the worker makes the 1200 × 630 crop; the words are added by
+  the page when it builds, because names can change after upload.
+- **Ch 11.** `PermanentJobError` "which pg-boss is configured to fail without
+  retrying". pg-boss has no such setting. Built: the runner sets the job's
+  retry limit to its retry count, then lets it fail.
+- **Ch 12.** Home shows the newest six albums; publish needs at least one
+  photograph. Built to the Design page: every published album, and all 18.
+- **Ch 13.** The duplicate index uses `date_trunc` on a `timestamptz`, which
+  Postgres refuses. Built as a lookup under an advisory lock.
+- **Ch 16.** `tokens.css`, `tokens.ts`, `tailwind.preset.js`, names like
+  `--bg-page`. Built: `css/primitives.css`, `css/semantic.css`,
+  `src/index.ts`, names like `--vows-bg-page`.
+- **Ch 21.** Eight journeys, one needing a settings page that has no design.
+- **Ch 23.** 72-character subjects and feature scopes. `commitlint.config.js`
+  has 60 and package scopes, plus `server`.
+
+Design page:
+
+- **CMS notes.** "Deleting an album" is listed as a fifth confirmation.
+  The frames have four. Built four.
+- **CMS, delete photograph modal.** "It is removed from this album and from
+  vows.lk." A live album needs all 18, so removing from a published album is
+  refused; replace it, or move the album to draft first.
+- **CMS form.** The prefix is `vows.studio/albums/`. To be built as `vows.lk`.
+- **Contact form.** The seventh state, "Blocked", is not built. The three
+  "Form open" page frames show an older field list than the form states.
+- **Design system.** `Display/Wordmark L` is 184 in the style and 200 in the
+  footer note. Navbar padding is 64 / 24 / 16 in one note, 40 / 24 / 16 in two.
+- **Footer.** "Rates (PDF)" and "Cookies Policy" have nothing behind them.
+- **404.** "Back to the albums" points at `/albums`, which has no screen.
 
 ## Decisions I made that are worth knowing
 
@@ -213,8 +275,12 @@ These are known and not yet fixed.
   `DATABASE_URL="$(neonctl connection-string dev-claude --project-id plain-fog-47201137 --pooled)" pnpm exec vitest run`.
   Without the variable the database tests skip. They use album `alb_000022`
   as a fixture and put it back.
-- To run the API locally it needs every variable in `src/config/env.ts`.
-  Placeholder values work for R2 and Clerk; `/readyz` then reports R2 down.
+- The R2 key is read inline from the vault item `r2/dev-access-keys`, fields
+  `Access Key ID` and `Secret Access Key`. Never store it.
+- The live upload test: start `node apps/worker/dist/main.js` with the R2 and
+  database variables set, then in `packages/server` run
+  `PIPELINE_LIVE=1 pnpm exec vitest run test/upload.spec.ts` with the same
+  variables. It uses album `alb_000021` and cleans up its rows, not its files.
 - To read Figma text in bulk, `get_metadata` cuts layer names short. A
   read-only `use_figma` script that returns `characters` gets the full text,
   up to about 20 KB a call. Screens and their node ids are listed in the
