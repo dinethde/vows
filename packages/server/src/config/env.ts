@@ -25,6 +25,9 @@ const schema = z.object({
   R2_BUCKET_PUBLIC: z.string().min(1),
   REVALIDATE_SECRET: z.string().min(32),
   IP_HASH_SALT: z.string().min(16),
+  /** Worker only. Without them enquiry.notify fails and retries, and says why. */
+  RESEND_API_KEY: z.string().min(1).optional(),
+  MAIL_FROM: z.string().min(3).optional(),
   SENTRY_DSN: z.string().url().optional(),
 });
 

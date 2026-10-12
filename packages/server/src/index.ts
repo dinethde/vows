@@ -7,6 +7,7 @@ export { configure } from './bootstrap';
 export { PermanentJobError } from './common/errors/domain-error';
 export { LOGGER } from './common/logger';
 export { ENV } from './config/env';
+export { MAILER, NotifyService } from './modules/enquiry/notify.service';
 export { HousekeepingService } from './modules/housekeeping/housekeeping.service';
 export { CleanupService } from './modules/photo/cleanup.service';
 export { DeriveService } from './modules/photo/derive.service';

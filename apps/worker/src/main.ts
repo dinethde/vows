@@ -5,6 +5,7 @@ import type { Logger } from '@vows/server';
 
 import { albumRevalidate } from './jobs/album-revalidate/handler';
 import { albumSitemap } from './jobs/album-sitemap/handler';
+import { enquiryNotify } from './jobs/enquiry-notify/handler';
 import { housekeepingArchive } from './jobs/housekeeping-archive/handler';
 import { housekeepingOrphans } from './jobs/housekeeping-orphans/handler';
 import { photoCleanup } from './jobs/photo-cleanup/handler';
@@ -23,6 +24,7 @@ async function main(): Promise<void> {
   await queue.start();
   await queue.work('photo.derive', photoDerive(app));
   await queue.work('album.revalidate', albumRevalidate(app));
+  await queue.work('enquiry.notify', enquiryNotify(app));
   await queue.work('photo.cleanup', photoCleanup(app));
   await queue.work('album.sitemap', albumSitemap(app));
   await queue.work('housekeeping.archive', housekeepingArchive(app));
