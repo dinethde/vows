@@ -26,6 +26,12 @@ function toDrizzle(text: string, values: unknown[] = []): SQL {
   );
 }
 
+export interface JobAttempt {
+  jobId: string;
+  /** True when a failure now is final: pg-boss will not run the job again. */
+  last: boolean;
+}
+
 /**
  * The one place that talks to pg-boss. `send` takes the caller's transaction,
  * so a job and the row it refers to are written together or not at all.
@@ -84,18 +90,20 @@ export class QueueService implements OnApplicationShutdown {
    */
   async work<Name extends JobName>(
     name: Name,
-    handler: (payload: JobPayload<Name>, jobId: string) => Promise<void>,
+    handler: (payload: JobPayload<Name>, attempt: JobAttempt) => Promise<void>,
   ): Promise<void> {
     for (let slot = 0; slot < QUEUES[name].concurrency; slot += 1) {
-      await this.boss.work(name, { batchSize: 1 }, async ([job]) => {
+      const options = { batchSize: 1, includeMetadata: true as const };
+      await this.boss.work(name, options, async ([job]) => {
         if (!job) return;
+        const attempt = { jobId: job.id, last: job.retryCount >= job.retryLimit };
         const context = { job: name, jobId: job.id, ...(job.data as object) };
         this.log.info(context, 'job started');
         try {
           const payload = JOBS[name].safeParse(job.data);
           if (!payload.success)
             throw new PermanentJobError('The payload does not match its schema.');
-          await handler(payload.data as JobPayload<Name>, job.id);
+          await handler(payload.data as JobPayload<Name>, attempt);
           this.log.info(context, 'job finished');
         } catch (error) {
           if (error instanceof PermanentJobError) await this.stopRetrying(job.id);
