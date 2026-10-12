@@ -10,16 +10,17 @@ Last updated: 2026-10-12, milestone 3 mostly done: uploads run end to end.
 
 - **Done:** milestones 0, 1 and 2. Tokens, the Tailwind mapping, the contracts,
   the database schema, two migrations and the seed are committed.
-- **Mostly done:** milestone 3. The API serves health, enquiries, albums and
-  photographs. The worker runs `photo.derive` for real: a 3000 × 2000 JPEG went
-  from an upload URL to ready in 12 seconds, with ten files and a share card in
-  R2. 30 server tests, 5 of them the live upload path.
-- **Next, in this order:** the other seven jobs (`album.revalidate`,
-  `photo.cleanup`, `enquiry.notify`, the four scheduled ones), then
-  `packages/mail` with its two templates, then milestone 4.
+- **Done bar one check:** milestone 3. The API serves health, enquiries,
+  albums and photographs. The worker has all eight jobs. `photo.derive`,
+  cleanup and the orphan sweep have run for real against R2 and Neon.
+  `enquiry.notify` is tested with a recording mailer; nothing has gone through
+  Resend. `db.backup` dumps the database but could not write the file: the R2
+  key is refused on `vows-backups-dev`.
+- **Next:** milestone 4, the component library, then 5, the public site.
 - **Cloud resources in use:** Neon project `vows-sg` in Singapore
   (`plain-fog-47201137`, Postgres 18), branch `dev-claude`. R2 buckets
   `vows-originals-dev` (CORS allows `PUT` from `http://localhost:3000`) and
+  `vows-backups-dev` (mine, empty), and
   `vows-media-dev` (public at
   `https://pub-2b21405facd34cbd996583485c36af84.r2.dev`). Dineth made the
   buckets and the key; I set the CORS rule and turned the public address on.
@@ -33,16 +34,16 @@ Last updated: 2026-10-12, milestone 3 mostly done: uploads run end to end.
 
 Each one leaves something that runs.
 
-| #   | Milestone                                                             | Leaves running                                         | State       |
-| --- | --------------------------------------------------------------------- | ------------------------------------------------------ | ----------- |
-| 0   | Read the sources, check the tools, write this plan                    | `pnpm install`                                         | done        |
-| 1   | Tokens from Figma, `config`, `contracts`                              | `pnpm tokens:build`; 34 tests                          | done        |
-| 2   | Database schema, migrations, seed                                     | a seeded Neon branch with 22 albums                    | done        |
-| 3   | API and worker: config, guard, envelope, routes, the eight jobs       | `/healthz`, `/readyz`, one job end to end locally      | part done   |
-| 4   | Component library in `packages/ui`                                    | each Figma component in every state, with visual tests | not started |
-| 5   | Public site: loader, music gate, home, album, contact, footer, errors | the site locally against the seeded API                | not started |
-| 6   | Studio: dashboard, album editor, confirmation scenarios               | sign in, edit, upload, publish locally                 | not started |
-| 7   | CI, staging, the end-to-end journeys                                  | staging green, journeys passing against it             | not started |
+| #   | Milestone                                                             | Leaves running                                         | State                     |
+| --- | --------------------------------------------------------------------- | ------------------------------------------------------ | ------------------------- |
+| 0   | Read the sources, check the tools, write this plan                    | `pnpm install`                                         | done                      |
+| 1   | Tokens from Figma, `config`, `contracts`                              | `pnpm tokens:build`; 34 tests                          | done                      |
+| 2   | Database schema, migrations, seed                                     | a seeded Neon branch with 22 albums                    | done                      |
+| 3   | API and worker: config, guard, envelope, routes, the eight jobs       | `/healthz`, `/readyz`, one job end to end locally      | done bar the backup write |
+| 4   | Component library in `packages/ui`                                    | each Figma component in every state, with visual tests | not started               |
+| 5   | Public site: loader, music gate, home, album, contact, footer, errors | the site locally against the seeded API                | not started               |
+| 6   | Studio: dashboard, album editor, confirmation scenarios               | sign in, edit, upload, publish locally                 | not started               |
+| 7   | CI, staging, the end-to-end journeys                                  | staging green, journeys passing against it             | not started               |
 
 One pull request into `dev-v2`, opened as a draft after milestone 2 and updated
 at the end of each later milestone.
@@ -64,6 +65,12 @@ at the end of each later milestone.
 
 ## Needs Dineth
 
+0. **Let the R2 key write to `vows-backups-dev`.** I created that bucket for
+   the weekly database backup. The key in `r2/dev-access-keys` is scoped to
+   the other two buckets and gets "Access Denied" on this one. Either add the
+   bucket to the token, or make a second token and store it in the vault.
+   Until then the backup cannot be written and the restore cannot be
+   rehearsed.
 1. **Clerk keys.** The vault's `vows` folder holds only `r2/dev-access-keys`.
    The Studio cannot sign anyone in without a Clerk development instance: its
    publishable key, secret key, issuer URL and JWKS URL. This blocks milestone
