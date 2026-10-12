@@ -14,6 +14,9 @@ export const site = {
   placeShort: 'Wadduwa',
   mapUrl: 'https://www.google.com/maps/search/?api=1&query=Wadduwa%2C+Kalutara%2C+Sri+Lanka',
   since: 'Since 2013',
+  copyright: '©2026 VOWS Weddings',
+  /** The rates sheet. Left out of the footer until there is a file to link. */
+  ratesPdf: null as string | null,
   track: 'First Light',
   intro: {
     desktop:
@@ -36,6 +39,7 @@ export const routes = {
   contact: { label: 'Contact', href: '/contact' },
   chat: { label: 'Chat with Dinuka', href: '/contact' },
   privacy: { label: 'Privacy Policy', href: '/privacy' },
+  cookies: { label: 'Cookies Policy', href: '/privacy#cookies' },
 } as const;
 
 /** One loop, fetched only after the visitor asks for it. */
