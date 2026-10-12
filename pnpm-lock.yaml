@@ -142,36 +142,18 @@ importers:
 
   apps/worker:
     dependencies:
-      '@aws-sdk/client-s3':
-        specifier: 3.717.0
-        version: 3.717.0
       '@nestjs/common':
         specifier: 11.0.1
         version: 11.0.1(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/core':
         specifier: 11.0.1
         version: 11.0.1(@nestjs/common@11.0.1(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@11.0.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@sentry/node':
-        specifier: 8.47.0
-        version: 8.47.0
       '@vows/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
-      '@vows/db':
+      '@vows/server':
         specifier: workspace:*
-        version: link:../../packages/db
-      '@vows/mail':
-        specifier: workspace:*
-        version: link:../../packages/mail
-      nestjs-pino:
-        specifier: 4.2.0
-        version: 4.2.0(@nestjs/common@11.0.1(reflect-metadata@0.2.2)(rxjs@7.8.1))(pino-http@10.5.0)
-      pg-boss:
-        specifier: 10.1.5
-        version: 10.1.5
-      pino:
-        specifier: 9.5.0
-        version: 9.5.0
+        version: link:../../packages/server
       reflect-metadata:
         specifier: 0.2.2
         version: 0.2.2
@@ -184,9 +166,6 @@ importers:
       thumbhash:
         specifier: 0.1.1
         version: 0.1.1
-      zod:
-        specifier: 3.24.1
-        version: 3.24.1
     devDependencies:
       '@nestjs/cli':
         specifier: 11.0.0
@@ -5751,13 +5730,6 @@ packages:
   neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
 
-  nestjs-pino@4.2.0:
-    resolution: {integrity: sha512-+YpNb+ZyWq+vZqhMLRGyV8838n/sjdvLsHjPjmw+yW8+hnE9yVP50MdehtGcHA9d7z2XVccT/GUp8pI1U+nDvA==}
-    engines: {node: '>= 14'}
-    peerDependencies:
-      '@nestjs/common': ^8.0.0 || ^9.0.0 || ^10.0.0
-      pino-http: ^6.4.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
-
   next@15.0.4:
     resolution: {integrity: sha512-nuy8FH6M1FG0lktGotamQDCXhh5hZ19Vo0ht1AOIQWrYJLP598TIUagKtvJrfJ5AGwB/WmDqkKaKhMpVifvGPA==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
@@ -6055,9 +6027,6 @@ packages:
   pino-abstract-transport@2.0.0:
     resolution: {integrity: sha512-F63x5tizV6WCh4R6RHyi2Ml+M70DNRXt/+HANowMflpgGFMAym/VKm6G7ZOQRjqN7XbGxK1Lg9t6ZrtzOaivMw==}
 
-  pino-http@10.5.0:
-    resolution: {integrity: sha512-hD91XjgaKkSsdn8P7LaebrNzhGTdB086W3pyPihX0EzGPjq5uBJBXo4N5guqNaK6mUjg9aubMF7wDViYek9dRA==}
-
   pino-std-serializers@7.1.0:
     resolution: {integrity: sha512-BndPH67/JxGExRgiX1dX0w1FvZck5Wa4aal9198SrRhZjH3GxKQUKIBnYJTdj2HDN3UQAS06HlfcSbQj2OHmaw==}
 
@@ -6203,9 +6172,6 @@ packages:
 
   process-warning@4.0.1:
     resolution: {integrity: sha512-3c2LzQ3rY9d0hc1emcsHhfT9Jwz0cChib/QN89oME2R451w5fy3f0afAhERFZAwrbDU43wk12d0ORBpDVME50Q==}
-
-  process-warning@5.1.1:
-    resolution: {integrity: sha512-oCkNVj4OKnKEcocVBcDfiIugN1/cE6rgfT3nCtzeqZPA8+rIxMaQ0xXzIkGP8Gj2qUaP1UR7uhJ1VD8lUCpzCg==}
 
   prop-types@15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
@@ -13015,11 +12981,6 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  nestjs-pino@4.2.0(@nestjs/common@11.0.1(reflect-metadata@0.2.2)(rxjs@7.8.1))(pino-http@10.5.0):
-    dependencies:
-      '@nestjs/common': 11.0.1(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      pino-http: 10.5.0
-
   next@15.0.4(@babel/core@7.24.5)(@opentelemetry/api@1.9.1)(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
       '@next/env': 15.0.4
@@ -13337,13 +13298,6 @@ snapshots:
     dependencies:
       split2: 4.2.0
 
-  pino-http@10.5.0:
-    dependencies:
-      get-caller-file: 2.0.5
-      pino: 9.5.0
-      pino-std-serializers: 7.1.0
-      process-warning: 5.1.1
-
   pino-std-serializers@7.1.0: {}
 
   pino@9.5.0:
@@ -13425,8 +13379,6 @@ snapshots:
   process-nextick-args@2.0.1: {}
 
   process-warning@4.0.1: {}
-
-  process-warning@5.1.1: {}
 
   prop-types@15.8.1:
     dependencies:

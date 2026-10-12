@@ -2,13 +2,17 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import { JOBS } from '@vows/contracts';
 import type { JobName, JobPayload } from '@vows/contracts';
-import type { Tx } from '@vows/db';
+import type { Db, Tx } from '@vows/db';
 import { sql } from 'drizzle-orm';
 import type { SQL } from 'drizzle-orm';
 import PgBoss from 'pg-boss';
 
+import { PermanentJobError } from '../common/errors/domain-error';
+import { LOGGER } from '../common/logger';
+import type { Logger } from '../common/logger';
 import { ENV } from '../config/env';
 import type { Env } from '../config/env';
+import { DB } from '../database/database.module';
 
 import { CRON_TIMEZONE, QUEUES, RETRY_DELAY_SECONDS } from './catalogue';
 
@@ -31,7 +35,11 @@ export class QueueService implements OnApplicationShutdown {
   readonly boss: PgBoss;
   private started = false;
 
-  constructor(@Inject(ENV) env: Env) {
+  constructor(
+    @Inject(ENV) env: Env,
+    @Inject(DB) private readonly db: Db,
+    @Inject(LOGGER) private readonly log: Logger,
+  ) {
     this.boss = new PgBoss({ connectionString: env.DATABASE_URL, schema: 'pgboss', max: 2 });
   }
 
@@ -61,6 +69,39 @@ export class QueueService implements OnApplicationShutdown {
     await this.boss.send(name, data, {
       db: { executeSql: (text: string, values?: unknown[]) => tx.execute(toDrizzle(text, values)) },
     });
+  }
+
+  /**
+   * Registers a handler. Throwing is how a handler fails: pg-boss retries with
+   * a growing gap. A PermanentJobError spends the retries first, so a file that
+   * is not an image is not tried four more times.
+   */
+  async work<Name extends JobName>(
+    name: Name,
+    handler: (payload: JobPayload<Name>, jobId: string) => Promise<void>,
+  ): Promise<void> {
+    for (let slot = 0; slot < QUEUES[name].concurrency; slot += 1) {
+      await this.boss.work(name, { batchSize: 1 }, async ([job]) => {
+        if (!job) return;
+        const context = { job: name, jobId: job.id, ...(job.data as object) };
+        this.log.info(context, 'job started');
+        try {
+          const payload = JOBS[name].safeParse(job.data);
+          if (!payload.success)
+            throw new PermanentJobError('The payload does not match its schema.');
+          await handler(payload.data as JobPayload<Name>, job.id);
+          this.log.info(context, 'job finished');
+        } catch (error) {
+          if (error instanceof PermanentJobError) await this.stopRetrying(job.id);
+          this.log.warn({ ...context, err: error }, 'job failed');
+          throw error;
+        }
+      });
+    }
+  }
+
+  private async stopRetrying(jobId: string): Promise<void> {
+    await this.db.execute(sql`update pgboss.job set retry_limit = retry_count where id = ${jobId}`);
   }
 
   async onApplicationShutdown(): Promise<void> {
