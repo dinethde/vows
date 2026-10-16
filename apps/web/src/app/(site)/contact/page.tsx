@@ -101,7 +101,7 @@ export default function ContactPage(): ReactElement {
           </p>
           <h1 className="type-display-hero-s tablet:type-display-hero-m desktop:type-display-hero-l text-primary flex flex-col items-center text-center">
             {/* The arrow and the first line are centred together, as one line. */}
-            <span className="tablet:gap-[22px] desktop:gap-[28px] flex items-center gap-[12px] whitespace-nowrap">
+            <span className="tablet:gap-[22px] desktop:gap-[28px] gap-space-3 flex items-center whitespace-nowrap">
               <Image
                 src="/icons/arrow-56.svg"
                 alt=""

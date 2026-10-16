@@ -46,7 +46,7 @@ function MonthStep({ back, onClick }: MonthStepProps): ReactElement {
 }
 
 const cell = cn(
-  'type-ui-caption flex size-[36px] cursor-pointer items-center justify-center rounded-[6px]',
+  'type-ui-caption flex size-[36px] cursor-pointer items-center justify-center rounded-sm',
   focusRing,
 );
 
@@ -128,7 +128,7 @@ export function CalendarGrid(props: CalendarGridProps): ReactElement {
         onKeyDown={onKeyDown}
       >
         <WeekdayRow />
-        <div role="rowgroup" className="flex flex-col gap-[2px] pt-[8px]">
+        <div role="rowgroup" className="pt-space-2 flex flex-col gap-[2px]">
           {monthWeeks(focused).map((week) => (
             <div key={week[0]} role="row" className="flex justify-between">
               {week.map((day) => (
