@@ -34,6 +34,8 @@ const fields = z.object({
   RESEND_API_KEY: z.string().min(1).optional(),
   MAIL_FROM: z.string().min(3).optional(),
   SENTRY_DSN: z.string().url().optional(),
+  /** The release Sentry files errors under; the deploy sets it to the commit. */
+  SENTRY_RELEASE: z.string().min(1).optional(),
   /** Passed on to pg_dump, which has to be found somewhere. */
   PATH: z.string().default(''),
 });

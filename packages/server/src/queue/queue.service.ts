@@ -13,6 +13,7 @@ import type { Logger } from '../common/logger';
 import { ENV } from '../config/env';
 import type { Env } from '../config/env';
 import { DB } from '../database/database.module';
+import { monitored, reportFailure } from '../observability/error-reporting';
 
 import { CRON_TIMEZONE, QUEUES, RETRY_DELAY_SECONDS } from './catalogue';
 
@@ -105,15 +106,23 @@ export class QueueService implements OnApplicationShutdown {
         const attempt = { jobId: job.id, last: job.retryCount >= job.retryLimit };
         const context = { job: name, jobId: job.id, ...(job.data as object) };
         this.log.info(context, 'job started');
-        try {
+        const run = async (): Promise<void> => {
           const payload = JOBS[name].safeParse(job.data);
           if (!payload.success)
             throw new PermanentJobError('The payload does not match its schema.');
           await handler(payload.data as JobPayload<Name>, attempt);
+        };
+        const { cron, expireInSeconds } = QUEUES[name];
+        try {
+          // A scheduled job checks in with the dead-man's switch; others just run.
+          await (cron ? monitored(name, { cron, maxSeconds: expireInSeconds }, run) : run());
           this.log.info(context, 'job finished');
         } catch (error) {
-          if (error instanceof PermanentJobError) await this.stopRetrying(job.id);
+          const permanent = error instanceof PermanentJobError;
+          if (permanent) await this.stopRetrying(job.id);
           this.log.warn({ ...context, err: error }, 'job failed');
+          // Only a failure nothing will retry is worth telling a person about.
+          if (permanent || attempt.last) reportFailure(error, { job: name, jobId: job.id });
           throw error;
         }
       });

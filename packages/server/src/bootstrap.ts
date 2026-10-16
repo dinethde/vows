@@ -7,11 +7,13 @@ import { LOGGER } from './common/logger';
 import type { Logger } from './common/logger';
 import { ENV } from './config/env';
 import type { Env } from './config/env';
+import { startErrorReporting } from './observability/error-reporting';
 import { QueueService } from './queue/queue.service';
 
 /** Everything main.ts and the tests both need, so a test runs the real pipeline. */
 export async function configure(app: INestApplication): Promise<Env> {
   const env = app.get<Env>(ENV);
+  startErrorReporting(env);
   const express = app as NestExpressApplication;
 
   // One proxy sits in front: Fly's. It appends the address that connected to

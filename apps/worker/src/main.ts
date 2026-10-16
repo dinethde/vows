@@ -1,7 +1,14 @@
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
-import { AppModule, declareService, LOGGER, QueueService } from '@vows/server';
-import type { Logger } from '@vows/server';
+import {
+  AppModule,
+  declareService,
+  ENV,
+  LOGGER,
+  QueueService,
+  startErrorReporting,
+} from '@vows/server';
+import type { Env, Logger } from '@vows/server';
 
 import { albumRevalidate } from './jobs/album-revalidate/handler';
 import { albumSitemap } from './jobs/album-sitemap/handler';
@@ -20,6 +27,7 @@ async function main(): Promise<void> {
   declareService('worker');
   const app = await NestFactory.createApplicationContext(AppModule, { logger: ['error', 'warn'] });
   app.enableShutdownHooks();
+  startErrorReporting(app.get<Env>(ENV));
 
   const queue = app.get(QueueService);
   await queue.start();

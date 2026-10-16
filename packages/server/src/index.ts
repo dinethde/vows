@@ -18,6 +18,7 @@ export { pathsFor, RevalidateService } from './modules/revalidate/revalidate.ser
 export { DB } from './database/database.module';
 export { CRON_TIMEZONE, QUEUES } from './queue/catalogue';
 export { QueueService } from './queue/queue.service';
+export { startErrorReporting } from './observability/error-reporting';
 export type { JobAttempt } from './queue/queue.service';
 export { StorageService } from './storage/storage.service';
 

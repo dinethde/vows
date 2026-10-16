@@ -3,6 +3,7 @@ import type { ArgumentsHost, ExceptionFilter } from '@nestjs/common';
 import type { ErrorCode, ErrorEnvelope } from '@vows/contracts';
 import type { Response } from 'express';
 
+import { reportFailure } from '../../observability/error-reporting';
 import { DomainError, RateLimitedError } from '../errors/domain-error';
 import { STATUS } from '../errors/status';
 import { LOGGER } from '../logger';
@@ -77,7 +78,10 @@ export class DomainExceptionFilter implements ExceptionFilter {
     const failure = describe(error);
     const requestId = request.requestId;
 
-    if (failure.status >= 500) this.log.error({ requestId, err: error }, 'request failed');
+    if (failure.status >= 500) {
+      this.log.error({ requestId, err: error }, 'request failed');
+      reportFailure(error, { requestId, route: request.path });
+    }
     if (error instanceof RateLimitedError) {
       response.setHeader('Retry-After', String(error.retryAfterSeconds));
     }
