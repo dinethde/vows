@@ -125,6 +125,29 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  images:
+    # The API and worker are only ever built as images on Fly. Building them
+    # here means a broken Dockerfile fails the pull request, not the deploy.
+    name: api and worker images build and start
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        app: [api, worker]
+    steps:
+      - uses: actions/checkout@v4
+      - name: build
+        run: docker build -f apps/${{ matrix.app }}/Dockerfile -t vows-${{ matrix.app }} .
+      - name: the image refuses to start without its configuration
+        # It must exit with the config error, not a missing module.
+        run: |
+          set +e
+          output=$(docker run --rm vows-${{ matrix.app }} 2>&1)
+          status=$?
+          echo "$output" | tail -5
+          test $status -ne 0
+          echo "$output" | grep -q "Invalid environment. Refusing to start."
+
   prose:
     name: commit and pull request prose
     if: github.event_name == 'pull_request'
