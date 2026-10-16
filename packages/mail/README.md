@@ -3,25 +3,24 @@
 Every email Vows sends, and the one Resend client that sends them.
 
 ```
-src/templates/   one React Email component per message
-src/lib/         the Resend client, the from-addresses, the plain-text fallback
+src/templates/   one React Email component per message, and the shared layout
+src/lib/         render (HTML and plain text) and the mailer that calls Resend
 ```
 
-The messages, from chapter 18:
+The messages:
 
-| Template           | Trigger                    | To                |
-| ------------------ | -------------------------- | ----------------- |
-| `enquiry-received` | the contact form           | the couple        |
-| `enquiry-notify`   | the contact form           | the studio        |
-| `album-ready`      | an album is published      | the couple        |
-| `album-link`       | the studio shares an album | whoever they name |
-| `download-ready`   | a full-album zip finishes  | whoever asked     |
+| Template           | Trigger          | To         |
+| ------------------ | ---------------- | ---------- |
+| `enquiry-received` | the contact form | the couple |
+| `enquiry-notify`   | the contact form | the studio |
 
 Rules:
 
-- **nothing calls `resend.emails.send()` except this package.** The API and the
-  worker both enqueue a `send-email` job; the worker's handler calls in here.
-- every template has a plain-text version. Some clients never render the HTML.
-- the DNS records that make these deliverable — SPF, DKIM, DMARC — are in
-  chapter 18 and on the launch checklist in chapter 31.
-- never put a real address in a template preview. Use `couple@example.com`.
+- **Nothing calls Resend except this package.** The API stores the enquiry and
+  enqueues `enquiry.notify` in the same transaction; the worker's handler
+  renders both messages here and sends them.
+- Each send carries an idempotency key, so a retried job does not send twice.
+- Every template has a plain-text version. Some clients never render the HTML.
+- The DNS records that make these deliverable — SPF, DKIM, DMARC — are on the
+  launch checklist in `architecture.md`.
+- Never put a real address in a template preview. Use `couple@example.com`.

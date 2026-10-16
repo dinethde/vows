@@ -17,6 +17,10 @@ Clerk handles sign-in, sessions and the password reset. The API verifies the
 Clerk JWT; there is no user table of our own beyond a `studio_users` row keyed by
 the Clerk user id.
 
+_Note, 2026-10: as built there is no `studio_users` table either. The role is
+`public_metadata.role` on the Clerk user, carried in the session token, and
+`audit_log.actor_clerk_id` records who did what._
+
 ## Why
 
 Two users is far inside Clerk's free tier, and the whole surface — hosted pages,

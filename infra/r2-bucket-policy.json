@@ -1,6 +1,7 @@
 {
   "_comment": [
-    "Applied with: wrangler r2 bucket cors set vows-originals --file infra/r2-bucket-policy.json",
+    "The CORS rule for the production originals bucket. Applied with: wrangler r2 bucket cors set <originals bucket> --file infra/r2-bucket-policy.json",
+    "Development uses infra/r2-cors-dev.json; staging needs its own origin added.",
     "The browser PUTs directly to a presigned URL, so R2 must accept PUT from our",
     "origins and nowhere else. Originals are never public — only the derivatives",
     "bucket sits behind media.vows.lk. Chapter 10."
