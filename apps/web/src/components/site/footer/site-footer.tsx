@@ -41,7 +41,10 @@ export async function SiteFooter(): Promise<ReactElement> {
       <FooterPhotos pictures={pictures} />
       <FooterColumns />
       {/* The name is drawn over the photographs, as in Figma, never under them. */}
-      <div className="relative z-10 flex w-full flex-1 items-center justify-center">
+      {/* Figma sets the name a little above the middle of the space it has:
+          about two fifths of the free height above it, three below. */}
+      <div className="relative z-10 flex w-full flex-1 flex-col items-center">
+        <span aria-hidden="true" className="flex-[2]" />
         {/* The size follows the window, so the name always fills the width
             with a little air either side. The break on a phone is in the
             markup, so a word is never split. */}
@@ -49,6 +52,7 @@ export async function SiteFooter(): Promise<ReactElement> {
           VOWS <br className="tablet:hidden" />
           Weddings
         </h2>
+        <span aria-hidden="true" className="flex-[3]" />
       </div>
       <ul className="type-nav-legal tablet:flex tablet:justify-between relative z-10 grid w-full grid-cols-[auto_auto] justify-between gap-y-[10px] [&>*:nth-child(even)]:justify-self-end">
         <li>{site.copyright}</li>

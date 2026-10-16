@@ -10,13 +10,15 @@ const label =
 const link = 'type-nav-link';
 
 interface ColumnProps {
+  /** A fixed width where Figma gives the column one; otherwise it hugs. */
+  className?: string;
   title: string;
   children: ReactNode;
 }
 
-function Column({ title, children }: ColumnProps): ReactElement {
+function Column({ title, children, className = '' }: ColumnProps): ReactElement {
   return (
-    <div className="gap-space-5 flex flex-col items-start">
+    <div className={`gap-space-5 flex flex-col items-start ${className}`}>
       <h3 className={label}>{title}</h3>
       {children}
     </div>
@@ -57,7 +59,8 @@ export function FooterColumns(): ReactElement {
           ))}
         </ul>
       </Column>
-      <Column title="Contacts">
+      {/* Figma fixes this one at 193 from a tablet up; the other three hug. */}
+      <Column title="Contacts" className="tablet:w-[193px]">
         <ul className="gap-space-2 flex flex-col">
           <li>
             <EmailLink user={user} domain={domain} className={link} />
