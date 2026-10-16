@@ -1,5 +1,6 @@
 import type { ReactElement, ReactNode } from 'react';
 
+import { Analytics } from '@/components/site/analytics';
 import { MusicProvider } from '@/components/site/music/music-provider';
 import { SiteHeader } from '@/components/site/site-header';
 
@@ -19,6 +20,7 @@ export default function SiteLayout({ children }: SiteLayoutProps): ReactElement 
       </a>
       <SiteHeader />
       {children}
+      <Analytics />
     </MusicProvider>
   );
 }

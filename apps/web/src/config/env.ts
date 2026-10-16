@@ -9,6 +9,11 @@ const schema = z.object({
   API_URL: z.string().url(),
   SITE_URL: z.string().url(),
   MEDIA_URL: z.string().url(),
+  /** Cloudflare Web Analytics' site token. Public: it sits in the page. Optional. */
+  ANALYTICS_TOKEN: z
+    .string()
+    .optional()
+    .transform((token) => (token === '' ? undefined : token)),
 });
 
 const parsed = schema.safeParse({
@@ -16,6 +21,7 @@ const parsed = schema.safeParse({
   API_URL: process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL,
   SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
   MEDIA_URL: process.env.NEXT_PUBLIC_MEDIA_URL,
+  ANALYTICS_TOKEN: process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN,
 });
 
 if (!parsed.success) {
