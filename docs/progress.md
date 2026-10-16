@@ -4,58 +4,41 @@ This file and the git log are how a new session picks up the work. Read it
 first. Update it when a milestone lands, when the plan changes, or when
 something joins the "needs Dineth" list.
 
-Last updated: 2026-10-12, public site and Studio built and both reviewed; Studio not yet run signed in against the real API; staging half prepared.
+Last updated: 2026-10-17. Everything that can be built and checked without the
+four platform accounts is done. What is left needs Clerk, R2, Resend and Neon
+set up by Dineth first: see "When the platforms are ready".
 
 ## Where things stand
 
-- **Done:** milestones 0, 1 and 2. Tokens, the Tailwind mapping, the contracts,
-  the database schema, two migrations and the seed are committed.
-- **Done bar one check:** milestone 3. The API serves health, enquiries,
-  albums and photographs. The worker has all eight jobs. `photo.derive`,
-  cleanup and the orphan sweep have run for real against R2 and Neon.
-  `enquiry.notify` is tested with a recording mailer; nothing has gone through
-  Resend. `db.backup` dumps the database but could not write the file: the R2
-  key is refused on `vows-backups-dev`.
-- **Done:** milestone 4. `packages/ui` has 15 components and 93 tests, built
-  by a subagent from the Figma components board and merged here. Its three
-  checks pass on this branch. The date picker is not built: Figma has it as
-  plain frames, not a component.
-- **Nearly done:** milestone 5, the public site. Built and checked in a
-  browser at 1440, 834 and 390: the home canvas with the loader and the music
-  prompt, the album page, the contact page and its form, privacy, the footer
-  with its reveal, colour change and falling photographs, and the 404 and 500
-  pages. `/readyz` is green locally with Postgres, R2 and the queue.
-- **Left in milestone 5:** a design pass against every Figma frame, with the
-  screenshots kept for the pull request. The contact form now has its
-  calendar, and its code loads when the form is opened (first load 184 kB
-  down to 142 kB). The form's card was sitting half off the left edge on
-  tablet and desktop; that is fixed and a test now checks where it sits.
-- **Built, one check missing:** milestone 6, the Studio. A subagent built it
-  and its five commits are on this branch: the Clerk gate with a real 403,
-  sign-in, the dashboard, the album editor, the date picker, the upload queue,
-  and four confirmation dialogs. It was checked in a browser at 1440, 834 and
-  390 against a stand-in API. **It has not been used signed in against the
-  real API.** See "The Studio and Clerk" below for why and what unblocks it.
-- **Started:** milestone 7. The workspace is clean from the root: typecheck,
-  lint, test and build all pass, and `pnpm audit` has no high or critical
-  advisory with a fix. 24 end-to-end tests pass locally in Chromium and
-  WebKit. CI and a staging deploy workflow are written. Staging has its Neon
-  branch (migrated) and its three buckets. It has no Fly apps, no Vercel
-  project and no secrets yet: see "What staging still needs".
+- **Done:** milestones 0 to 4. Tokens, config, contracts, the database (22 fixed
+  albums by migration), the API, the worker with all eight jobs, and the
+  component library.
+- **Done:** milestone 5, the public site. Every public screen is built and was
+  compared with its Figma frame at 1440, 834 and 390 by the design reviewer;
+  the clear mismatches are fixed and re-measured (see "Review findings").
+  The contact form has its calendar and loads its code on open.
+- **Built, one check owed:** milestone 6, the Studio. Gate with a real 403,
+  sign-in, dashboard, album editor, date picker, upload queue, four
+  confirmation dialogs. Checked in a browser against a stand-in API. **Never
+  used signed in against the real API**: that needs a real Clerk instance.
+- **Done locally, waiting on the platforms:** milestone 7. CI and the staging
+  deploy workflow are written. From the root, typecheck, lint, test and build
+  pass; 28 Playwright tests pass in Chromium and WebKit; every server test
+  passes live against Neon, R2 and a running worker. On CI the lint, unit,
+  audit, prose and image jobs pass; the integration, end-to-end and build jobs
+  need staging values and fail until those exist.
+- **Not built, and why:** the enquiry inbox, settings and an albums index (no
+  Figma frame); Sentry in the web app (a decision, see "Needs Dineth"); the
+  signed-in end-to-end tests (need Clerk, see below).
 - **Seeded and published:** album `alb_000001` (`benali-yasiru`) on the dev
   branch, with the cover and all 18 photographs from the Figma album page.
-- **Staging resources made so far:** Neon branch `staging` in `vows-sg`
-  (both migrations applied, no content), and the buckets
-  `vows-originals-staging`, `vows-media-staging`, `vows-backups-staging`
-  (empty, no CORS, not public yet).
-- **Cloud resources in use:** Neon project `vows-sg` in Singapore
-  (`plain-fog-47201137`, Postgres 18), branch `dev-claude`. R2 buckets
-  `vows-originals-dev` (CORS allows `PUT` from `http://localhost:3000`) and
-  `vows-backups-dev` (mine, empty), and
-  `vows-media-dev` (public at
-  `https://pub-2b21405facd34cbd996583485c36af84.r2.dev`). Dineth made the
-  buckets and the key; I set the CORS rule and turned the public address on.
-  The older Ohio Neon project `Vows` is no longer used.
+- **Cloud resources in use:** Neon project `vows-sg` (`plain-fog-47201137`,
+  Singapore, Postgres 18) with branches `dev-claude` (migrated, seeded) and
+  `staging` (migrated, empty). R2 buckets `vows-originals-dev` (CORS allows
+  `PUT` from `http://localhost:3000`), `vows-media-dev` (public at
+  `https://pub-2b21405facd34cbd996583485c36af84.r2.dev`), `vows-backups-dev`,
+  and the three empty `-staging` buckets. No Fly apps, no Vercel project. The
+  older Ohio Neon project `Vows` is no longer used.
 
 ## Milestones
 
@@ -68,9 +51,9 @@ Each one leaves something that runs.
 | 2   | Database schema, migrations, seed                                     | a seeded Neon branch with 22 albums                    | done                      |
 | 3   | API and worker: config, guard, envelope, routes, the eight jobs       | `/healthz`, `/readyz`, one job end to end locally      | done bar the backup write |
 | 4   | Component library in `packages/ui`                                    | each Figma component in every state, with visual tests | done                      |
-| 5   | Public site: loader, music gate, home, album, contact, footer, errors | the site locally against the seeded API                | nearly done               |
+| 5   | Public site: loader, music gate, home, album, contact, footer, errors | the site locally against the seeded API                | done                      |
 | 6   | Studio: dashboard, album editor, confirmation scenarios               | sign in, edit, upload, publish locally                 | built, signed-in run owed |
-| 7   | CI, staging, the end-to-end journeys                                  | staging green, journeys passing against it             | started                   |
+| 7   | CI, staging, the end-to-end journeys                                  | staging green, journeys passing against it             | waits on the platforms    |
 
 One pull request into `dev-v2`, opened as a draft after milestone 2 and updated
 at the end of each later milestone.
@@ -90,89 +73,97 @@ at the end of each later milestone.
 | Node                | 22.23.3 through nvm, as `.nvmrc` asks                               |
 | Commit signing      | Works once the SSH key is in the agent (`ssh-add -l` lists it)      |
 
-## What staging still needs
+## When the platforms are ready
 
-In order. Items marked **you** need a dashboard only Dineth can use.
+Dineth is setting up Clerk, R2, Resend and Neon and filling the vault. Nothing
+below starts before that. Items marked **you** need a dashboard only Dineth can
+use; the rest is mine, in this order.
 
-1. **you** — an R2 access key that can read and write the three staging
-   buckets, stored in the vault as `r2/staging-access-keys` with the same four
-   fields as the dev one. One token for every `vows-*` bucket would also fix
-   the dev backups bucket. Without it `/readyz` is red and Fly holds traffic
-   off the API.
+1. **you** — R2: an access key for the three staging buckets (and
+   `vows-backups-dev`), in the vault as `r2/staging-access-keys` with the same
+   four fields as `r2/dev-access-keys`.
 2. **you** — Clerk: a development instance, set up as "The Studio and Clerk"
-   describes, with its publishable key, secret key, issuer URL and JWKS URL in
-   the vault. The public site does not need them; the Studio and the sign-in
-   journey do.
-3. **you** — a Resend API key and a sender address, in the vault. Without them
-   the enquiry is stored but neither email goes out, so the "receive both
-   emails" journey cannot pass.
-4. **you** — a Neon API key, in the vault, for CI to make a database branch per
-   run.
-5. me — make the values that are ours to make (`REVALIDATE_SECRET`,
-   `IP_HASH_SALT`) as vault items, create `vows-api-staging` and
-   `vows-worker-staging` on Fly, push every secret from the vault, deploy.
-6. me — create the Vercel project from `apps/web`, set its variables, point it
-   at the staging API, deploy.
-7. me — set the repository's variables (`STAGING_API_URL`, `STAGING_SITE_URL`,
+   says (session token customised, your role, sign-ups off). Publishable key,
+   secret key, issuer URL and JWKS URL in the vault.
+3. **you** — Resend: an API key and a verified sender address, in the vault.
+4. **you** — Neon: an API key for CI, in the vault.
+5. **you** — say yes to the worker at 1 GB, above chapter 32's 512 MB (see
+   "Decisions"). Optional: a Sentry DSN and a Cloudflare Web Analytics site
+   token, both of which switch on by being set.
+6. me — make the values that are ours (`REVALIDATE_SECRET`, `IP_HASH_SALT`) as
+   vault items; create `vows-api-staging` and `vows-worker-staging` on Fly; push
+   every secret from the vault inline; deploy. The worker refuses to start
+   without `DATABASE_URL_UNPOOLED`, `R2_BUCKET_BACKUPS`, `RESEND_API_KEY` and
+   `MAIL_FROM` on staging.
+7. me — R2 CORS for the staging originals bucket (from the Vercel origin) and a
+   public address for `vows-media-staging`.
+8. me — the Vercel project from `apps/web`, its variables, deploy.
+9. me — repository variables (`STAGING_API_URL`, `STAGING_SITE_URL`,
    `STAGING_MEDIA_URL`, `NEON_PROJECT_ID`) and secrets (`FLY_API_TOKEN`,
-   `NEON_API_KEY`, `DATABASE_URL_UNPOOLED`) from the vault, so CI and the
-   deploy workflow can run.
-8. me — seed the first album on staging, run the end-to-end suite against it,
-   and run one job from start to finish.
-9. **you** — `staging.vows.lk`, `api-staging.vows.lk` and a media hostname are
-   DNS records, which are yours. Until then staging uses the addresses Vercel,
-   Fly and R2 hand out.
+   `NEON_API_KEY`, `DATABASE_URL_UNPOOLED`), read from the vault.
+10. me — the signed-in Studio run against the real API, then the Studio
+    end-to-end tests: sign in, upload and watch it become ready, the alt-text
+    refusal, publish and see it on the site. They need Clerk's testing tokens
+    (`@clerk/testing`); I have not written them blind.
+11. me — seed the first album on staging, run the whole suite against it, run
+    one job end to end, check `/healthz` and `/readyz`, get CI green.
+12. me — check on staging the two things that cannot be checked locally: that
+    Fly puts the client last in `X-Forwarded-For` and Vercel puts the visitor
+    first (the enquiry limit depends on both).
+13. **you** — DNS for `staging.vows.lk`, `api-staging.vows.lk` and a media host,
+    when you want them. Until then staging uses the addresses Vercel, Fly and R2
+    hand out.
 
 ## Needs Dineth
 
-0. **Let the R2 key write to `vows-backups-dev`.** I created that bucket for
-   the weekly database backup. The key in `r2/dev-access-keys` is scoped to
-   the other two buckets and gets "Access Denied" on this one. Either add the
-   bucket to the token, or make a second token and store it in the vault.
-   Until then the backup cannot be written and the restore cannot be
-   rehearsed.
-1. **Two Figma colours fail the contrast rule in chapter 17.** `text/accent`
-   (`blue/500`) on `bg/page` is 3.27:1, and `text/muted` (`ink/500`) on
-   `bg/page` is 4.21:1. WCAG AA needs 4.5:1 for text this size. They are the
-   small blue column labels, and the captions and legal lines. Chapter 17 says
-   the token pairs were pre-checked; these two were not. Pick darker values in
-   Figma and I will re-export. Until then the accessibility test lists the two
-   pairs as known exceptions, by name.
-2. **Clerk keys.** The vault's `vows` folder holds only `r2/dev-access-keys`.
-   The Studio cannot sign anyone in without a Clerk development instance: its
-   publishable key, secret key, issuer URL and JWKS URL. This blocks the
-   signed-in check of milestone 6 and the sign-in journey. The steps are in
-   "The Studio and Clerk". Server tests do not need it; they make their own
-   signing keys.
-3. **A Resend key.** Without it `enquiry.notify` can be written and its emails
-   rendered, but nothing can be sent.
-4. **A Sentry DSN**, when you want error reporting on. Nothing waits on it.
-5. **The Ohio Neon project `Vows` is no longer used.** It holds an empty
-   `production` branch and my old `dev-claude` branch. Delete it when you
-   like; I will not.
-6. **The music file.** Chapter 14 names "Romantic Saxophone" from Pixabay. The
-   navbar in Figma calls the track "First Light". The file and its
-   `LICENCE.md` are not in the repository.
-7. **Screens that have no Figma frame:** the enquiry inbox and the settings
-   page (both in chapter 14), and an albums index (`/albums`, chapter 12). The
-   API routes for enquiries get built. The Studio pages wait for a design.
-8. **Figma needs four corrections to match what was decided:** chapter 16 (the
-   token file layout), chapters 02 and 08 (22 fixed albums, no create),
-   chapter 07 (the new columns, the partial slot index, `jpeg`), chapter 13
-   (the duplicate index cannot be created, see below). I have not edited the
-   Figma page.
-9. **`.claude/settings.json` still denies reads of the old token paths.** It is
-   harmless. I left the permissions file alone.
-10. **`CODEOWNERS` names `@dinethdesilva`.** The GitHub account that is signed in
-    is `dinethde`. Tell me which is right.
-11. **The seed photographs are other people's.** The nineteen images in the
-    Figma album page are placeholders from elsewhere (one is a magazine cover).
-    They are in `.seed-photos/`, which git ignores, and in the dev R2 buckets.
-    They are fine for development. Say if they may go on staging, which is a
-    public address, or give me the studio's own.
-12. **`docs/implementation-brief.md`** is untracked and I have left it that way.
+The platform setup is in "When the platforms are ready". These are the rest.
 
-## Settled by Dineth on 2026-10-12
+1. **Two Figma colours fail the contrast rule in chapter 17.** `text/accent`
+   (`blue/500`) on `bg/page` is 3.27:1 and `text/muted` (`ink/500`) on
+   `bg/page` is 4.21:1; AA needs 4.5:1. Pick darker values in Figma and I will
+   re-export. Until then the accessibility test names the two pairs as known
+   exceptions.
+2. **Q11 below**: when a replacement photograph takes its slot.
+3. **The enquiry limit and CI.** The end-to-end suite sends two enquiries a
+   run and the API allows five an hour per visitor, so a third run inside the
+   hour fails. _I would exempt one test address on staging only._ It adds a way
+   round a protection, so it is your call.
+4. **Sentry in the web app.** The API and worker report; the web app does not.
+   `@sentry/nextjs` adds a dependency, and its browser part adds weight to every
+   public page, which is already over the 120 KB budget. _I would add it
+   server-side only (`instrumentation.ts`), so Vercel errors are reported and no
+   script reaches the browser._
+5. **`.env.example`** needs new names, and the permission settings deny me the
+   file. The list is under "Decisions".
+6. **Figma's off-scale values.** After the token pass, 115 spacing values in
+   the code are ones Figma draws off its own scale (10, 14, 22, 56…). Snap them
+   in Figma, or grow the scale; either way it is a design decision.
+7. **The phone button label on 404 and 403** is 16 px in those frames and 18 px
+   on the contact frame. Built 18. Say which.
+8. **The music file.** Chapter 14 names "Romantic Saxophone" from Pixabay; the
+   navbar in Figma calls it "First Light". The file and its `LICENCE.md` are
+   not in the repository.
+9. **Screens with no Figma frame:** the enquiry inbox, settings, and an albums
+   index (`/albums`). Their API routes exist; the pages wait for a design.
+10. **The seed photographs are other people's** (placeholders from the Figma
+    album page, one a magazine cover). Say if they may go on staging, which is
+    public, or give me the studio's own.
+11. **`CODEOWNERS` names `@dinethdesilva`**; the signed-in GitHub account is
+    `dinethde`. Say which.
+12. **The Ohio Neon project `Vows`** is unused. Delete it when you like; I
+    will not.
+13. **Figma corrections** are listed under "Figma mismatches"; none made, as
+    asked.
+14. `.claude/settings.json` still denies reads of the old token paths, and of
+    `node_modules`. Harmless; left alone.
+15. `docs/implementation-brief.md` is untracked and stays that way.
+
+## Settled by Dineth
+
+On 2026-10-13: Dineth sets up Clerk, R2, Resend and Neon and fills the vault;
+the staging work waits for that. Everything else goes ahead.
+
+On 2026-10-12:
 
 - **The pasted brief governs.** The finish line is staging.
   `docs/implementation-brief.md` is extra detail only where the two agree.
@@ -256,8 +247,8 @@ JWT template. No template is needed.
 `WEB_ORIGINS` on the API must hold the Studio's origin exactly as the browser
 sends it, because that is what Clerk writes into `azp`.
 
-**API gaps the Studio found.** The first is fixed. The second is open question
-Q11, because the fix changes what a slot shows.
+**API gaps the Studio found.** 1, 5 and 6 are fixed. The second is open
+question Q11, because the fix changes what a slot shows.
 
 1. Fixed: retrying a photograph the worker failed did nothing with the same
    idempotency key. The row now goes back to waiting for its file.
@@ -268,9 +259,10 @@ Q11, because the fix changes what a slot shows.
    it.
 4. There is no slug-availability route, so the address is checked on save, not
    on blur as the design notes ask.
-5. `PATCH /photos/:id` and the upload confirmation return the photograph with
-   no derivatives.
-6. `slug_taken` puts its suggestion in `message`, not in `fields.slug`.
+5. Fixed: describing a photograph returned it with no files. It now answers
+   with the photograph as the list returns it.
+6. Fixed: `slug_taken` now puts its suggestion in `fields.slug` too, and the
+   Studio's special case for it is gone.
 7. Save and publish are two requests. If publish is refused the edits are
    already saved while the form still shows them as unsaved.
 
@@ -419,6 +411,19 @@ From the subagent that built `packages/ui`. These are for the design pass.
 
 ## Decisions I made that are worth knowing
 
+- **The worker gets 1 GB and derives one photograph at a time.** Chapter 32
+  says start at 512 MB. Measured on 2026-10-17: one derive peaks near 540 MB
+  for 24 MP and 60 MP files alike, after the fix that decodes each photograph
+  once (it was 631 and 912 MB). The rest is the AVIF encoder at 2400 px. Three
+  at once would not fit 1 GB. Costs more than chapter 32; waits for a yes.
+- **Sentry is the dead-man's switch.** The four scheduled jobs check in through
+  Sentry's cron monitors, so one tool runs the whole alert table, as chapter 20
+  says. The check-ins are sent by hand: the SDK's `withMonitor` left a failed
+  run's rejection unhandled, which would end the worker. Only failures nothing
+  will retry are reported.
+- **Images are built in CI.** No Docker on the development machine, so a CI job
+  builds both images and checks each refuses to start without its config.
+
 - **Slots.** `photo.position` 0 is the cover and 1 to 18 the gallery. Removing
   a photograph empties its slot; the others do not close up, because the
   Studio draws 18 numbered slots.
@@ -461,45 +466,46 @@ From the subagent that built `packages/ui`. These are for the design pass.
 
 ## Still to correct
 
-- **JavaScript on a public route is over the budget in chapter 18.** The budget
-  is 120 KB gzipped. Next 15 and React 19 alone are 103 KB before any page
-  code. The build reports 114 KB for privacy, 136 for an album, 152 for home
-  and 184 for contact, where the form library and the dialog load with the
-  page. The contact form can be split off so it loads on the first click; the
-  103 KB floor cannot be removed.
-
-These are known and not yet fixed.
-
-- `commitlint.config.js` allows a 60-character subject and a scope list that
-  differs from Figma chapter 23 (72, and feature scopes such as `album`).
-- The launch checklist says `cdn.vows.lk` and `/health`. Figma says
-  `media.vows.lk`, `/healthz` and `/readyz`. `next.config.ts` and
-  `infra/fly.api.toml` have the same two.
-- `infra/fly.worker.toml` gives the worker 1 GB; chapter 32 says start at
-  512 MB. `infra/r2-bucket-policy.json` names `vows-photographs`.
-- Folder names differ from chapter 15: `modules/albums`, `photographs`,
-  `uploads`, `webhooks` against `album`, `photo`, `enquiry`, `setting`,
-  `audit`; and `app/(studio)` against `app/studio`. I will follow Figma.
-- `packages/db/README.md` says uuid v7 ids, `packages/mail/README.md` lists
-  five emails, and decision record 0001 mentions a `studio_users` table.
-  Figma says prefixed text ids, two emails and no users table.
-- Scaffold READMEs point at chapter numbers that have moved.
-- React 19.0.0 and Next 15.1.3 need a patch bump, and `nestjs-pino` 4.2.0 does
-  not accept Nest 11.
-- In the Design page: the confirmation modal notes still list a delete-album
+- **JavaScript on public routes is over chapter 18's 120 KB budget.** Next 15
+  and React 19 alone are 103 KB. Last build: privacy 114, album 136, contact
+  142 (184 before the form split), home 153. The floor cannot be removed.
+- `commitlint.config.js` allows a 60-character subject and package scopes;
+  Figma chapter 23 says 72 and feature scopes.
+- In the Design page: the confirmation notes still list a delete-album
   variant; the navbar padding is 64 / 24 / 16 in one note and 40 / 24 / 16 in
-  two others; the `Display/Wordmark L` style is 184 where the footer note
-  says 200.
+  two others; `Display/Wordmark L` is 184 where the footer note says 200.
+- The idempotency key is looked up with no album or slot (audit A9). A key
+  reused across albums would return the other album's row.
+- `.env.example` lists `STUDIO_NOTIFY_EMAIL` and `WORKER_CONCURRENCY`, which
+  nothing reads (denied to me; see "Needs Dineth").
 
-### The enquiry journey and the rate limit
+## Launch checklist
 
-The API allows five enquiries an hour from one connection. The end-to-end
-suite sends two per run (desktop and phone). A third run inside the hour gets
-the "several messages from this connection" notice and the journey fails. It
-happened locally on 2026-10-12. On staging, CI would fail the same way on a
-busy afternoon. _I would have the staging journey send from a test address
-that the limit does not count, set by an environment variable on staging only.
-Not done: it adds a way round a protection, so it is Dineth's call._
+The appendix of `architecture.md`, walked on 2026-10-17. "On go" means I can do
+it once the platforms are set up and Dineth says go; nothing on this list is
+production work I may start alone.
+
+| Item                                                                        | State                                                            |
+| --------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `vows.lk` at Vercel, `media.vows.lk` at the derivatives bucket              | only a person (DNS)                                              |
+| Resend domain verified; SPF, DKIM, DMARC                                    | only a person (DNS and Resend)                                   |
+| Test enquiry reaches Gmail and Yahoo inboxes                                | on go, after the domain                                          |
+| Every production value in the vault                                         | only a person                                                    |
+| Values pushed to Vercel, Fly, GitHub from the vault                         | on go                                                            |
+| Vault export stored offline, recovery tried once                            | only a person                                                    |
+| Neon production branch, migrations by the deploy workflow                   | on go (production: Dineth's call)                                |
+| API and worker deployed, `/healthz` and `/readyz` green, one job end to end | on go (staging first)                                            |
+| R2 CORS; an upload from the real domain completes                           | on go; the CORS file is ready                                    |
+| Clerk production instance, both studio users signed in once                 | only a person                                                    |
+| Cloudflare Web Analytics live, a pageview seen                              | built; needs the site token                                      |
+| Sentry from all three apps, release tagged                                  | API and worker built and tagged on deploy; web app is a decision |
+| Six Sentry alert rules, phone push, each fired once                         | only a person (Sentry UI)                                        |
+| `db.backup` by hand, restore rehearsed                                      | on go; needs the backups key                                     |
+| 404, 500 and 403 on the real domain                                         | on go; tests exist                                               |
+| Share cards in WhatsApp, Messenger, iMessage                                | only a person (phones)                                           |
+| Lighthouse on home and an album against chapter 18                          | on go; JS is over budget, see "Still to correct"                 |
+| Privacy page live and in the footer                                         | done                                                             |
+| One album published, opened on a phone on mobile data                       | only a person                                                    |
 
 ## Review findings, 2026-10-12
 
@@ -551,11 +557,15 @@ Vercel puts the visitor first. A deployed worker now refuses to start without
 
 ### Architecture audit: promised and not built
 
-- [ ] **A11. Sentry is not initialised anywhere** (chapter 20). None of the
+- [x] **A11. Sentry is not initialised anywhere** (chapter 20). None of the
       six alerts can fire.
-- [ ] **A12. No dead-man's switch** on the four scheduled jobs (chapter 11).
+- [x] **A12. No dead-man's switch** on the four scheduled jobs (chapter 11).
       A backup that silently stops is not noticed.
 - [x] **A13. No test rolls a transaction back and checks the job is gone.**
+
+A11 and A12 are done for the API and the worker: errors and job check-ins
+reach Sentry when `SENTRY_DSN` is set, proved against a stand-in endpoint. The
+web app does not report yet (see "Needs Dineth"). A10 stays a question.
 
 ### Architecture audit: the document is wrong, the code is right
 
@@ -568,7 +578,7 @@ Vercel puts the visitor first. A deployed worker now refuses to start without
       ×4); who enqueues `album.revalidate` and `photo.cleanup`.
 - [x] Ch 12: a signed rebuild call can be replayed for five minutes.
 - [x] Ch 14: client names are `publicApi`, `authedApi`, `serverApi`, `useApi`.
-- [ ] Ch 15: small services query without a repository; the health controller
+- [x] Ch 15: small services query without a repository; the health controller
       runs `select 1`.
 - [x] Ch 21: a signed-out visitor gets the 403, not a redirect to sign-in.
 - [x] Ch 30 (the READMEs are still stale) and `apps/worker/src/jobs/README.md`: the orphan sweep only
@@ -587,7 +597,7 @@ Vercel puts the visitor first. A deployed worker now refuses to start without
       headings 18/26, body 14/22.
 - [x] **D3. Footer on a phone: falling photographs cover the phone number.**
       They paint above the columns and the legal row.
-- [ ] **D4. Footer on a phone: the Socials column is 22 px left**; Figma
+- [x] **D4. Footer on a phone: the Socials column is 22 px left**; Figma
       right-aligns it. At 1440 Socials is +11 and Contacts +22.
 - [x] **D5. Contact heading.** Figma centres the arrow and the first line as
       one unit; built hangs the arrow outside (41 px off at 1440, ~30 at 834,
@@ -597,13 +607,14 @@ Vercel puts the visitor first. A deployed worker now refuses to start without
 - [ ] **D7. 404 and 403 on a phone**: the ghost number sits 5–7 px right. The
       button label is 18 px where these two frames draw 16 (the contact frame
       draws 18; Figma disagrees with itself).
-- [ ] **D8. Footer wordmark** sits 20 px lower than Figma beyond the known 56.
+- [x] **D8. Footer wordmark** sits 20 px lower than Figma beyond the known 56.
 - [x] **D9. Music gate was not compared.** The capture caught the loader.
 
-D1, D2, D3, D5, D6 and D9 are fixed and re-measured against the frames. Of D4,
-the phone columns are fixed; the 1440 offsets (+11 and +22) are not. Of D7, the
-number is centred; the button label is left at 18 px until Figma says which of
-its two sizes is right. D8 is open.
+All but D7 are fixed and re-measured against the frames. Of D7 the number is
+centred; the button label stays 18 px until Figma says which size is right.
+The footer columns are within 1 px of the frame at 1440 and 834. The wordmark
+sits two fifths down its free space; Figma's three frames disagree (a third to
+a half), so it lands inside the known 56 px offset rather than on one frame.
 
 Three places where the fix does not copy the frame exactly:
 
@@ -629,6 +640,19 @@ Three places where the fix does not copy the frame exactly:
   `rounded-[24px]`). A token pass is owed.
 
 ## Notes for the next session
+
+- Start every local run with the API and worker built
+  (`pnpm turbo run build --filter=@vows/api... --filter=@vows/worker...`), then
+  `node apps/api/dist/main.js` and `node apps/worker/dist/main.js` with the
+  variables read inline from the vault and `neonctl`, as in the commands below.
+- Every server test, live: in `packages/server`, with `DATABASE_URL`, the R2
+  variables and a running worker, `PIPELINE_LIVE=1 pnpm exec vitest run`.
+  On 2026-10-17: 65 passed, 1 skipped.
+- `node_modules` cannot be read under the permission settings. Check a
+  library's options in its documentation instead.
+- To measure derive memory, encode a large JPEG with sharp, then run
+  `deriveImage` from `apps/worker/dist/lib/derive-image.js` in a fresh process
+  and read `process.resourceUsage().maxRSS`.
 
 - Use Node 22: `source ~/.nvm/nvm.sh && nvm use 22` before any `pnpm` command.
 - The dev database URL is never stored. Read it inline:
