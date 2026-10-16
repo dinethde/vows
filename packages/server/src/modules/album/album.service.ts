@@ -187,13 +187,10 @@ export class AlbumService {
 
   private async claimSlug(tx: Tx, album: AlbumRow, slug: string): Promise<void> {
     if (await this.repo.slugTaken(slug, album.id, tx)) {
-      throw new DomainError(
-        'slug_taken',
-        `That address is taken. Try ${await this.freeSlug(tx, album.id, slug)}.`,
-        {
-          slug: 'Taken',
-        },
-      );
+      const sentence = `That address is taken. Try ${await this.freeSlug(tx, album.id, slug)}.`;
+      // The field map carries the whole sentence, so a form shows it beside
+      // the field like any other refusal.
+      throw new DomainError('slug_taken', sentence, { slug: sentence });
     }
     await this.repo.redirect(tx, album.slug, slug, album.id);
   }

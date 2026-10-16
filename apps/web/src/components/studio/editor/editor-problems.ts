@@ -13,17 +13,14 @@ function isField(key: string): key is AlbumFieldName {
 }
 
 /**
- * Puts the API's refusal beside the fields it names. A taken address carries
- * its suggestion in the message, not in the field map, so that one is read
- * from there. Returns the first field marked, or null when the refusal was
- * not about a field at all.
+ * Puts the API's refusal beside the fields it names. Returns the first field
+ * marked, or null when the refusal was not about a field at all.
  */
 export function applyFieldErrors(form: AlbumForm, failure: ActionFailure): AlbumFieldName | null {
   const named = Object.entries(failure.fields).filter(([key]) => isField(key));
   for (const [key, message] of named) {
     if (!isField(key)) continue;
-    const text = failure.code === 'slug_taken' && key === 'slug' ? failure.message : message;
-    form.setError(key, { type: 'server', message: text });
+    form.setError(key, { type: 'server', message });
   }
   const first = FIELD_ORDER.find((name) => named.some(([key]) => key === name));
   return first ?? null;

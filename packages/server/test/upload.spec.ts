@@ -123,6 +123,15 @@ describe.skipIf(!live)('a photograph, from an upload URL to ready', () => {
       sql`select count(*)::int as n from photo_derivative where photo_id = ${cover.id}`,
     );
     expect(rows.rows[0]?.n).toBe(11);
+
+    // An edit answers with the photograph as the list shows it, files and all.
+    const described = await request(http)
+      .patch(`/v1/studio/photos/${cover.id}`)
+      .set(auth)
+      .send({ alt: 'The couple on the steps' });
+    expect(described.status).toBe(200);
+    expect((described.body as Photo).alt).toBe('The couple on the steps');
+    expect((described.body as Photo).derivatives).toHaveLength(10);
   });
 
   it('keeps the album pointing at a cover when the cover is replaced', async () => {

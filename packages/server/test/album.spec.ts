@@ -137,6 +137,8 @@ describe.skipIf(!hasDatabase)('the album routes', () => {
       .send({ slug: 'album-21' });
     expect(response.status).toBe(409);
     expect((response.body as ErrorBody).error.message).toContain('album-21-2');
+    // The same sentence beside the field, so a form needs no special case.
+    expect((response.body as ErrorBody).error.fields?.slug).toContain('album-21-2');
   });
 
   it('publishes a complete album, shows it publicly, and keeps the old address working', async () => {

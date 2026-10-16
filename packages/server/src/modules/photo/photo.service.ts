@@ -151,7 +151,7 @@ export class PhotoService {
       if (album.status === 'published') await this.revalidate(tx, album, caller);
       return updated;
     });
-    return this.present(next);
+    return this.withFiles(next);
   }
 
   /** Out of the album, with every file left where it is for thirty days. */
@@ -222,6 +222,13 @@ export class PhotoService {
   private async reopen(row: PhotoRow): Promise<PhotoRow> {
     if (row.status !== 'failed') return row;
     return this.repo.update(this.db, row.id, { status: 'pending', errorCode: null });
+  }
+
+  /** The photograph with its files, as the list returns it. */
+  private async withFiles(row: PhotoRow): Promise<Photo> {
+    const rows = await this.albums.photosOf([row.albumId]);
+    const full = rows.find((candidate) => candidate.id === row.id);
+    return full ? toPhoto(full, (key) => this.storage.publicUrl(key)) : this.present(row);
   }
 
   private present(row: PhotoRow): Photo {

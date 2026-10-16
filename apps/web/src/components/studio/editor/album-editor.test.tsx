@@ -232,7 +232,7 @@ describe('publishing', () => {
       ok: false,
       code: 'slug_taken',
       message: 'That address is taken. Try benali-yasiru-2.',
-      fields: { slug: 'Taken' },
+      fields: { slug: 'That address is taken. Try benali-yasiru-2.' },
     });
     open(complete());
     await userEvent.click(publishButton());
