@@ -21,6 +21,7 @@ primary_region = "sin"
 
 [[vm]]
   size = "shared-cpu-1x"
+  # Chapter 32 says 512 MB. One derive alone peaks near 540 MB, so 1 GB.
   memory = "1gb"
   processes = ["worker"]
 

@@ -1,6 +1,7 @@
 import { DERIVATIVE_WIDTHS } from '@vows/contracts';
 import { PermanentJobError } from '@vows/server';
 import sharp from 'sharp';
+import type { Sharp } from 'sharp';
 import { rgbaToThumbHash } from 'thumbhash';
 
 /** Chapter 10's table: smaller files get a little less quality, larger a little more. */
@@ -14,6 +15,7 @@ const QUALITY: Record<number, { avif: number; webp: number }> = {
 const IMAGE_FORMATS = ['jpeg', 'png', 'webp', 'tiff'];
 const THUMBHASH_SIDE = 100;
 export const SHARE_CARD = { width: 1200, height: 630 } as const;
+const WIDEST = Math.max(...DERIVATIVE_WIDTHS);
 
 export interface ImageFile {
   format: 'avif' | 'webp' | 'jpeg';
@@ -50,8 +52,31 @@ async function describe(
   };
 }
 
-async function thumbhash(upright: Buffer): Promise<string> {
-  const { data, info } = await sharp(upright)
+/** The decoded, upright picture every file is made from, as raw pixels. */
+interface Working {
+  data: Buffer;
+  raw: { width: number; height: number; channels: 3 | 4 };
+}
+
+const from = (working: Working): Sharp => sharp(working.data, { raw: working.raw });
+
+/**
+ * The original is decoded once, turned upright and brought down to the widest
+ * file we make. Every output is cut from that. Decoding the full original for
+ * each of eleven files is what took a 24 MP photograph past 600 MB.
+ */
+async function workingCopy(original: Buffer): Promise<Working> {
+  const { data, info } = await sharp(original, { sequentialRead: true })
+    .rotate()
+    .resize({ width: WIDEST })
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  return { data, raw: { width: info.width, height: info.height, channels: 3 } };
+}
+
+async function thumbhash(working: Working): Promise<string> {
+  const { data, info } = await from(working)
     .resize(THUMBHASH_SIDE, THUMBHASH_SIDE, { fit: 'inside' })
     .ensureAlpha()
     .raw()
@@ -59,9 +84,9 @@ async function thumbhash(upright: Buffer): Promise<string> {
   return Buffer.from(rgbaToThumbHash(info.width, info.height, data)).toString('base64');
 }
 
-async function resized(upright: Buffer, width: number): Promise<ImageFile[]> {
+async function resized(working: Working, width: number): Promise<ImageFile[]> {
   const quality = QUALITY[width] ?? { avif: 55, webp: 75 };
-  const base = sharp(upright).resize({ width });
+  const base = from(working).resize({ width });
   const [avif, webp] = await Promise.all([
     base.clone().avif({ quality: quality.avif }).toBuffer({ resolveWithObject: true }),
     base.clone().webp({ quality: quality.webp }).toBuffer({ resolveWithObject: true }),
@@ -72,8 +97,8 @@ async function resized(upright: Buffer, width: number): Promise<ImageFile[]> {
   ];
 }
 
-async function shareCard(upright: Buffer): Promise<ImageFile> {
-  const body = await sharp(upright)
+async function shareCard(working: Working): Promise<ImageFile> {
+  const body = await from(working)
     .resize({ ...SHARE_CARD, fit: 'cover', position: 'attention' })
     .jpeg({ quality: 82, mozjpeg: true })
     .toBuffer();
@@ -87,12 +112,12 @@ async function shareCard(upright: Buffer): Promise<ImageFile> {
  */
 export async function deriveImage(original: Buffer, withShareCard: boolean): Promise<DerivedImage> {
   const about = await describe(original);
-  const upright = await sharp(original).rotate().toBuffer();
+  const working = await workingCopy(original);
 
   const files: ImageFile[] = [];
-  // One width at a time: five at once is how a 512 MB machine runs out.
-  for (const width of DERIVATIVE_WIDTHS) files.push(...(await resized(upright, width)));
-  if (withShareCard) files.push(await shareCard(upright));
+  // One width at a time: five at once is how a small machine runs out.
+  for (const width of DERIVATIVE_WIDTHS) files.push(...(await resized(working, width)));
+  if (withShareCard) files.push(await shareCard(working));
 
-  return { ...about, thumbhash: await thumbhash(upright), files };
+  return { ...about, thumbhash: await thumbhash(working), files };
 }

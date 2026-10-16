@@ -11,7 +11,10 @@ export interface QueueOptions {
 
 /** Chapter 11's catalogue. A queue that is not here does not exist. */
 export const QUEUES: Record<JobName, QueueOptions> = {
-  'photo.derive': { retryLimit: 3, expireInSeconds: 300, concurrency: 3 },
+  // One at a time. A derive needs about 385 MB above the process whatever the
+  // photograph's size (the AVIF encoder at 2400 px), so three at once do not
+  // fit the worker's 1 GB. Measured 2026-10-17; see docs/progress.md.
+  'photo.derive': { retryLimit: 3, expireInSeconds: 300, concurrency: 1 },
   'album.revalidate': { retryLimit: 5, expireInSeconds: 30, concurrency: 1 },
   'enquiry.notify': { retryLimit: 5, expireInSeconds: 30, concurrency: 2 },
   'photo.cleanup': { retryLimit: 3, expireInSeconds: 120, concurrency: 1 },
