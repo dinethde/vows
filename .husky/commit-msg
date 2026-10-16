@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+pnpm exec commitlint --edit "$1" || exit 1
+
+MSG=$(cat "$1")
+
+if echo "$MSG" | grep -qiE 'co-authored-by:.*(claude|copilot|cursor|gpt|codex|bot)|generated with'; then
+  echo "✗ no tool attribution in commit messages. See .claude/skills/writing-commits."
+  exit 1
+fi
+
+if echo "$MSG" | grep -qiE '\b(comprehensive|robust|seamless(ly)?|streamline[sd]?|leverage[sd]?|utilize[sd]?|delve|cutting-edge|performant)\b'; then
+  echo "✗ filler word. Say what actually changed instead."
+  exit 1
+fi
+
+if echo "$MSG" | grep -qiE '^(this commit|this change|this pr)\b'; then
+  echo "✗ drop 'this commit' — just say what it does."
+  exit 1
+fi

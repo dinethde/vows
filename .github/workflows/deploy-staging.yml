@@ -1,0 +1,71 @@
+name: Deploy to staging
+
+# Everything merged to dev-v2 goes to staging. Vercel deploys the web app from
+# its own GitHub integration; this workflow owns the database migration and the
+# two Fly apps, in that order, so the database is always ahead of the code that
+# needs it. Production has its own workflow and is started by a person.
+
+on:
+  push:
+    branches: [dev-v2]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    name: migrate the staging database
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: drizzle migrate, over the direct connection
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_UNPOOLED }}
+        run: pnpm db:migrate
+
+  api:
+    name: fly · api
+    needs: migrate
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy -c infra/fly.api.staging.toml --dockerfile apps/api/Dockerfile --remote-only --env SENTRY_RELEASE=${{ github.sha }}
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+  worker:
+    name: fly · worker
+    needs: migrate
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy -c infra/fly.worker.staging.toml --dockerfile apps/worker/Dockerfile --remote-only --env SENTRY_RELEASE=${{ github.sha }}
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+  smoke:
+    name: smoke test
+    needs: [api, worker]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: the API is alive and every dependency answers
+        run: |
+          curl --fail --silent --show-error --retry 10 --retry-delay 6 --retry-all-errors "${{ vars.STAGING_API_URL }}/healthz"
+          curl --fail --silent --show-error --retry 10 --retry-delay 6 --retry-all-errors "${{ vars.STAGING_API_URL }}/readyz"

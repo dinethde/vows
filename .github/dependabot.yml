@@ -1,0 +1,23 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    groups:
+      all-minor:
+        patterns: ['*']
+        update-types: ['minor', 'patch']
+    commit-message:
+      # Conventional Commits, because commitlint runs on these too.
+      prefix: 'chore'
+    target-branch: dev-v2
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: 'ci'
+    target-branch: dev-v2

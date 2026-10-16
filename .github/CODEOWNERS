@@ -1,0 +1,11 @@
+# One reviewer, for now. Keeping the file means the day there are two, the
+# routing already exists.
+*                       @dinethdesilva
+
+# Changes here are architecture changes and should be read as such.
+/architecture.md        @dinethdesilva
+/docs/adr/              @dinethdesilva
+/packages/contracts/    @dinethdesilva
+/packages/db/migrations/ @dinethdesilva
+/.github/workflows/     @dinethdesilva
+/infra/                 @dinethdesilva
