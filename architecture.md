@@ -477,6 +477,12 @@ Two processes, one codebase. Four layers, and what each may do:
 | Repository  | Drizzle queries                                        | Decide anything                              |
 | Job handler | Call the same services                                 | Duplicate a service's logic                  |
 
+Two exceptions, kept on purpose. The health controller runs `select 1` itself,
+because a repository for one query would only hide what the check does. And the
+services that belong to a single job (`DeriveService`, `CleanupService`,
+`NotifyService`, `HousekeepingService`, `AuditService`) hold their few queries
+directly: each has one caller and no logic another service would reuse.
+
 Both entry points start the one application in `packages/server`, because an
 app may not import from another app. The worker starts it without an HTTP
 listener. Neither process holds an HTTP client for our own API, and neither has
@@ -756,7 +762,7 @@ Not a chapter of the Figma page — a working list assembled from chapters 18, 1
 
 **Domain and mail**
 
-- `vows.lk` pointed at Vercel; `cdn.vows.lk` at the R2 derivatives bucket
+- `vows.lk` pointed at Vercel; `media.vows.lk` at the R2 derivatives bucket
 - Resend domain verified, and the three records that make mail deliverable:
   **SPF**, **DKIM**, and a **DMARC** record at `_dmarc.vows.lk`
   (`v=DMARC1; p=quarantine; rua=mailto:dmarc@vows.lk`)
@@ -774,8 +780,8 @@ Not a chapter of the Figma page — a working list assembled from chapters 18, 1
 **The applications**
 
 - Neon production branch created, migrations applied by the deploy workflow
-- `vows-api` and `vows-worker` deployed, `/health` green, one job processed end
-  to end
+- `vows-api` and `vows-worker` deployed, `/healthz` and `/readyz` green, one job
+  processed end to end
 - R2 CORS applied; an upload from the real domain completes
 - Clerk production instance, both studio users invited and signed in once
 
