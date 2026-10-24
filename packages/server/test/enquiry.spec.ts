@@ -83,6 +83,14 @@ describe.skipIf(!hasDatabase)('POST /v1/enquiries', () => {
     });
   });
 
+  it('accepts a form from a visitor whose clock runs ten minutes fast', async () => {
+    const response = await request(http)
+      .post('/v1/enquiries')
+      .set('x-forwarded-for', '203.0.113.12')
+      .send(body({ openedAt: Date.now() + 600_000 }));
+    expect(response.status).toBe(202);
+  });
+
   it('refuses a form that was open for under three seconds', async () => {
     const response = await request(http)
       .post('/v1/enquiries')

@@ -57,7 +57,7 @@ describe.skipIf(!hasDatabase)('enquiry.notify', () => {
       'benali.notify@example.com',
     ]);
     expect(sent[0]?.mail.subject).toBe('New enquiry — Benali Perera, 14 February 2027');
-    expect(sent[0]?.mail.text).toContain(`/studio/enquiries?open=${id}`);
+    expect(sent[0]?.mail.text).toContain(`/studio`);
     expect(sent[1]?.mail.subject).toBe('We have your message — Vows');
   });
 

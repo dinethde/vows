@@ -66,7 +66,10 @@ export class EnquiryService {
    * email can be late without anyone losing a message.
    */
   async create(input: CreateEnquiry, sender: Sender, now = new Date()): Promise<{ id: string }> {
-    if (now.getTime() - input.openedAt < MIN_FORM_OPEN_MS) {
+    // The open time comes from the visitor's clock. One running fast puts it in
+    // the future; that is a clock, not a bot, so only a short real gap counts.
+    const elapsed = now.getTime() - input.openedAt;
+    if (elapsed >= 0 && elapsed < MIN_FORM_OPEN_MS) {
       throw new ValidationError({ form: 'That was sent too quickly. Please try again.' });
     }
     const ipHash = createHash('sha256')
@@ -78,6 +81,7 @@ export class EnquiryService {
 
     return this.db.transaction(async (tx) => {
       await this.repo.lockEmail(tx, input.email);
+      await this.repo.lockSender(tx, ipHash);
 
       // The same message again within ten minutes is a lost reply being
       // retried, not a second enquiry. Days later it is a real follow-up.

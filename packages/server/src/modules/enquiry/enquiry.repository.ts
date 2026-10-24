@@ -22,6 +22,11 @@ export class EnquiryRepository {
     await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${email}))`);
   }
 
+  /** One sender at a time, so a burst cannot all count the same hour at once. */
+  async lockSender(tx: DbOrTx, ipHash: string): Promise<void> {
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`ip:${ipHash}`}))`);
+  }
+
   async countFromIpSince(tx: DbOrTx, ipHash: string, since: Date): Promise<number> {
     return tx.$count(enquiry, and(eq(enquiry.ipHash, ipHash), gte(enquiry.createdAt, since)));
   }

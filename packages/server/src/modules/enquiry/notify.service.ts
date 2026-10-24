@@ -48,7 +48,8 @@ export class NotifyService {
         weddingPlace: row.weddingPlace,
         notes: row.notes,
         receivedAt: colomboTime(row.createdAt),
-        studioUrl: `${this.env.SITE_URL.replace(/\/$/, '')}/studio/enquiries?open=${row.id}`,
+        // The enquiry inbox has no design yet, so the link opens the Studio.
+        studioUrl: `${this.env.SITE_URL.replace(/\/$/, '')}/studio`,
       }),
       renderEnquiryReceived({ name: row.name, phone: studio.phone }),
     ]);
