@@ -4,9 +4,9 @@ This file and the git log are how a new session picks up the work. Read it
 first. Update it when a milestone lands, when the plan changes, or when
 something joins the "needs Dineth" list.
 
-Last updated: 2026-10-17. Everything that can be built and checked without the
-four platform accounts is done. What is left needs Clerk, R2, Resend and Neon
-set up by Dineth first: see "When the platforms are ready".
+Last updated: 2026-10-24. The platforms are set up and checked. Staging waits
+on one thing: Fly's trial has ended, and creating the two apps needs a card on
+the Fly account (Dineth). Everything that does not need Fly is in place.
 
 ## Where things stand
 
@@ -17,10 +17,10 @@ set up by Dineth first: see "When the platforms are ready".
   compared with its Figma frame at 1440, 834 and 390 by the design reviewer;
   the clear mismatches are fixed and re-measured (see "Review findings").
   The contact form has its calendar and loads its code on open.
-- **Built, one check owed:** milestone 6, the Studio. Gate with a real 403,
-  sign-in, dashboard, album editor, date picker, upload queue, four
-  confirmation dialogs. Checked in a browser against a stand-in API. **Never
-  used signed in against the real API**: that needs a real Clerk instance.
+- **Done:** milestone 6, the Studio. Used signed in against the real API and
+  a real Clerk instance on 2026-10-24: five end-to-end journeys pass (sign in,
+  upload until ready, publish refused for a missing description, an album taken
+  off the site and put back).
 - **Done locally, waiting on the platforms:** milestone 7. CI and the staging
   deploy workflow are written. From the root, typecheck, lint, test and build
   pass; 28 Playwright tests pass in Chromium and WebKit; every server test
@@ -73,46 +73,50 @@ at the end of each later milestone.
 | Node                | 22.23.3 through nvm, as `.nvmrc` asks                               |
 | Commit signing      | Works once the SSH key is in the agent (`ssh-add -l` lists it)      |
 
-## When the platforms are ready
+## Staging: where it stands
 
-Dineth is setting up Clerk, R2, Resend and Neon and filling the vault. Nothing
-below starts before that. Items marked **you** need a dashboard only Dineth can
-use; the rest is mine, in this order.
+Checked on 2026-10-24 with each key, printing results only:
 
-1. **you** — R2: an access key for the three staging buckets (and
-   `vows-backups-dev`), in the vault as `r2/staging-access-keys` with the same
-   four fields as `r2/dev-access-keys`.
-2. **you** — Clerk: a development instance, set up as "The Studio and Clerk"
-   says (session token customised, your role, sign-ups off). Publishable key,
-   secret key, issuer URL and JWKS URL in the vault.
-3. **you** — Resend: an API key and a verified sender address, in the vault.
-4. **you** — Neon: an API key for CI, in the vault.
-5. **you** — say yes to the worker at 1 GB, above chapter 32's 512 MB (see
-   "Decisions"). Optional: a Sentry DSN and a Cloudflare Web Analytics site
-   token, both of which switch on by being set.
-6. me — make the values that are ours (`REVALIDATE_SECRET`, `IP_HASH_SALT`) as
-   vault items; create `vows-api-staging` and `vows-worker-staging` on Fly; push
-   every secret from the vault inline; deploy. The worker refuses to start
-   without `DATABASE_URL_UNPOOLED`, `R2_BUCKET_BACKUPS`, `RESEND_API_KEY` and
-   `MAIL_FROM` on staging.
-7. me — R2 CORS for the staging originals bucket (from the Vercel origin) and a
-   public address for `vows-media-staging`.
-8. me — the Vercel project from `apps/web`, its variables, deploy.
-9. me — repository variables (`STAGING_API_URL`, `STAGING_SITE_URL`,
-   `STAGING_MEDIA_URL`, `NEON_PROJECT_ID`) and secrets (`FLY_API_TOKEN`,
-   `NEON_API_KEY`, `DATABASE_URL_UNPOOLED`), read from the vault.
-10. me — the signed-in Studio run against the real API, then the Studio
-    end-to-end tests: sign in, upload and watch it become ready, the alt-text
-    refusal, publish and see it on the site. They need Clerk's testing tokens
-    (`@clerk/testing`); I have not written them blind.
-11. me — seed the first album on staging, run the whole suite against it, run
-    one job end to end, check `/healthz` and `/readyz`, get CI green.
-12. me — check on staging the two things that cannot be checked locally: that
-    Fly puts the client last in `X-Forwarded-For` and Vercel puts the visitor
-    first (the enquiry limit depends on both).
-13. **you** — DNS for `staging.vows.lk`, `api-staging.vows.lk` and a media host,
-    when you want them. Until then staging uses the addresses Vercel, Fly and R2
-    hand out.
+- **Neon** (`neon/dev-secrets`): works. In GitHub as `NEON_API_KEY`, with
+  `NEON_PROJECT_ID`; CI's integration job now passes on its own branch.
+- **Clerk** (`clerk/dev-secrets`): development instance, session token carries
+  `public_metadata`. A test owner is in the vault as `clerk/dev-test-owner`.
+- **R2** (`r2/dev-secrets`): reads and writes all six buckets.
+- **Resend** (`resend/dev-secrets`): a send-only key with a `resend.dev`
+  sender, so Resend delivers only to the account's own address. Real
+  delivery waits for a verified domain, which Dineth has put off.
+- **Worker at 1 GB:** approved by Dineth on 2026-10-24.
+
+Made for staging:
+
+- Vault item `staging/app-secrets`: rebuild secret, IP salt, both staging
+  database URLs.
+- Neon branch `staging`: both migrations, 22 albums, no photographs yet.
+- `vows-media-staging` public at
+  `https://pub-dc564b44038b4f979f548ab1cd05ba1b.r2.dev`; upload CORS on
+  `vows-originals-staging` for `https://vows-staging.vercel.app` only.
+- Vercel project `vows-staging` (root `apps/web`, Next.js, Node 22) with its
+  seven variables, read from the vault. Not deployed: its build reads the
+  published albums from the staging API.
+- GitHub: `DATABASE_URL_UNPOOLED` (staging), `STAGING_SITE_URL`,
+  `STAGING_MEDIA_URL`.
+
+**Blocked:** `fly apps create` answers "trial has ended, please add a credit
+card". Once a card is on the account, in order:
+
+1. me — create `vows-api-staging` and `vows-worker-staging`; run
+   `infra/fly-secrets-staging.sh`; deploy the API, check `/healthz` and
+   `/readyz`, then the worker.
+2. me — a deploy token for GitHub (`FLY_API_TOKEN`, into the vault first) and
+   `STAGING_API_URL`.
+3. me — deploy the web app to `vows-staging`; check whether Vercel's
+   protection covers the staging address, and decide with Dineth.
+4. me — seed the Figma photographs on staging (the brief asks for them), run
+   the whole suite against staging, one job end to end, CI green.
+5. me — on staging, check the client address Fly and Vercel hand the enquiry
+   limit.
+6. **you** — later: verify the domain in Resend and change `from-address`;
+   DNS for staging names if wanted.
 
 ## Needs Dineth
 
