@@ -9,4 +9,5 @@
 .seed-photos
 .playwright-mcp
 .env*
+**/.clerk
 docs

@@ -9,8 +9,8 @@
   "rules": [
     {
       "allowed": {
-        "origins": ["https://vows.lk", "https://www.vows.lk", "http://localhost:3000"],
-        "methods": ["PUT", "GET", "HEAD"],
+        "origins": ["https://vows.lk", "https://www.vows.lk"],
+        "methods": ["PUT"],
         "headers": ["content-type", "content-md5", "x-amz-*"]
       },
       "exposeHeaders": ["etag"],

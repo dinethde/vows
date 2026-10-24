@@ -14,7 +14,8 @@ export default [
           patterns: [
             {
               group: ['**/lib/api/transport*'],
-              message: 'Use serverApi() or browserApi() from @/lib/api, not the transport.',
+              message:
+                'Use publicApi(), serverApi() or useApi() (all built on @/lib/api), not fetch.',
             },
           ],
         },
