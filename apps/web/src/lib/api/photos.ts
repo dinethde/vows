@@ -28,22 +28,33 @@ export interface PhotosApi {
 export function photosApi(request: Transport): PhotosApi {
   return {
     list: async (albumId) =>
-      (await request(`/v1/studio/albums/${albumId}/photos`, { schema: photoList })).data,
+      (
+        await request(`/v1/studio/albums/${encodeURIComponent(albumId)}/photos`, {
+          schema: photoList,
+        })
+      ).data,
     uploadUrl: (albumId, body, idempotencyKey) =>
-      request(`/v1/studio/albums/${albumId}/photos/upload-url`, {
+      request(`/v1/studio/albums/${encodeURIComponent(albumId)}/photos/upload-url`, {
         method: 'POST',
         body,
         idempotencyKey,
         schema: uploadTicket,
       }),
     markUploaded: (id) =>
-      request(`/v1/studio/photos/${id}/uploaded`, { method: 'POST', schema: photo }),
+      request(`/v1/studio/photos/${encodeURIComponent(id)}/uploaded`, {
+        method: 'POST',
+        schema: photo,
+      }),
     update: (id, body) =>
-      request(`/v1/studio/photos/${id}`, { method: 'PATCH', body, schema: photo }),
-    remove: (id) => request(`/v1/studio/photos/${id}`, { method: 'DELETE' }),
+      request(`/v1/studio/photos/${encodeURIComponent(id)}`, {
+        method: 'PATCH',
+        body,
+        schema: photo,
+      }),
+    remove: (id) => request(`/v1/studio/photos/${encodeURIComponent(id)}`, { method: 'DELETE' }),
     reorder: async (albumId, body) =>
       (
-        await request(`/v1/studio/albums/${albumId}/order`, {
+        await request(`/v1/studio/albums/${encodeURIComponent(albumId)}/order`, {
           method: 'PUT',
           body,
           schema: photoList,

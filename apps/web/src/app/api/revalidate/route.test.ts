@@ -62,4 +62,17 @@ describe('POST /api/revalidate', () => {
     const signature = createHmac('sha256', SECRET).update(body).digest('hex');
     expect((await call(body.replace('"/"', '"/studio"'), signature)).status).toBe(404);
   });
+
+  it('refuses a correctly signed call dated more than five minutes ahead', async () => {
+    const response = await call(
+      JSON.stringify({ paths: ['/'], issuedAt: Date.now() + 10 * 60 * 1000 }),
+    );
+    expect(response.status).toBe(404);
+    expect(revalidatePath).not.toHaveBeenCalled();
+  });
+
+  it('refuses a correctly signed body that is not JSON, without an error', async () => {
+    const response = await call('not json');
+    expect(response.status).toBe(404);
+  });
 });

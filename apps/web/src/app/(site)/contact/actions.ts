@@ -25,12 +25,18 @@ export async function sendEnquiry(input: CreateEnquiry): Promise<SendEnquiryResu
     );
     return { ok: false, message: 'Check the marked fields.', fields };
   }
+  // Outside the try: a missing secret is a fault in the deployment, and it
+  // must surface as one, not as a polite message every visitor gets.
+  const visitor = await visitorHeaders();
   try {
-    await publicApi().enquiries.create(parsed.data, await visitorHeaders());
+    await publicApi().enquiries.create(parsed.data, visitor);
     return { ok: true };
   } catch (error) {
     if (error instanceof ApiError)
       return { ok: false, message: error.message, fields: error.fields };
+    // The API could not be reached. The visitor is told to try again or email;
+    // the server log is told why.
+    console.error('enquiry not sent', error);
     return { ok: false, message: UNREACHABLE, fields: {} };
   }
 }

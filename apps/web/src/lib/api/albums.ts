@@ -26,14 +26,28 @@ export function albumsApi(request: Transport): AlbumsApi {
     list: async () =>
       (await request('/v1/albums', { schema: albumList, next: { tags: ['albums'] } })).data,
     get: (slug) =>
-      request(`/v1/albums/${slug}`, { schema: album, next: { tags: ['albums', `album:${slug}`] } }),
+      request(`/v1/albums/${encodeURIComponent(slug)}`, {
+        schema: album,
+        next: { tags: ['albums', `album:${slug}`] },
+      }),
     listForStudio: () => request('/v1/studio/albums', { schema: studioAlbumList }),
-    getForStudio: (id) => request(`/v1/studio/albums/${id}`, { schema: studioAlbum }),
+    getForStudio: (id) =>
+      request(`/v1/studio/albums/${encodeURIComponent(id)}`, { schema: studioAlbum }),
     update: (id, body) =>
-      request(`/v1/studio/albums/${id}`, { method: 'PATCH', body, schema: studioAlbum }),
+      request(`/v1/studio/albums/${encodeURIComponent(id)}`, {
+        method: 'PATCH',
+        body,
+        schema: studioAlbum,
+      }),
     publish: (id) =>
-      request(`/v1/studio/albums/${id}/publish`, { method: 'POST', schema: studioAlbum }),
+      request(`/v1/studio/albums/${encodeURIComponent(id)}/publish`, {
+        method: 'POST',
+        schema: studioAlbum,
+      }),
     unpublish: (id) =>
-      request(`/v1/studio/albums/${id}/unpublish`, { method: 'POST', schema: studioAlbum }),
+      request(`/v1/studio/albums/${encodeURIComponent(id)}/unpublish`, {
+        method: 'POST',
+        schema: studioAlbum,
+      }),
   };
 }

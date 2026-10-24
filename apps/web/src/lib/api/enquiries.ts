@@ -36,6 +36,10 @@ export function enquiriesApi(request: Transport): EnquiriesApi {
       return request(`/v1/studio/enquiries${suffix}`, { schema: enquiryList });
     },
     setStatus: (id, status) =>
-      request(`/v1/studio/enquiries/${id}`, { method: 'PATCH', body: { status }, schema: enquiry }),
+      request(`/v1/studio/enquiries/${encodeURIComponent(id)}`, {
+        method: 'PATCH',
+        body: { status },
+        schema: enquiry,
+      }),
   };
 }
