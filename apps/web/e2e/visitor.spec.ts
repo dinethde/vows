@@ -47,3 +47,24 @@ test('a page that does not exist is a real 404 too', async ({ page }) => {
   const response = await page.goto('/no-such-page');
   expect(response?.status()).toBe(404);
 });
+
+test('the footer waits until the page has slid fully off it', async ({ page }) => {
+  await page.goto('/contact');
+  const footer = page.locator('footer');
+  const endTop = (): Promise<number> =>
+    page.locator('[data-page-end]').evaluate((marker) => marker.getBoundingClientRect().top);
+
+  // Just short of the end, with the page still covering the top of the footer.
+  const remaining = await endTop();
+  await page.evaluate((by) => {
+    window.scrollBy(0, by);
+  }, remaining - 40);
+  await expect.poll(endTop).toBeGreaterThan(30);
+  await page.waitForTimeout(300);
+  await expect(footer).toHaveAttribute('data-revealed', 'false');
+
+  await page.evaluate(() => {
+    window.scrollTo(0, document.documentElement.scrollHeight);
+  });
+  await expect(footer).toHaveAttribute('data-revealed', 'true');
+});
