@@ -40,10 +40,12 @@ jobs:
 
       - run: pnpm turbo run lint typecheck test
       - run: pnpm exec prettier --check .
-      - run: pnpm turbo run build
+      # The web app builds in the integration job, where an API is running:
+      # its pages are made from the published albums at build time.
+      - run: pnpm turbo run build --filter='!@vows/web'
 
   integration:
-    name: integration, on its own Neon branch
+    name: integration and web build, on its own Neon branch
     runs-on: ubuntu-latest
     timeout-minutes: 15
     # A fork cannot read the secret, and must not be able to.
@@ -75,6 +77,44 @@ jobs:
         env:
           DATABASE_URL: ${{ steps.branch.outputs.db_url_pooled }}
         run: pnpm turbo run test --filter=@vows/server
+
+      # The web build reads the published albums from the API, so a real API
+      # runs on this run's database. Nothing here is a secret: the values are
+      # placeholders for services the build never calls.
+      - name: start the API on this run's database
+        env:
+          DATABASE_URL: ${{ steps.branch.outputs.db_url_pooled }}
+          APP_ENV: local
+          PORT: '3001'
+          LOG_LEVEL: warn
+          CLERK_ISSUER: https://clerk.ci.invalid
+          CLERK_JWKS_URL: https://clerk.ci.invalid/.well-known/jwks.json
+          WEB_ORIGINS: http://localhost:3000
+          SITE_URL: http://localhost:3000
+          MEDIA_URL: https://media.ci.invalid
+          R2_ACCOUNT_ID: ci
+          R2_ACCESS_KEY_ID: ci
+          R2_SECRET_ACCESS_KEY: ci
+          R2_BUCKET_ORIGINALS: ci
+          R2_BUCKET_PUBLIC: ci
+          REVALIDATE_SECRET: ci-only-revalidate-placeholder-0123456789
+          IP_HASH_SALT: ci-only-salt-0123
+        run: |
+          pnpm turbo run build --filter=@vows/api...
+          nohup node apps/api/dist/main.js > api.log 2>&1 &
+          curl --fail --silent --retry 20 --retry-delay 2 --retry-all-errors http://localhost:3001/healthz
+
+      - name: build the web app against it
+        env:
+          API_URL: http://localhost:3001
+          NEXT_PUBLIC_API_URL: http://localhost:3001
+          NEXT_PUBLIC_SITE_URL: http://localhost:3000
+          NEXT_PUBLIC_MEDIA_URL: https://media.ci.invalid
+        run: pnpm turbo run build --filter=@vows/web
+
+      - name: the API's log, when something failed
+        if: failure()
+        run: tail -50 api.log || true
 
       - name: drop the branch
         if: always()
