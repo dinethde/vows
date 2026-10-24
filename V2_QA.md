@@ -121,6 +121,9 @@ Reported by Dineth on 2026-10-24, after using the site locally.
   token to carry it.
 - Documented: `architecture.md` chapter 09 now says a new account needs a role
   from an owner, and where to set it.
+- Confirmed: the audit log shows Dineth's Google account working in the Studio
+  from 06:19 UTC on 2026-10-24 — moving "Benali & Yasiru" to draft, reordering
+  four photographs, publishing it and moving it back to draft.
 
 ### Checks for this round
 
@@ -128,3 +131,8 @@ Run from the repository root on 2026-10-24: typecheck, lint, unit tests and
 the production build all pass. Browser suite: 30 passed, 13 skipped by design
 (the deployed-only checks, and the Studio journeys, which ran on their own
 against the Clerk development instance: 5 passed).
+
+After the music was added, the home-page browser test failed on both widths:
+not a fault, but the seeded album "Benali & Yasiru" was in draft, set so by
+Dineth in the Studio at 06:21 UTC (audit log). The test needs one published
+album; it passes with the album published, as it was for the run above.
