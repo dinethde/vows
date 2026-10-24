@@ -8,10 +8,50 @@ and the git log; this file starts where review started.
 
 Versions:
 
-| Version | Date       | What it is                                  |
-| ------- | ---------- | ------------------------------------------- |
-| v2.0    | 2026-10-24 | The build as first handed over for review   |
-| v2.1    | 2026-10-24 | QA round 1: home, album bar, footer, Studio |
+| Version | Date       | What it is                                    |
+| ------- | ---------- | --------------------------------------------- |
+| v2.0    | 2026-10-24 | The build as first handed over for review     |
+| v2.1    | 2026-10-24 | QA round 1: home, album bar, footer, Studio   |
+| v2.2    | 2026-10-24 | QA round 2: a clip in each error page's print |
+
+---
+
+## v2.2 — QA round 2
+
+Asked for by Dineth on 2026-10-24: the print in the middle of each error page
+(Figma `2448:1964`) read as an empty box. Fill it with the Peter Griffin clips
+he supplied in `apps/web/src/assets/gifs`.
+
+**8. A clip in each error page's print.**
+
+- Supplied: `404.webp` (200 × 134, 97 frames), `500.webp` (356 × 200, 39
+  frames), `403.gif` (220 × 185, a single frame, so it does not move).
+- Code: `ErrorScreen` in `packages/ui` takes an optional `picture`, which fills
+  the 164 × 192 print (72 × 84 on a phone), cropped to it, under the print's
+  hairline edge; without one, the print keeps its drawing. The site passes a
+  `<picture>` per page: the clip, or its first frame (`404-still.webp`,
+  `500-still.webp`, made here) for anyone who asks for reduced motion. The
+  files are served as they are, because an image optimiser would flatten the
+  animation. The card stays decoration, hidden from screen readers.
+- Figma: in all six frames (404, 500, 403 at 1440 and 390) the print's fill is
+  the clip, with its first frame as a PNG fill underneath, because Figma's
+  renderer for exports and previews drew the GIF fills blank. The drawings are
+  kept in each print, hidden. The 404 print's dashed edge is now the same solid
+  `border/hairline` as the others, since it is no longer an empty slot. The
+  notes beside the frames (`2457:2037`) describe the new print.
+- `design.md`: the error screen in the components table, and the still frame
+  under reduced motion.
+- Checked: in a browser at 1440 and 390, real 404 and 403 statuses, each clip
+  loaded and covering the print, the still frame with reduced motion; the 500
+  crop previewed frame by frame (Peter stays centred). Component tests for the
+  picture and for its absence; accessibility tests pass.
+- Commit: `1dec051` (code), and the documents commit after it.
+- **Before launch — Dineth's call:** Peter Griffin is a Family Guy character,
+  owned by 20th Television / Disney. These clips carry no licence, unlike the
+  music. On a business's site that is a copyright risk; a takedown or claim is
+  possible. Fine for staging and review. Before production, either confirm the
+  use is acceptable or swap the files: they live in `apps/web/src/assets/gifs`,
+  and replacing them under the same names changes nothing else.
 
 ---
 

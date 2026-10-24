@@ -77,16 +77,17 @@ variant can choose one. The names match: `Heading/1` is `type-heading-1`.
 
 The Figma library is `packages/ui`. The Figma name is the contract:
 
-| Figma                                           | React                                        | Notes                                                                                                  |
-| ----------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `button — primary / neutral / outline / danger` | `<Button variant="…">`                       | danger is only for destroying something                                                                |
-| `field — site` / `field — studio`               | `<Field surface="site\|studio">`             |                                                                                                        |
-| `photo_slot`                                    | `<PhotoSlot state badge number>`             | five states: Empty, Uploading, Uploaded, Update, Error                                                 |
-| `confirmation_modal`                            | `<ConfirmationModal tone="primary\|danger">` | four real uses; copy is props in code. There is no delete-album variant — see decision 012             |
-| `navbar`, `bottom_bar`                          | `<Navbar>`, `<BottomBar variant>`            | breakpoint is CSS, not a prop                                                                          |
-| `album_page_bottom_bar` (`2289:7026`)           | `<AlbumBottomBar>`                           | names required, every other part optional and left out when empty; captions sit left over their values |
-| `player — nav`                                  | `<Player />`                                 | client component, lives above the router                                                               |
-| `chip`, `status_pill`, `banner — studio`        | `<Chip>`, `<StatusPill>`, `<Banner>`         |                                                                                                        |
+| Figma                                           | React                                        | Notes                                                                                                         |
+| ----------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `button — primary / neutral / outline / danger` | `<Button variant="…">`                       | danger is only for destroying something                                                                       |
+| `field — site` / `field — studio`               | `<Field surface="site\|studio">`             |                                                                                                               |
+| error pages (`2448:1964`)                       | `<ErrorScreen card picture>`                 | the print on the middle digit shows a short clip per page, filling it; without `picture` it shows its drawing |
+| `photo_slot`                                    | `<PhotoSlot state badge number>`             | five states: Empty, Uploading, Uploaded, Update, Error                                                        |
+| `confirmation_modal`                            | `<ConfirmationModal tone="primary\|danger">` | four real uses; copy is props in code. There is no delete-album variant — see decision 012                    |
+| `navbar`, `bottom_bar`                          | `<Navbar>`, `<BottomBar variant>`            | breakpoint is CSS, not a prop                                                                                 |
+| `album_page_bottom_bar` (`2289:7026`)           | `<AlbumBottomBar>`                           | names required, every other part optional and left out when empty; captions sit left over their values        |
+| `player — nav`                                  | `<Player />`                                 | client component, lives above the router                                                                      |
+| `chip`, `status_pill`, `banner — studio`        | `<Chip>`, `<StatusPill>`, `<Banner>`         |                                                                                                               |
 
 When one side is renamed, the other is renamed in the same pull request.
 
@@ -126,7 +127,8 @@ specifications.
   card on an error page, the sound mark.
 - Focus is visible everywhere, and focus order follows reading order.
 - `prefers-reduced-motion` removes the curtain, the blur transition and the
-  waveform animation.
+  waveform animation, and shows the first frame of each error page's clip
+  instead of the clip.
 
 ## Motion
 
