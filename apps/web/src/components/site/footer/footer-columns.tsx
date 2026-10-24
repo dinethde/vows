@@ -1,8 +1,8 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import type { ReactElement, ReactNode } from 'react';
 
 import { EmailLink } from '@/components/site/email-link';
+import { LocationPin } from '@/components/site/location-pin';
 import { routes, site } from '@/config/site';
 
 const label =
@@ -74,7 +74,7 @@ export function FooterColumns(): ReactElement {
       </Column>
       <Column title="Studio">
         <a href={site.mapUrl} rel="noreferrer" className={`${link} flex items-center gap-[10px]`}>
-          <Image src="/icons/location-pin.svg" alt="" width={18} height={18} />
+          <LocationPin />
           {site.placeShort}
         </a>
       </Column>

@@ -1,0 +1,25 @@
+import type { ReactElement } from 'react';
+
+/**
+ * The map pin beside the studio's place. Drawn inline in `currentColor` so its
+ * green is the `status/success/icon` token, not a value in a file.
+ */
+export function LocationPin(): ReactElement {
+  return (
+    <svg
+      aria-hidden="true"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      className="text-status-success-icon shrink-0"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M9 15.75C11.625 13.05 14.25 10.6323 14.25 7.65C14.25 4.66766 11.8995 2.25 9 2.25C6.10051 2.25 3.75 4.66766 3.75 7.65C3.75 10.6323 6.375 13.05 9 15.75Z" />
+      <path d="M9 9.75C10.2427 9.75 11.25 8.74267 11.25 7.5C11.25 6.25736 10.2427 5.25 9 5.25C7.75732 5.25 6.75 6.25736 6.75 7.5C6.75 8.74267 7.75732 9.75 9 9.75Z" />
+    </svg>
+  );
+}

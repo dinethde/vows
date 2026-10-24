@@ -6,6 +6,7 @@ import type { ReactElement, ReactNode } from 'react';
 import { EnquiryDialog } from '@/components/site/contact/enquiry-dialog';
 import { EmailLink } from '@/components/site/email-link';
 import { SiteFooter } from '@/components/site/footer/site-footer';
+import { LocationPin } from '@/components/site/location-pin';
 import { site } from '@/config/site';
 
 export const metadata: Metadata = {
@@ -75,7 +76,7 @@ function ContactDetails(): ReactElement {
           rel="noreferrer"
           className={`${value} flex items-center gap-[10px] whitespace-nowrap`}
         >
-          <Image src="/icons/location-pin.svg" alt="" width={18} height={18} />
+          <LocationPin />
           {site.place}
         </a>
       </Group>

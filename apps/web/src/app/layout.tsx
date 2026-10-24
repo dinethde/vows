@@ -11,7 +11,14 @@ export const metadata: Metadata = {
   metadataBase: new URL(env.SITE_URL),
   title: { default: 'Vows Weddings', template: '%s · Vows' },
   description: 'Wedding photography in Sri Lanka, since 2013.',
-  openGraph: { type: 'website', siteName: 'Vows Weddings', locale: 'en_LK' },
+  // Every page has a share card: this one unless the page names its own, as
+  // the album pages do (chapter 12).
+  openGraph: {
+    type: 'website',
+    siteName: 'Vows Weddings',
+    locale: 'en_LK',
+    images: [{ url: '/share/fallback.png', width: 1200, height: 630 }],
+  },
   twitter: { card: 'summary_large_image' },
 };
 
