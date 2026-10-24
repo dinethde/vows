@@ -24,13 +24,23 @@ Reported by Dineth on 2026-10-24, after using the site locally.
 **1. The song does not play.**
 
 - Found: the player asks for `audio/vows-theme.m4a` and `audio/vows-theme.ogg`
-  on the media bucket, and neither file exists; both answer 404. The player
-  code is fine. The file was never supplied: chapter 14 names "Romantic
-  Saxophone" from Pixabay, and the Figma navbar calls the track "First Light".
-- Changed: nothing yet.
-- Open: Dineth to supply the track and its licence. Then it is converted to
-  `.m4a` and `.ogg`, uploaded to the dev and staging media buckets as
-  `audio/vows-theme.*`, and its `LICENCE.md` committed.
+  on the media bucket, and neither file existed; both answered 404. The player
+  code was fine. The track had never been supplied.
+- Changed: at Dineth's request, a licensed track was found and added.
+  "Gentle Glow (romantic saxophone)" by Surprising_Media on Pixabay, 4:48,
+  free under the Pixabay Content License (no credit required; the track may not
+  be sold or handed out on its own). Chosen over the 1:03 track literally named
+  "Romantic Saxophone" because a short loop repeats every minute. Uploaded to
+  the dev and staging media buckets as `audio/vows-theme.m4a` (AAC, 160 kbps,
+  5.8 MB, played first) and `audio/vows-theme.mp3` (the original, the
+  fallback). The `.ogg` was dropped: there is no Ogg encoder here and every
+  current browser plays AAC. Source, licence and how the files were made are in
+  `docs/music/LICENCE.md`.
+- Checked: in a browser, nothing is downloaded before the visitor chooses
+  music; after choosing, the `.m4a` streams and is playing 4 seconds later.
+  The "never fetched unless asked" browser test still passes.
+- Open: if Dineth prefers a different track, it replaces these two files under
+  the same names.
 
 **2. Too many album covers; more space between them.**
 

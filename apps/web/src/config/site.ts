@@ -42,8 +42,12 @@ export const routes = {
   cookies: { label: 'Cookies Policy', href: '/privacy#cookies' },
 } as const;
 
-/** One loop, fetched only after the visitor asks for it. */
+/**
+ * One loop, fetched only after the visitor asks for it: "Gentle Glow
+ * (romantic saxophone)", Pixabay Content License, see docs/music/LICENCE.md.
+ * AAC first; the MP3 is the source file, for any browser without AAC.
+ */
 export const music = {
   m4a: `${env.MEDIA_URL.replace(/\/$/, '')}/audio/vows-theme.m4a`,
-  ogg: `${env.MEDIA_URL.replace(/\/$/, '')}/audio/vows-theme.ogg`,
+  mp3: `${env.MEDIA_URL.replace(/\/$/, '')}/audio/vows-theme.mp3`,
 } as const;

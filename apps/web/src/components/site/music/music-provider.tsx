@@ -91,7 +91,7 @@ export function MusicProvider({ children }: MusicProviderProps): ReactElement {
         }}
       >
         <source src={music.m4a} type="audio/mp4" />
-        <source src={music.ogg} type="audio/ogg" />
+        <source src={music.mp3} type="audio/mpeg" />
       </audio>
       {children}
     </MusicContext>
