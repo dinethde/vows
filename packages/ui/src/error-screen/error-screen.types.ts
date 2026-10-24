@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import type { LinkComponent } from '../lib/link.types';
 
 /** What the photo card over the middle digit shows. `empty` is a slot with no
@@ -28,6 +30,12 @@ export interface ErrorScreenProps {
   /** What happened and what to do next. */
   subline: string;
   card: ErrorScreenCard;
+  /**
+   * What fills the print, edge to edge: an image or a `<picture>` that covers
+   * the 164 × 192 frame (`object-cover`). Figma `2448:1964`, QA round 2: a
+   * short animation per page. Without it the card shows its drawing.
+   */
+  picture?: ReactNode;
   /** The small line under the card: "no frame here". Decoration, like the card. */
   caption: string;
   primaryAction: ErrorScreenAction;

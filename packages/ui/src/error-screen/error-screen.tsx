@@ -35,6 +35,7 @@ export function ErrorScreen({
   headline,
   subline,
   card,
+  picture,
   caption,
   primaryAction,
   homeLink,
@@ -57,7 +58,7 @@ export function ErrorScreen({
           <div className={zone}>
             <span className={numeral}>{code}</span>
             <span className="tablet:top-[189px] absolute left-1/2 top-[94px] -translate-x-1/2">
-              <ErrorCard variant={card} className="tablet:[zoom:1] [zoom:0.44]" />
+              <ErrorCard variant={card} picture={picture} className="tablet:[zoom:1] [zoom:0.44]" />
             </span>
           </div>
           <span className="type-body-xs text-muted">{caption}</span>

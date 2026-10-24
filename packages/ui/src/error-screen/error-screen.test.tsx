@@ -98,4 +98,21 @@ describe('ErrorScreen', () => {
       expect(link).toHaveAttribute('data-router', 'true');
     }
   });
+
+  it('fills the print with the picture it is given, hidden from readers like the card', () => {
+    const { container } = render(
+      <ErrorScreen {...notFound} picture={<img src="/404.webp" alt="" data-testid="gif" />} />,
+    );
+    const card = container.querySelector('[data-card]');
+
+    expect(card?.querySelector('[data-testid="gif"]')).not.toBeNull();
+    expect(card?.closest('[aria-hidden="true"]')).not.toBeNull();
+  });
+
+  it('keeps its drawing when no picture is given', () => {
+    const { container } = render(<ErrorScreen {...notFound} />);
+
+    expect(container.querySelector('[data-card] img')).toBeNull();
+    expect(container.querySelector('[data-card] svg')).not.toBeNull();
+  });
 });

@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 import { cn } from '../lib/cn';
 
@@ -142,13 +142,29 @@ const drawings: Record<ErrorScreenCard, () => ReactElement> = {
   locked: Locked,
 };
 
+/* A picture fills the print, cropped to it, with the print's hairline over
+ * its edge so it still reads as a photograph in a frame. */
+const filled = '[&_img]:absolute [&_img]:inset-0 [&_img]:size-full [&_img]:object-cover';
+
 export function ErrorCard({
   variant,
+  picture,
   className,
 }: {
   variant: ErrorScreenCard;
+  picture?: ReactNode;
   className?: string;
 }): ReactElement {
+  if (picture) {
+    return (
+      <span className={cn(card, 'bg-slot', filled, className)} data-card={variant}>
+        {picture}
+        <svg className="absolute inset-0 size-full fill-none" viewBox="0 0 164 192">
+          <Hairline />
+        </svg>
+      </span>
+    );
+  }
   const Drawing = drawings[variant];
 
   return (
