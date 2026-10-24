@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-import { renderEnquiryNotify, renderEnquiryReceived } from './index';
+import { createMailer, renderEnquiryNotify, renderEnquiryReceived } from './index';
 
 const enquiry = {
   name: 'Benali Perera',
@@ -46,5 +46,25 @@ describe('the reply to the couple', () => {
     expect(mail.subject).toBe('We have your message — Vows');
     expect(mail.text).toContain('a reply usually takes a day or two');
     expect(mail.text).toContain('+94 71 657 0999');
+  });
+});
+
+describe('a send Resend refuses', () => {
+  it('says why, without the address', async () => {
+    const reply = {
+      message: 'You can only send testing emails to your own email address (owner@example.com).',
+    };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(new Response(JSON.stringify(reply), { status: 403 })),
+    );
+    const mailer = createMailer({ apiKey: 're_test', from: 'Vows <hello@resend.dev>' });
+    const mail = { subject: 'Hello', html: '<p>Hello</p>', text: 'Hello' };
+    const sending = mailer.send('couple@example.com', mail, 'key-1');
+    await expect(sending).rejects.toThrow(
+      'Resend answered 403. You can only send testing emails to your own email address <address>',
+    );
+    await expect(sending).rejects.not.toThrow('owner@example.com');
+    vi.unstubAllGlobals();
   });
 });
