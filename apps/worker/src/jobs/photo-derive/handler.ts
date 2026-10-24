@@ -19,8 +19,10 @@ export function photoDerive(
 
   const run = async ({ photoId, requestId }: JobPayload<'photo.derive'>): Promise<void> => {
     const subject = await derive.subject(photoId);
-    // Gone, or already done by an earlier run of this same job.
+    // Gone, done by an earlier run of this job, or replaced or removed since it
+    // was queued: a dead photograph is not worth a derive.
     if (!subject || subject.status === 'ready') return;
+    if (subject.supersededAt || subject.removedAt) return;
 
     const original = await storage.readOriginal(subject.originalKey);
     const image = await deriveImage(original, subject.position === COVER_POSITION);

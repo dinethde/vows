@@ -61,7 +61,7 @@ export class PhotoService {
   ): Promise<UploadTicket> {
     await this.loadAlbum(albumId);
     const repeat = idempotencyKey
-      ? await this.repo.findByIdempotencyKey(idempotencyKey)
+      ? await this.repo.findRepeat(idempotencyKey, albumId, body.position)
       : undefined;
     const row =
       (repeat ? await this.reopen(repeat) : undefined) ??
@@ -128,15 +128,20 @@ export class PhotoService {
 
   async update(id: string, body: UpdatePhoto, caller: Caller): Promise<Photo> {
     const row = await this.load(id);
-    const album = await this.loadAlbum(row.albumId);
-    if (album.status === 'published' && body.alt === null) {
-      throw new DomainError(
-        'album_not_publishable',
-        'This album is on the website, and every photograph there needs a description.',
-        { alt: 'Describe this photograph.' },
-      );
-    }
+    if (row.removedAt)
+      throw new NotFoundError('photo_not_found', 'We could not find that photograph.');
     const next = await this.db.transaction(async (tx) => {
+      // Decided on the locked album, as publishing is, so a description cannot
+      // be cleared in the moment an album goes live.
+      const album = await this.albums.lock(tx, row.albumId);
+      if (!album) throw new NotFoundError('album_not_found', 'We could not find that album.');
+      if (album.status === 'published' && body.alt === null) {
+        throw new DomainError(
+          'album_not_publishable',
+          'This album is on the website, and every photograph there needs a description.',
+          { alt: 'Describe this photograph.' },
+        );
+      }
       const updated = await this.repo.update(
         tx,
         id,

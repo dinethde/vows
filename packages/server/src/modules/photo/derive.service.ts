@@ -24,7 +24,7 @@ export interface DeriveResult {
 
 export type DeriveSubject = Pick<
   typeof photo.$inferSelect,
-  'id' | 'albumId' | 'originalKey' | 'position' | 'status'
+  'id' | 'albumId' | 'originalKey' | 'position' | 'status' | 'supersededAt' | 'removedAt'
 >;
 
 /** The database half of photo.derive. The worker makes the files; this records them. */
@@ -39,7 +39,15 @@ export class DeriveService {
   async subject(photoId: string): Promise<DeriveSubject | undefined> {
     return this.db.query.photo.findFirst({
       where: eq(photo.id, photoId),
-      columns: { id: true, albumId: true, originalKey: true, position: true, status: true },
+      columns: {
+        id: true,
+        albumId: true,
+        originalKey: true,
+        position: true,
+        status: true,
+        supersededAt: true,
+        removedAt: true,
+      },
     });
   }
 

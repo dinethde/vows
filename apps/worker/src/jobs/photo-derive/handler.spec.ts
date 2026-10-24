@@ -7,7 +7,10 @@ import { photoDerive } from './handler';
 const PAYLOAD = { photoId: 'pho_test', requestId: 'req_test' };
 
 /** A worker whose storage fails the way the test says, and a record of what was marked. */
-function worker(readOriginal: () => Promise<Buffer>): {
+function worker(
+  readOriginal: () => Promise<Buffer>,
+  state: { supersededAt?: Date | null; removedAt?: Date | null } = {},
+): {
   run: ReturnType<typeof photoDerive>;
   fail: ReturnType<typeof vi.fn>;
 } {
@@ -24,6 +27,8 @@ function worker(readOriginal: () => Promise<Buffer>): {
             originalKey: 'originals/alb_000001/pho_test.jpg',
             position: 1,
             status: 'processing',
+            supersededAt: state.supersededAt ?? null,
+            removedAt: state.removedAt ?? null,
           }),
         fail,
       },
@@ -52,5 +57,17 @@ describe('photo.derive, when it cannot finish', () => {
       PermanentJobError,
     );
     expect(fail).toHaveBeenCalledWith(PAYLOAD.photoId, 'wrong_file_type');
+  });
+});
+
+describe('photo.derive, for a photograph that is no longer wanted', () => {
+  it('does nothing for one replaced or removed since the job was queued', async () => {
+    const read = vi.fn(() => Promise.resolve(Buffer.from('')));
+    for (const state of [{ supersededAt: new Date() }, { removedAt: new Date() }]) {
+      const { run, fail } = worker(read, state);
+      await run(PAYLOAD, { jobId: 'job_1', last: false });
+      expect(fail).not.toHaveBeenCalled();
+    }
+    expect(read).not.toHaveBeenCalled();
   });
 });

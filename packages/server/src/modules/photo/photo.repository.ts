@@ -25,8 +25,20 @@ export class PhotoRepository {
     return tx.query.photo.findFirst({ where: eq(photo.id, id) });
   }
 
-  findByIdempotencyKey(key: string): Promise<PhotoRow | undefined> {
-    return this.db.query.photo.findFirst({ where: eq(photo.idempotencyKey, key) });
+  /**
+   * A repeat of an upload request: the same key, for the same album and slot,
+   * and still the slot's photograph. A key that comes back for another album,
+   * or for a row that has since been replaced or removed, is a new request.
+   */
+  findRepeat(key: string, albumId: string, position: number): Promise<PhotoRow | undefined> {
+    return this.db.query.photo.findFirst({
+      where: and(
+        eq(photo.idempotencyKey, key),
+        eq(photo.albumId, albumId),
+        eq(photo.position, position),
+        live,
+      ),
+    });
   }
 
   findInSlot(tx: DbOrTx, albumId: string, position: number): Promise<PhotoRow | undefined> {
