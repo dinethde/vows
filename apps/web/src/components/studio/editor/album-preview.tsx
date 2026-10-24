@@ -56,8 +56,8 @@ function PreviewCover(): ReactElement {
       thumbWidth={1600}
       boxClassName={
         empty
-          ? 'border-strong bg-slot aspect-[1077/850] items-center justify-center border-[1.5px] border-dashed'
-          : 'aspect-[1077/850]'
+          ? 'border-strong bg-slot aspect-[1077/850] items-center justify-center overflow-clip border-[1.5px] border-dashed'
+          : 'aspect-[1077/850] overflow-clip'
       }
       slotClassName={empty ? 'h-[256px] w-[289px] max-w-full' : undefined}
       captionClassName="max-w-[320px]"

@@ -31,7 +31,7 @@ export function AlbumGrid({ albums, view }: AlbumGridProps): ReactElement {
   }
 
   return (
-    <ul className="gap-space-4 tablet:grid-cols-3 desktop:grid-cols-4 grid grid-cols-1">
+    <ul className="gap-space-4 desktop:gap-space-6 tablet:grid-cols-3 desktop:grid-cols-4 grid grid-cols-1">
       {albums.map((album) => (
         <AlbumCard key={album.id} album={album} />
       ))}

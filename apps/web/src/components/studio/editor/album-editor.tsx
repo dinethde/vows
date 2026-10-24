@@ -56,7 +56,7 @@ export function AlbumEditor({ album }: AlbumEditorProps): ReactElement {
       <SlotsProvider
         value={{ photos: editor.photos, mutations: editor.mutations, problems: editor.shown }}
       >
-        <div className="gap-space-6 p-space-5 tablet:gap-space-7 tablet:px-space-7 tablet:py-space-6 desktop:flex-row desktop:items-start desktop:gap-space-4 desktop:p-space-4 flex flex-col">
+        <div className="gap-space-6 p-space-5 tablet:gap-space-7 tablet:px-space-7 tablet:py-space-6 desktop:flex-row desktop:items-start desktop:gap-space-4 desktop:p-space-4 desktop:pt-space-8 flex flex-col">
           <h1 className="desktop:sr-only desktop:block hidden">Edit the album {names}</h1>
           <div className="gap-space-4 tablet:flex-row tablet:items-end tablet:justify-between desktop:hidden flex flex-col">
             <EditorHead />
