@@ -11,8 +11,9 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   projects: [
-    { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
-    { name: 'mobile', use: { ...devices['iPhone 13'] } },
+    { name: 'clerk', testMatch: /clerk\.setup\.ts/ },
+    { name: 'desktop', use: { ...devices['Desktop Chrome'] }, dependencies: ['clerk'] },
+    { name: 'mobile', use: { ...devices['iPhone 13'] }, dependencies: ['clerk'] },
   ],
   // Against a deployed URL there is nothing to start.
   ...(process.env.E2E_BASE_URL

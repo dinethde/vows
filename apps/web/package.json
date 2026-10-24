@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
+    "@clerk/testing": "1.14.11",
     "@playwright/test": "1.64.0",
     "@tailwindcss/postcss": "4.3.3",
     "@testing-library/react": "16.1.0",
