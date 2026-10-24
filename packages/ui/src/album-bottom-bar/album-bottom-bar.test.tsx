@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { AlbumBottomBar } from './album-bottom-bar';
 import type { AlbumBottomBarProps } from './album-bottom-bar.types';
 
-const album: AlbumBottomBarProps = {
+const album = {
   coupleNames: 'Benali & Yasiru',
   intro:
     'An intimate celebration beneath the late-summer sky, filled with quiet glances, joyful tears, and the people they love most.',
@@ -14,7 +14,7 @@ const album: AlbumBottomBarProps = {
   date: '2 January 2022',
   dateTime: '2022-01-02',
   labels: { type: 'type', place: 'location' },
-};
+} satisfies AlbumBottomBarProps;
 
 describe('AlbumBottomBar', () => {
   it('makes the couple’s names the page heading', () => {
@@ -49,5 +49,30 @@ describe('AlbumBottomBar', () => {
     render(<AlbumBottomBar {...album} />);
 
     expect(screen.getByText('2 January 2022')).toHaveAttribute('datetime', '2022-01-02');
+  });
+});
+
+describe('AlbumBottomBar with fields left empty', () => {
+  it('leaves out an empty field and keeps the rest', () => {
+    render(<AlbumBottomBar {...album} type="" place="" />);
+    const terms = screen.getAllByRole('term').map((term) => term.textContent);
+
+    expect(terms).toEqual(['(morning)']);
+  });
+
+  it('captions the date "(date)" when there is no time of day', () => {
+    render(<AlbumBottomBar {...album} timeOfDay="" />);
+
+    expect(screen.getByText('(date)')).toBeInTheDocument();
+  });
+
+  it('holds together with nothing but the names', () => {
+    const { container } = render(
+      <AlbumBottomBar coupleNames="Benali & Yasiru" labels={album.labels} />,
+    );
+
+    expect(screen.getByRole('heading', { name: 'Benali & Yasiru' })).toBeInTheDocument();
+    expect(container.querySelector('dl')).toBeNull();
+    expect(container.querySelector('p')).toBeNull();
   });
 });

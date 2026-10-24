@@ -1,13 +1,15 @@
-import type { ReactElement, ReactNode } from 'react';
+import type { ReactElement } from 'react';
 
-import { bottomBackdrop } from '../lib/bar';
+import { albumBackdrop } from '../lib/bar';
 import { cn } from '../lib/cn';
 
-import type { AlbumBottomBarProps } from './album-bottom-bar.types';
+import type { AlbumBottomBarDetailProps, AlbumBottomBarProps } from './album-bottom-bar.types';
 
-/* The bar hugs its content and has no fixed height. A phone stacks three
- * lines, a tablet two rows, and a desktop puts all four parts on one line with
- * the paragraph taking the leftover width. Side padding 20 / 32 / 64. */
+/* Figma `2289:7026`. The bar hugs its content and has no fixed height. A
+ * phone stacks three lines, a tablet two rows, and a desktop puts all four
+ * parts on one line with the paragraph taking the leftover width. Side
+ * padding 20 / 32 / 64. Only the names are required; an empty field is left
+ * out and the rest close up. */
 const bar = cn(
   'relative isolate flex w-full flex-col gap-space-3 px-space-5 py-space-3 text-primary',
   'tablet:gap-space-4 tablet:px-space-7',
@@ -22,11 +24,12 @@ const row = cn(
   'desktop:contents',
 );
 
-function Detail({ label, children }: { label: string; children: ReactNode }): ReactElement {
+/* Each caption sits on the left edge of its value, as the redrawn bar has them. */
+function Detail({ label, children }: AlbumBottomBarDetailProps): ReactElement {
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-start">
       <dt className="type-meta-field-label">({label})</dt>
-      <dd className="type-body-s tablet:type-body-m text-center">{children}</dd>
+      <dd className="type-body-s tablet:type-body-m whitespace-nowrap">{children}</dd>
     </div>
   );
 }
@@ -43,24 +46,32 @@ export function AlbumBottomBar({
   headingLevel: Heading = 'h1',
   className,
 }: AlbumBottomBarProps): ReactElement {
+  // An empty string is as good as missing here, so these test for any text.
+  const hasDetails = [type, place, date].some(Boolean);
   return (
     <div className={cn(bar, className)}>
-      <span aria-hidden="true" className={bottomBackdrop} />
+      <span aria-hidden="true" className={albumBackdrop} />
       <div className={row}>
         <Heading className="type-heading-3 desktop:order-1 relative shrink-0">
           {coupleNames}
         </Heading>
-        <dl className="gap-space-6 desktop:order-3 relative flex shrink-0 flex-wrap justify-between">
-          <Detail label={labels.type}>{type}</Detail>
-          <Detail label={labels.place}>{place}</Detail>
-          <Detail label={timeOfDay}>
-            <time dateTime={dateTime}>{date}</time>
-          </Detail>
-        </dl>
+        {hasDetails ? (
+          <dl className="gap-x-space-6 gap-y-space-6 desktop:order-3 relative flex shrink-0 flex-wrap justify-between">
+            {type ? <Detail label={labels.type}>{type}</Detail> : null}
+            {place ? <Detail label={labels.place}>{place}</Detail> : null}
+            {date ? (
+              <Detail label={timeOfDay ? timeOfDay : (labels.date ?? 'date')}>
+                <time dateTime={dateTime}>{date}</time>
+              </Detail>
+            ) : null}
+          </dl>
+        ) : null}
       </div>
-      <p className="type-body-s tablet:type-body-m desktop:order-2 desktop:min-w-0 desktop:flex-1 relative">
-        {intro}
-      </p>
+      {intro ? (
+        <p className="type-body-s tablet:type-body-m desktop:order-2 desktop:min-w-0 desktop:flex-1 relative">
+          {intro}
+        </p>
+      ) : null}
     </div>
   );
 }

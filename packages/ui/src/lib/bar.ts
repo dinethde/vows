@@ -12,3 +12,16 @@ export const navBackdrop = `${wash} -top-space-8 -bottom-space-9 [mask-image:lin
 
 /** Under a bottom bar: from 40 above the bar to its foot, fading upwards. */
 export const bottomBackdrop = `${wash} -top-space-8 bottom-0 [mask-image:linear-gradient(to_bottom,transparent,black_80px)]`;
+
+/**
+ * Under the album bar, as redrawn in Figma `2289:7026` (QA round 1): a frosted
+ * shape wider than the window with a fully rounded top, starting at the top of
+ * the bar — 1684 wide on a desktop, 1082 on a tablet, 638 on a phone, 218
+ * tall, its edge blurred by 50. The edge is a mask, as above, over 100px.
+ */
+export const albumBackdrop = [
+  'pointer-events-none absolute left-1/2 top-0 -z-10 h-[max(100%,218px)] -translate-x-1/2',
+  'w-[638px] tablet:-top-[27px] tablet:w-[1082px] desktop:top-0 desktop:w-[1684px]',
+  'rounded-t-[1000px] bg-surface-light/10 backdrop-blur-nav',
+  '[mask-image:linear-gradient(to_bottom,transparent,black_100px)]',
+].join(' ');
