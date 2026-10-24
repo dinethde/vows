@@ -277,6 +277,11 @@ session cache: the signature, the issuer (`CLERK_ISSUER`), that `azp` is one of
 another application on the same Clerk instance. A template token minted on the
 server carries no `azp`, which is why templates are not used.
 
+A new Clerk account, whatever way it signs in, has no role, so it gets the 403
+until an owner gives it one: `public_metadata` set to `{"role": "owner"}` or
+`{"role": "editor"}` on the user, in the Clerk dashboard. The token carries
+the change from the next session.
+
 The web app gates `/studio` in middleware: a signed-out visitor and a signed-in
 account with no role both get the 403 screen with a real 403 status. That gate
 only decides what to draw. The API guards the data.

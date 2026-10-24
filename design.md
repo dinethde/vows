@@ -77,15 +77,16 @@ variant can choose one. The names match: `Heading/1` is `type-heading-1`.
 
 The Figma library is `packages/ui`. The Figma name is the contract:
 
-| Figma                                           | React                                        | Notes                                                                                      |
-| ----------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `button — primary / neutral / outline / danger` | `<Button variant="…">`                       | danger is only for destroying something                                                    |
-| `field — site` / `field — studio`               | `<Field surface="site\|studio">`             |                                                                                            |
-| `photo_slot`                                    | `<PhotoSlot state badge number>`             | five states: Empty, Uploading, Uploaded, Update, Error                                     |
-| `confirmation_modal`                            | `<ConfirmationModal tone="primary\|danger">` | four real uses; copy is props in code. There is no delete-album variant — see decision 012 |
-| `navbar`, `bottom_bar`, `album_page_bottom_bar` | `<Navbar>`, `<BottomBar variant>`            | breakpoint is CSS, not a prop                                                              |
-| `player — nav`                                  | `<Player />`                                 | client component, lives above the router                                                   |
-| `chip`, `status_pill`, `banner — studio`        | `<Chip>`, `<StatusPill>`, `<Banner>`         |                                                                                            |
+| Figma                                           | React                                        | Notes                                                                                                  |
+| ----------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `button — primary / neutral / outline / danger` | `<Button variant="…">`                       | danger is only for destroying something                                                                |
+| `field — site` / `field — studio`               | `<Field surface="site\|studio">`             |                                                                                                        |
+| `photo_slot`                                    | `<PhotoSlot state badge number>`             | five states: Empty, Uploading, Uploaded, Update, Error                                                 |
+| `confirmation_modal`                            | `<ConfirmationModal tone="primary\|danger">` | four real uses; copy is props in code. There is no delete-album variant — see decision 012             |
+| `navbar`, `bottom_bar`                          | `<Navbar>`, `<BottomBar variant>`            | breakpoint is CSS, not a prop                                                                          |
+| `album_page_bottom_bar` (`2289:7026`)           | `<AlbumBottomBar>`                           | names required, every other part optional and left out when empty; captions sit left over their values |
+| `player — nav`                                  | `<Player />`                                 | client component, lives above the router                                                               |
+| `chip`, `status_pill`, `banner — studio`        | `<Chip>`, `<StatusPill>`, `<Banner>`         |                                                                                                        |
 
 When one side is renamed, the other is renamed in the same pull request.
 
@@ -97,7 +98,9 @@ When one side is renamed, the other is renamed in the same pull request.
   640 and 1024, the two numbers the design notes give ("below 640", "below
   roughly 1024"), written as the `tablet:` and `desktop:` variants.
 - The footer is fixed behind the page and revealed by scrolling past the end —
-  on the contact page and the album page both.
+  on the contact page and the album page both. It stays in state 1 while any of
+  the page still covers it, and turns (colour, then the falling photographs)
+  only once the page has slid fully off it.
 - The public pages carry almost no JavaScript. A component becomes a client
   component only when a hook or an event handler forces it, and then it is as
   small as it can be.
@@ -124,6 +127,23 @@ specifications.
 - Focus is visible everywhere, and focus order follows reading order.
 - `prefers-reduced-motion` removes the curtain, the blur transition and the
   waveform animation.
+
+## Motion
+
+Every floating photograph — the home canvas, the album gallery, the footer —
+moves in three layers, from one set of numbers in `apps/web/src/lib/motion`:
+
+- **Drift:** a slow figure of its own, 5 px, nine seconds a turn.
+- **Push:** a photograph near the pointer leans the way the pointer travels,
+  strongest under it, gone at 320 px.
+- **Follow:** the whole field shifts towards where the pointer is: left with
+  the pointer on the left, lower with it near the bottom, at most 16 px, each
+  photograph by its own depth. It glides back to the middle when the pointer
+  leaves the window.
+
+None of it runs for touch or with reduced motion. On the home page the Figma
+places are spread 30 per cent further apart from the middle of the frame
+(`SPREAD` in `home-layout.ts`), so a screen holds fewer covers.
 
 ## The music gate
 
