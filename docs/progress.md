@@ -643,6 +643,83 @@ Three places where the fix does not copy the frame exactly:
 - Many one-off sizes in the site's classes (`gap-[56px]`, `pt-[152px]`,
   `rounded-[24px]`). A token pass is owed.
 
+## Pre-merge review of PR #2, 2026-10-24
+
+Before merging into `dev-v2`, Dineth asked for the whole application to be
+reviewed with all three project agents. Four passes ran: a code review of the
+pull request (correctness), the architecture auditor (whole app, web and CI
+included), the test planner (coverage), and the design reviewer (Studio,
+album bar, error pages). Scratch output is in the session scratchpad
+`review2/`, not in the repository.
+
+### Fixed before the merge
+
+- **Photographs** (`7b96cc2`): clearing a description now decides on the
+  locked album; an upload key repeats only for the same album, slot and live
+  row; a derive skips a photograph replaced or removed since it was queued.
+- **Enquiries** (`5c7a5e9`): the hourly limit also locks per visitor, so a
+  burst with different emails cannot all pass; a visitor whose clock runs fast
+  is no longer refused; the notification links to the Studio, not to the
+  missing inbox.
+- **Web** (`54ca42d`): path values encoded in the API client; the rebuild call
+  must be within five minutes either way, and a bad body is a 404; the contact
+  action surfaces a missing secret and logs an unreachable API.
+- **Tokens and sharing** (`8924590`): the map pin drawn with its token; every
+  page has a share card.
+- **Studio design** (`c32bb25`): the editor preview clips the album bar's wide
+  backdrop (it frosted over the form); the editor's top gap and the dashboard's
+  card gap at 1440 now match Figma.
+- **CI and config** (`df93d2c`, `01558e0`, plus `e5ecd9c`, `1e1007a`): the web
+  app builds in CI against a real API on the run's own database; the staging
+  browser job runs only once staging exists; read-only workflow permissions;
+  the flyctl action pinned to a commit; production migrations over the direct
+  URL; the production CORS rule narrowed to PUT from vows.lk; every `.env.*`
+  ignored except the example.
+- **architecture.md**: chapters 03 (the one on-demand exception), 04
+  (versions), 05 (layout), 10 (removal leaves the slot empty), 12 (the shared
+  secret's second use), 14 (no about page), 19 (gitleaks runs in CI), 25 (how
+  deploys are actually ordered, Lighthouse not in CI).
+
+### Found and deferred
+
+- **Q11** stays open: a replacement supersedes the live photograph before its
+  file exists. The code review rated it the most serious finding.
+- **Needs Dineth:** the migration guard in `packages/db/drizzle.config.ts`
+  cannot recognise a production Neon URL (endpoint names do not contain the
+  branch), so it protects nothing; fix it when the production branch exists.
+  Separate R2 tokens per environment (staging uses the dev key, which reaches
+  every bucket). If vows.lk sits behind Cloudflare, the enquiry limit must read
+  `cf-connecting-ip`.
+- **CI:** the staging browser job tests what is deployed, not the pull
+  request; it should target the Vercel preview and carry a Clerk test user.
+  Fork pull requests never build the web app (the integration job needs the
+  Neon secret). Lighthouse is not in CI. Only flyctl is pinned to a commit.
+  The CI web build runs on a branch of Neon `main`, whose albums are all
+  drafts, so it renders no album page.
+- **Code:** the album rebuild enqueue is written three times
+  (`AlbumService`, `PhotoService`, `DeriveService`); `publish()` reads the
+  album twice; `update()` takes the old slug outside its transaction.
+  `REVALIDATE_SECRET` is checked when used, not at start.
+- **Tests the planner asked for, not yet written:** a sweep that every
+  `/v1/studio` route answers 401/403 without a token or role; expired,
+  foreign-issuer and unknown-key tokens; cleanup of superseded photographs in
+  CI; removal refused on a live album; an edit that would leave a live album
+  incomplete; replacement inheriting slot, alt and cover; the old-slug 308 end
+  to end; both emails through the real queue; the last-attempt flag through the
+  real queue. Also: the publish journey changes the seeded album that other
+  tests need (give it its own album), and the alt-text journey cleans up inside
+  the test body.
+- **Design (Studio):** the editor's form sits in a white card where Figma has
+  none and a divider; tablet and phone top padding is about 40 px short; 25 px
+  above Publish where Figma has 35; the search placeholder is near-black where
+  Figma is grey (2.9:1, a contrast choice); toolbar inset and stat widths
+  differ slightly; the 403 phone body is 14 px where that frame draws 16 (and
+  its copy differs). Studio components keep their props interfaces in the
+  component file, not a `.types.ts` beside it as `components.md` asks; some
+  Studio spacing and one radius are off the scale; "Photos" uses a Site type
+  style. Studio text in `text-placeholder` measures 2.5:1 and `text-muted`
+  3.8:1, below AA, matching Figma's own colours: a token decision.
+
 ## Notes for the next session
 
 - Start every local run with the API and worker built

@@ -56,7 +56,10 @@ Visitor ──► Cloudflare CDN ──► Next.js (Vercel) ──► NestJS API
 
 Five rules hold the shape together:
 
-1. A visitor's request never reaches Postgres. Public pages are files.
+1. A visitor's request never reaches Postgres. Public pages are files. The one
+   exception: an album address the build did not know (a new album, an old
+   address that redirects, a mistyped one) is rendered once on demand, then
+   kept as a file.
 2. Only the API writes to the database. Not the web app, not a script, not a
    hand-run migration against production. The one exception is the development
    seed in `packages/db`, which fills a developer's own branch and nothing else.
@@ -85,11 +88,11 @@ at any moment without losing work.
 | Runtime          | Node                                        | 22 LTS  |
 | Validation       | Zod                                         | 3.x     |
 | Server state     | TanStack Query — **Studio only**            | 5.x     |
-| Database access  | Drizzle ORM                                 | 0.3x    |
+| Database access  | Drizzle ORM                                 | 0.45    |
 | Database         | PostgreSQL on Neon, Singapore               | 18      |
 | Job queue        | pg-boss (a schema inside the same database) | 10.x    |
 | Object storage   | Cloudflare R2                               | —       |
-| Image processing | sharp                                       | 0.33    |
+| Image processing | sharp                                       | 0.35    |
 | Blur placeholder | thumbhash                                   | —       |
 | Auth             | Clerk                                       | —       |
 | Mail             | Resend + React Email                        | —       |
@@ -124,11 +127,13 @@ packages/tokens     generated from Figma. Never edited by hand
 packages/ui         the Figma library in React, built on copied shadcn primitives
 packages/mail       React Email templates and a thin Resend wrapper
 packages/config     shared eslint, tsconfig and tailwind presets
-infra           fly.api.toml, fly.worker.toml, r2-bucket-policy.json
+infra           production and staging Fly files, R2 CORS rules per environment,
+                fly-secrets-staging.sh
 docs/adr        one markdown file per decision
 docs/incidents  two or three lines, written the same day
 .claude         rules, skills, agents, commands and hooks — chapter 28
-.github         ci.yml, deploy.yml, the pull request template, CODEOWNERS
+.github         ci.yml, deploy.yml, deploy-staging.yml, the pull request template,
+                CODEOWNERS
 .husky          commit-msg and pre-commit
 ```
 
@@ -320,7 +325,8 @@ are not:
   album's `cover_photo_id` pointed at the old row it is repointed at the new one
   **in the same transaction** — there is never a moment where an album points at
   a photograph on its way out. The old row gets `superseded_at`.
-- **Removing** sets `removed_at`, closes up the positions after it, and leaves
+- **Removing** sets `removed_at`, leaves its slot empty (the others keep their
+  places; the Studio draws 18 numbered slots), and leaves
   every file in R2. For thirty days it can be undone by clearing that column.
   After thirty days `photo.cleanup` deletes the ten derivatives and the original,
   and that is the point of no return. A photograph that never finished processing
@@ -392,7 +398,9 @@ they get run in the first week, from a real backup file into a fresh Neon branch
 
 Public pages are files on a CDN, rebuilt when the photographer publishes and at
 no other time. Publishing calls `album.revalidate`, which calls the rebuild
-endpoint in Next with a shared secret plus an `issuedAt` inside a five-minute
+endpoint in Next with a shared secret (`REVALIDATE_SECRET`, which also signs
+the visitor's address the web app passes to the enquiry limit, so rotating it
+rotates both) plus an `issuedAt` inside a five-minute
 window. A captured call can be replayed inside those five minutes, which only
 rebuilds the same pages again.
 
@@ -437,7 +445,7 @@ apps/web/src/app/
 ├─ (site)/            public, shares the navbar and footer
 │  ├─ page.tsx        home — also mounts the first-load sound gate
 │  ├─ albums/[slug]/page.tsx
-│  ├─ about/ contact/ privacy/
+│  ├─ contact/ privacy/
 ├─ studio/            signed in, no shared chrome, no-store
 ├─ api/revalidate/route.ts
 ├─ not-found.tsx      404 — real status
@@ -524,7 +532,8 @@ a ticket.
 ## 19 · Security
 
 - Nothing secret is committed. `.env.example` holds names with empty values. A
-  pre-commit hook runs gitleaks.
+  `audit` job in CI runs gitleaks on every push; the pre-commit hook runs only
+  lint and formatting.
 - Two buckets: originals private and never served, derivatives public.
 - **No rate limit is ever counted in process memory.** A counter inside one API
   process is correct only while there is one process; the moment Fly runs a
@@ -634,9 +643,14 @@ A pull request can be sent back for its description alone.
 ## 25 · CI and deployment
 
 GitHub Actions on every push: typecheck, lint, unit, integration, build, e2e,
-lighthouse, axe, and `tokens:build` diff. On merge, Vercel takes the web app and
-Fly takes the API and the worker, with migrations running between the two so the
-database is always ahead of the code that needs it. That ordering is what makes
+axe, and `tokens:build` diff. Lighthouse is **not in CI yet**. On a push to
+`dev-v2` (staging) or `main` (production), a workflow migrates the database and
+then deploys the API and the worker to Fly, so the database is always ahead of
+the code that needs it. Vercel deploys the web app from its own GitHub
+integration, in parallel and unordered, and the web build reads the live API:
+a web change that needs a new API field must land after the API change. Neither
+deploy waits for CI, and production starts on any push to `main`, so only a
+person merges there. The migration ordering is what makes
 rollback possible: a migration is additive first, destructive only in a later
 release.
 
