@@ -1,4 +1,4 @@
-import { breakpointFor, HOME_FRAMES } from './home-layout';
+import { breakpointFor, HOME_FRAMES, spread, SPREAD } from './home-layout';
 import type { HomeFrame } from './home-layout';
 
 import {
@@ -31,17 +31,19 @@ function measure(): Geometry {
   const frame: HomeFrame = HOME_FRAMES[breakpointFor(width)];
   const widest = Math.max(...frame.tiles.map((tile) => tile[2]));
   const tallest = Math.max(...frame.tiles.map((tile) => tile[3])) + 24;
-  // One repeat is the window plus room for the largest tile on each side, so a
-  // tile is always fully off screen at the moment it wraps.
-  const cell = { x: width + widest * 2, y: height + tallest * 2 };
+  // One repeat is the spread-out window plus room for the largest tile on each
+  // side, so a tile is always fully off screen at the moment it wraps.
+  const cell = { x: width * SPREAD + widest * 2, y: height * SPREAD + tallest * 2 };
+  // The spread places reach SPREAD / 2 - 1 / 2 of a window past each edge.
+  const reach = (SPREAD - 1) / 2;
   return {
     frame,
     bases: frame.tiles.map(([x, y]) => ({
-      x: (x / frame.width) * width,
-      y: (y / frame.height) * height,
+      x: spread(x, frame.width) * width,
+      y: spread(y, frame.height) * height,
     })),
     cell,
-    start: { x: -widest, y: -tallest },
+    start: { x: -widest - width * reach, y: -tallest - height * reach },
   };
 }
 

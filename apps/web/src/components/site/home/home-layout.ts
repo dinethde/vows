@@ -5,6 +5,22 @@
  */
 export type Tile = readonly [x: number, y: number, w: number, h: number];
 
+/**
+ * How much further apart the tiles sit than in Figma. QA round 1: with every
+ * place filled the canvas felt crowded, so the places are spread by this much
+ * and the photographs keep their drawn sizes. One screen now holds about 40 per
+ * cent fewer of them. 1 is the Figma frame exactly.
+ */
+export const SPREAD = 1.3;
+
+/**
+ * A tile's place as a fraction of the frame, spread out from the middle of the
+ * frame so the open space around the title stays in the middle.
+ */
+export function spread(value: number, size: number): number {
+  return ((value - size / 2) * SPREAD + size / 2) / size;
+}
+
 export interface HomeFrame {
   width: number;
   height: number;
@@ -97,7 +113,7 @@ export function breakpointFor(width: number): HomeBreakpoint {
 function rules(frame: HomeFrame): string {
   const placed = frame.tiles.map(
     ([x, y, w, h], index) =>
-      `.tile-${String(index)}{display:flex;left:${String(Number(((x / frame.width) * 100).toFixed(3)))}vw;top:${String(Number(((y / frame.height) * 100).toFixed(3)))}svh;width:${String(w)}px}.tile-${String(index)} img{height:${String(h)}px}`,
+      `.tile-${String(index)}{display:flex;left:${String(Number((spread(x, frame.width) * 100).toFixed(3)))}vw;top:${String(Number((spread(y, frame.height) * 100).toFixed(3)))}svh;width:${String(w)}px}.tile-${String(index)} img{height:${String(h)}px}`,
   );
   const hidden = Array.from({ length: MAX_TILES - frame.tiles.length }, (_unused, extra) => {
     return `.tile-${String(frame.tiles.length + extra)}{display:none}`;
