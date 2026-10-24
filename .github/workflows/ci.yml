@@ -20,6 +20,11 @@ env:
   NEXT_PUBLIC_SITE_URL: ${{ vars.STAGING_SITE_URL }}
   NEXT_PUBLIC_MEDIA_URL: ${{ vars.STAGING_MEDIA_URL }}
 
+# Checks read the repository; nothing in CI writes to it.
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   verify:
     name: tokens · lint · typecheck · unit · build
