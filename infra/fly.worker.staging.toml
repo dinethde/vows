@@ -1,0 +1,23 @@
+# fly deploy -c infra/fly.worker.staging.toml --dockerfile apps/worker/Dockerfile
+#
+# The staging worker. No http_service: nothing calls it. It stays awake to hold
+# the queue. Chapter 32 says start at 512 MB, but one photo.derive was measured
+# at about 540 MB peak on 24 and 60 MP files (2026-10-17), so it gets 1 GB and
+# runs one derive at a time. Dineth approves the cost before the first deploy.
+
+app = "vows-worker-staging"
+primary_region = "sin"
+
+[env]
+  APP_ENV = "staging"
+  NODE_ENV = "production"
+  LOG_LEVEL = "info"
+  VOWS_SERVICE = "worker"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  # Measured 2026-10-17: one derive peaks near 540 MB, so 512 MB cannot work.
+  memory = "1gb"
+
+[deploy]
+  strategy = "immediate"

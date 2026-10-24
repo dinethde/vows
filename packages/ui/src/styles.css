@@ -1,0 +1,26 @@
+/* Imported by each app after the token stylesheets:
+ *
+ *   @import '@vows/config/tailwind/vows.css';
+ *   @import '@vows/tokens/css/primitives.css';
+ *   @import '@vows/tokens/css/semantic.css';
+ *   @import '@vows/ui/styles.css';
+ *
+ * It does two things. It tells Tailwind to read this package's source for
+ * class names, and it holds the one animation that is not Tailwind's own. */
+
+@source './';
+
+@theme {
+  /* The level meter in `player — nav`: four bars that rise and fall while the
+   * song plays. It is an ornament, not a reading of the sound. */
+  --animate-meter: vows-meter 900ms ease-in-out infinite alternate;
+
+  @keyframes vows-meter {
+    from {
+      transform: scaleY(0.35);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+}

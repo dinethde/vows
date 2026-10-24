@@ -1,0 +1,66 @@
+name: Deploy
+
+# Releases only. main is written by a release merge from dev-v2 and by nothing
+# else — chapter 22. Vercel deploys the web app from its own GitHub integration,
+# so this workflow owns the two Fly apps and the migration that must land
+# before them.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+# The deploy needs to read the repository and nothing else.
+permissions:
+  contents: read
+
+jobs:
+  migrate:
+    name: migrate the database
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: drizzle migrate
+        env:
+          # Migrations need the direct connection, as staging's do.
+          DATABASE_URL: ${{ secrets.DATABASE_URL_UNPOOLED }}
+          ALLOW_PROD_MIGRATE: 'yes'
+        run: pnpm db:migrate
+
+  api:
+    name: fly · api
+    needs: migrate
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1 # v1.6
+      - run: flyctl deploy -c infra/fly.api.toml --dockerfile apps/api/Dockerfile --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+  worker:
+    name: fly · worker
+    needs: migrate
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1 # v1.6
+      - run: flyctl deploy -c infra/fly.worker.toml --dockerfile apps/worker/Dockerfile --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

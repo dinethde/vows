@@ -1,0 +1,46 @@
+{
+  "name": "vows",
+  "private": true,
+  "packageManager": "pnpm@9.12.3",
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
+    "tokens:build": "turbo run tokens:build --filter=@vows/tokens",
+    "db:generate": "pnpm --filter @vows/db db:generate",
+    "db:migrate": "pnpm --filter @vows/db db:migrate",
+    "db:seed": "pnpm --filter @vows/db db:seed",
+    "format": "prettier --write .",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "19.5.0",
+    "@commitlint/config-conventional": "19.5.0",
+    "husky": "9.1.6",
+    "lint-staged": "15.2.10",
+    "prettier": "3.3.3",
+    "prettier-plugin-tailwindcss": "0.6.11",
+    "turbo": "2.1.3",
+    "typescript": "5.6.3"
+  },
+  "pnpm": {
+    "auditConfig": {
+      "ignoreGhsas": [
+        "GHSA-6g55-p6wh-862q",
+        "GHSA-r28c-9q8g-f849",
+        "GHSA-vfj7-8cjw-p6xm",
+        "GHSA-mrhx-c7xc-m3w5"
+      ]
+    },
+    "overrides": {
+      "multer": "2.5.0",
+      "body-parser": "2.4.0"
+    }
+  }
+}

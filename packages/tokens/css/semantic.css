@@ -1,0 +1,562 @@
+/* generated — do not edit.
+ * Source: the Figma collection vows/semantic and the text and effect styles, copied into tokens.json.
+ * Change it in Figma, export again, then run pnpm tokens:build. */
+
+:root {
+  --vows-bg-page: var(--vows-color-ink-50);
+  --vows-bg-surface: var(--vows-color-ink-0);
+  --vows-bg-surface-light: var(--vows-color-ink-transparent);
+  --vows-bg-raised: var(--vows-color-ink-0);
+  --vows-bg-field: var(--vows-color-ink-0);
+  --vows-bg-field-muted: var(--vows-color-ink-100);
+  --vows-bg-slot: var(--vows-color-ink-100);
+  --vows-bg-inverse: var(--vows-color-ink-900);
+  --vows-bg-accent: var(--vows-color-blue-600);
+  --vows-bg-scrim: var(--vows-color-ink-900);
+  --vows-text-primary: var(--vows-color-ink-900);
+  --vows-text-heading: var(--vows-color-ink-800);
+  --vows-text-secondary: var(--vows-color-ink-600);
+  --vows-text-muted: var(--vows-color-ink-500);
+  --vows-text-placeholder: var(--vows-color-ink-400);
+  --vows-text-inverse: var(--vows-color-ink-0);
+  --vows-text-accent: var(--vows-color-blue-500);
+  --vows-text-on-accent: var(--vows-color-blue-900);
+  --vows-text-ghost: var(--vows-color-ink-200);
+  --vows-border-hairline: var(--vows-color-ink-200);
+  --vows-border-field: var(--vows-color-ink-200);
+  --vows-border-card: var(--vows-color-ink-200);
+  --vows-border-strong: var(--vows-color-ink-400);
+  --vows-border-dashed: var(--vows-color-ink-300);
+  --vows-border-inverse: var(--vows-color-ink-900);
+  --vows-border-accent: var(--vows-color-blue-500);
+  --vows-action-primary-bg: var(--vows-color-ink-900);
+  --vows-action-primary-hover: var(--vows-color-ink-800);
+  --vows-action-primary-pressed: var(--vows-color-ink-700);
+  --vows-action-primary-text: var(--vows-color-ink-0);
+  --vows-action-neutral-bg: var(--vows-color-ink-0);
+  --vows-action-neutral-hover: var(--vows-color-ink-800);
+  --vows-action-neutral-pressed: var(--vows-color-ink-700);
+  --vows-action-neutral-border: var(--vows-color-ink-200);
+  --vows-action-neutral-border-hover: var(--vows-color-ink-300);
+  --vows-action-neutral-text: var(--vows-color-ink-900);
+  --vows-action-outline-bg-pressed: var(--vows-color-ink-50);
+  --vows-action-outline-border-pressed: var(--vows-color-ink-400);
+  --vows-action-danger-bg: var(--vows-color-red-500);
+  --vows-action-danger-hover: var(--vows-color-red-600);
+  --vows-action-danger-pressed: var(--vows-color-red-800);
+  --vows-action-danger-text: var(--vows-color-ink-0);
+  --vows-status-success-bg: var(--vows-color-green-50);
+  --vows-status-success-text: var(--vows-color-green-600);
+  --vows-status-success-icon: var(--vows-color-green-400);
+  --vows-status-warning-bg: var(--vows-color-amber-50);
+  --vows-status-warning-text: var(--vows-color-amber-600);
+  --vows-status-error-bg: var(--vows-color-red-50);
+  --vows-status-error-field: var(--vows-color-red-25);
+  --vows-status-error-text: var(--vows-color-red-500);
+  --vows-status-error-border: var(--vows-color-red-500);
+  --vows-status-info-text: var(--vows-color-blue-500);
+  --vows-focus-ring: var(--vows-color-blue-500);
+  --vows-elevation-card: 0 1px 2px 0 color-mix(in srgb, var(--vows-color-ink-900) 6%, transparent);
+  --vows-elevation-modal: 0 16px 40px -8px color-mix(in srgb, var(--vows-color-ink-900) 18%, transparent);
+  --vows-elevation-nav-blur: 24px;
+}
+
+[data-surface='studio'] {
+  --vows-bg-page: var(--vows-color-ink-75);
+  --vows-bg-surface: var(--vows-color-ink-0);
+  --vows-bg-surface-light: var(--vows-color-ink-transparent);
+  --vows-bg-raised: var(--vows-color-sand-50);
+  --vows-bg-field: var(--vows-color-sand-50);
+  --vows-bg-field-muted: var(--vows-color-sand-100);
+  --vows-bg-slot: var(--vows-color-sand-150);
+  --vows-bg-inverse: var(--vows-color-sand-900);
+  --vows-bg-accent: var(--vows-color-blue-600);
+  --vows-bg-scrim: var(--vows-color-ink-900);
+  --vows-text-primary: var(--vows-color-sand-800);
+  --vows-text-heading: var(--vows-color-sand-900);
+  --vows-text-secondary: var(--vows-color-sand-700);
+  --vows-text-muted: var(--vows-color-sand-600);
+  --vows-text-placeholder: var(--vows-color-sand-500);
+  --vows-text-inverse: var(--vows-color-ink-0);
+  --vows-text-accent: var(--vows-color-blue-500);
+  --vows-text-on-accent: var(--vows-color-ink-0);
+  --vows-text-ghost: var(--vows-color-ink-200);
+  --vows-border-hairline: var(--vows-color-sand-200);
+  --vows-border-field: var(--vows-color-sand-200);
+  --vows-border-card: var(--vows-color-sand-350);
+  --vows-border-strong: var(--vows-color-sand-400);
+  --vows-border-dashed: var(--vows-color-sand-300);
+  --vows-border-inverse: var(--vows-color-sand-900);
+  --vows-border-accent: var(--vows-color-blue-500);
+  --vows-action-primary-bg: var(--vows-color-orange-500);
+  --vows-action-primary-hover: var(--vows-color-orange-450);
+  --vows-action-primary-pressed: var(--vows-color-orange-600);
+  --vows-action-primary-text: var(--vows-color-ink-0);
+  --vows-action-neutral-bg: var(--vows-color-ink-0);
+  --vows-action-neutral-hover: var(--vows-color-slate-900);
+  --vows-action-neutral-pressed: var(--vows-color-slate-800);
+  --vows-action-neutral-border: var(--vows-color-slate-200);
+  --vows-action-neutral-border-hover: var(--vows-color-slate-300);
+  --vows-action-neutral-text: var(--vows-color-slate-700);
+  --vows-action-outline-bg-pressed: var(--vows-color-zinc-50);
+  --vows-action-outline-border-pressed: var(--vows-color-slate-400);
+  --vows-action-danger-bg: var(--vows-color-red-500);
+  --vows-action-danger-hover: var(--vows-color-red-600);
+  --vows-action-danger-pressed: var(--vows-color-red-800);
+  --vows-action-danger-text: var(--vows-color-ink-0);
+  --vows-status-success-bg: var(--vows-color-green-50);
+  --vows-status-success-text: var(--vows-color-green-600);
+  --vows-status-success-icon: var(--vows-color-green-400);
+  --vows-status-warning-bg: var(--vows-color-amber-50);
+  --vows-status-warning-text: var(--vows-color-amber-600);
+  --vows-status-error-bg: var(--vows-color-red-50);
+  --vows-status-error-field: var(--vows-color-red-25);
+  --vows-status-error-text: var(--vows-color-red-500);
+  --vows-status-error-border: var(--vows-color-red-500);
+  --vows-status-info-text: var(--vows-color-blue-500);
+  --vows-focus-ring: var(--vows-color-orange-500);
+}
+
+@utility type-display-wordmark-l {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 11.5rem;
+  line-height: 15rem;
+  letter-spacing: 0;
+}
+
+@utility type-display-wordmark-m {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 6.25rem;
+  line-height: 8.5rem;
+  letter-spacing: 0;
+}
+
+@utility type-display-wordmark-s {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 5rem;
+  line-height: 6rem;
+  letter-spacing: 0;
+}
+
+@utility type-display-hero-l {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 7rem;
+  line-height: 8rem;
+  letter-spacing: 0;
+}
+
+@utility type-display-hero-m {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 6rem;
+  line-height: 6.875rem;
+  letter-spacing: 0;
+}
+
+@utility type-display-hero-s {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 2.5rem;
+  line-height: 3rem;
+  letter-spacing: 0;
+}
+
+@utility type-display-error-code {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 28.75rem;
+  line-height: 25rem;
+  letter-spacing: 1.75rem;
+}
+
+@utility type-display-error-code-mobile {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12.5rem;
+  line-height: 10.875rem;
+  letter-spacing: 0.75rem;
+}
+
+@utility type-heading-1 {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 2.5rem;
+  line-height: 3rem;
+  letter-spacing: 0;
+}
+
+@utility type-heading-2 {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 2rem;
+  line-height: 2.5rem;
+  letter-spacing: 0;
+}
+
+@utility type-heading-3 {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.75rem;
+  line-height: 2.25rem;
+  letter-spacing: 0;
+}
+
+@utility type-heading-4 {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  letter-spacing: 0;
+}
+
+@utility type-heading-5 {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.625rem;
+  letter-spacing: 0;
+}
+
+@utility type-heading-6 {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1.625rem;
+  letter-spacing: 0;
+}
+
+@utility type-body-l {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.875rem;
+  letter-spacing: 0;
+}
+
+@utility type-body-m {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  letter-spacing: 0;
+}
+
+@utility type-body-s {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.375rem;
+  letter-spacing: 0;
+}
+
+@utility type-body-xs {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+  letter-spacing: 0;
+}
+
+@utility type-body-m-italic {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  letter-spacing: 0;
+}
+
+@utility type-body-s-italic {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.375rem;
+  letter-spacing: 0;
+}
+
+@utility type-meta-field-label {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.1875rem;
+  letter-spacing: 0;
+  text-transform: lowercase;
+}
+
+@utility type-nav-wordmark {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.5rem;
+  letter-spacing: 0;
+}
+
+@utility type-nav-link {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  letter-spacing: 0;
+}
+
+@utility type-nav-legal {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.1875rem;
+  letter-spacing: 0;
+}
+
+@utility type-ui-label {
+  font-family: var(--vows-font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  letter-spacing: 0;
+}
+
+@utility type-ui-label-s {
+  font-family: var(--vows-font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+  letter-spacing: 0;
+}
+
+@utility type-ui-button {
+  font-family: var(--vows-font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.125rem;
+  letter-spacing: 0;
+}
+
+@utility type-ui-field-l {
+  font-family: var(--vows-font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  letter-spacing: 0;
+}
+
+@utility type-ui-field-m {
+  font-family: var(--vows-font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  letter-spacing: 0;
+}
+
+@utility type-ui-message {
+  font-family: var(--vows-font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.625rem;
+  letter-spacing: 0;
+}
+
+@utility type-ui-caption {
+  font-family: var(--vows-font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  letter-spacing: 0;
+}
+
+@utility type-ui-caption-s {
+  font-family: var(--vows-font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  letter-spacing: 0;
+}
+
+@utility type-studio-display {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 2.875rem;
+  line-height: 3rem;
+  letter-spacing: 0;
+}
+
+@utility type-studio-heading {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.5625rem;
+  line-height: 2.375rem;
+  letter-spacing: 0;
+}
+
+@utility type-studio-subheading {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.3125rem;
+  line-height: 2rem;
+  letter-spacing: 0;
+}
+
+@utility type-studio-title {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.875rem;
+  letter-spacing: 0;
+}
+
+@utility type-studio-stat {
+  font-family: var(--vows-font-mate), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 2.3125rem;
+  line-height: 2.5rem;
+  letter-spacing: 0;
+}
+
+@utility type-studio-body-l {
+  font-family: var(--vows-font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.8125rem;
+  line-height: 1.2188rem;
+  letter-spacing: 0;
+}
+
+@utility type-studio-body {
+  font-family: var(--vows-font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+  letter-spacing: 0;
+}
+
+@utility type-studio-body-s {
+  font-family: var(--vows-font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  letter-spacing: 0;
+}
+
+@utility type-studio-label-l {
+  font-family: var(--vows-font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.6875rem;
+  line-height: 0.9375rem;
+  letter-spacing: 0;
+}
+
+@utility type-studio-label {
+  font-family: var(--vows-font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.625rem;
+  line-height: 0.9375rem;
+  letter-spacing: 0;
+}
+
+@utility type-studio-caption {
+  font-family: var(--vows-font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.625rem;
+  line-height: 0.9375rem;
+  letter-spacing: 0;
+}
+
+@utility type-studio-overline {
+  font-family: var(--vows-font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.625rem;
+  line-height: 0.9375rem;
+  letter-spacing: 0.0688rem;
+  text-transform: uppercase;
+}
+
+@utility type-studio-overline-s {
+  font-family: var(--vows-font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.5625rem;
+  line-height: 0.8438rem;
+  letter-spacing: 0.0394rem;
+  text-transform: uppercase;
+}
+
+@utility type-studio-badge {
+  font-family: var(--vows-font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.5625rem;
+  line-height: 0.8438rem;
+  letter-spacing: 0;
+}
+
+@utility type-studio-micro {
+  font-family: var(--vows-font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.5625rem;
+  line-height: 0.8125rem;
+  letter-spacing: 0;
+}
+
+@utility type-studio-button {
+  font-family: var(--vows-font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.125rem;
+  letter-spacing: 0;
+}
+
+@utility type-studio-avatar {
+  font-family: var(--vows-font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1rem;
+  letter-spacing: 0;
+}

@@ -1,0 +1,33 @@
+node_modules/
+.pnpm-store/
+.next/
+out/
+dist/
+build/
+coverage/
+playwright-report/
+test-results/
+.turbo/
+
+.env
+.env.*
+!.env.example
+!.env.example
+
+.claude/settings.local.json
+
+# Clerk's keyless mode writes a temporary development key here
+.clerk/
+
+.DS_Store
+*.log
+npm-debug.log*
+.vercel
+.fly/
+
+# browser tool output
+.playwright-mcp/
+*.tsbuildinfo
+
+# staging seed photographs, exported from Figma. Not ours to publish in git.
+.seed-photos/
