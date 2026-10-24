@@ -46,6 +46,39 @@ export function nudge(push: Point, travel: Point, distance: number): Point {
   return { x: clamp(push.x + travel.x * weight), y: clamp(push.y + travel.y * weight) };
 }
 
+/**
+ * The second movement, added in QA round 1: every photograph follows where the
+ * pointer is, not only the ones it passes. With the pointer at the left edge
+ * the whole field sits a little to the left; at the bottom, a little lower.
+ * Each photograph moves by its own depth, so the field reads as layers.
+ */
+export const FOLLOW = {
+  /** How far the field moves with the pointer at the edge of the window. */
+  reach: 16,
+  /** How much of the remaining way the field covers each frame. */
+  ease: 0.06,
+} as const;
+
+/** Where the field should sit for a pointer at `pointer` in a window of `size`. */
+export function followTarget(pointer: Point, size: Point): Point {
+  const unit = (value: number, length: number): number =>
+    length > 0 ? Math.max(-1, Math.min(1, (value / length) * 2 - 1)) : 0;
+  return { x: unit(pointer.x, size.x) * FOLLOW.reach, y: unit(pointer.y, size.y) * FOLLOW.reach };
+}
+
+/** One frame closer to `target`, so the field glides rather than jumps. */
+export function approach(current: Point, target: Point): Point {
+  return {
+    x: current.x + (target.x - current.x) * FOLLOW.ease,
+    y: current.y + (target.y - current.y) * FOLLOW.ease,
+  };
+}
+
+/** How strongly one photograph follows: between 0.6 and 1.4, fixed per photograph. */
+export function depth(seed: number): number {
+  return 1 + Math.sin(seed * 12.9898) * 0.4;
+}
+
 export function settle(push: Point): Point {
   return { x: push.x * FLOAT.decay, y: push.y * FLOAT.decay };
 }

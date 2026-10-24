@@ -1,7 +1,16 @@
 import { breakpointFor, HOME_FRAMES } from './home-layout';
 import type { HomeFrame } from './home-layout';
 
-import { drift, nudge, prefersReducedMotion, settle, wrap } from '@/lib/motion/float';
+import {
+  approach,
+  depth,
+  drift,
+  followTarget,
+  nudge,
+  prefersReducedMotion,
+  settle,
+  wrap,
+} from '@/lib/motion/float';
 import type { Point } from '@/lib/motion/float';
 
 const FRICTION = 0.94;
@@ -38,8 +47,9 @@ function measure(): Geometry {
 
 /**
  * The endless canvas. One loop moves every tile: the wrap from scrolling or
- * dragging, the idle drift and the lean towards the pointer are all one
- * transform per tile, and nothing else is animated.
+ * dragging, the idle drift, the lean of the tiles near the pointer and the
+ * whole canvas following where the pointer is are all one transform per tile,
+ * and nothing else is animated.
  */
 export class CanvasEngine {
   private geometry = measure();
@@ -47,6 +57,8 @@ export class CanvasEngine {
   private velocity: Point = { x: 0, y: 0 };
   private pushes: Point[] = [];
   private pointer: Point | null = null;
+  private follow: Point = { x: 0, y: 0 };
+  private followTo: Point = { x: 0, y: 0 };
   private drag: { last: Point; travelled: number } | null = null;
   private frameId = 0;
   private readonly still = prefersReducedMotion();
@@ -64,6 +76,7 @@ export class CanvasEngine {
     stage.addEventListener('pointerdown', this.onPointerDown, { signal });
     window.addEventListener('pointermove', this.onPointerMove, { signal });
     window.addEventListener('pointerup', this.onPointerUp, { signal });
+    document.addEventListener('pointerleave', this.onPointerLeave, { signal });
     stage.addEventListener('keydown', this.onKeyDown, { signal });
     stage.addEventListener('click', this.onClick, { signal, capture: true });
     document.addEventListener('visibilitychange', this.onVisibility, { signal });
@@ -105,7 +118,15 @@ export class CanvasEngine {
     } else if (this.pointer && event.pointerType === 'mouse' && !this.still) {
       this.lean({ x: now.x - this.pointer.x, y: now.y - this.pointer.y }, now);
     }
+    if (event.pointerType === 'mouse' && !this.still) {
+      this.followTo = followTarget(now, { x: window.innerWidth, y: window.innerHeight });
+    }
     this.pointer = now;
+  };
+
+  /** The pointer has left the window: the canvas drifts back to the middle. */
+  private readonly onPointerLeave = (): void => {
+    this.followTo = { x: 0, y: 0 };
   };
 
   private readonly onPointerUp = (): void => {
@@ -175,14 +196,16 @@ export class CanvasEngine {
       this.velocity = { x: this.velocity.x * FRICTION, y: this.velocity.y * FRICTION };
     }
     this.pushes = this.pushes.map(settle);
+    this.follow = approach(this.follow, this.followTo);
     for (const [index, tile] of this.tiles.entries()) {
       const place = this.place(index);
       const base = this.geometry.bases[index];
       const push = this.pushes[index];
       if (!place || !base || !push) continue;
       const idle = this.still ? { x: 0, y: 0 } : drift(time, index);
-      const x = place.x - base.x + idle.x + push.x;
-      const y = place.y - base.y + idle.y + push.y;
+      const lean = depth(index + 1);
+      const x = place.x - base.x + idle.x + push.x + this.follow.x * lean;
+      const y = place.y - base.y + idle.y + push.y + this.follow.y * lean;
       tile.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0)`;
     }
     this.frameId = requestAnimationFrame(this.tick);
