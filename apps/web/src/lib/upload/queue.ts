@@ -1,12 +1,12 @@
-import type { CreateUploadUrl, UploadTicket } from '@vows/contracts';
+import type { CreateUploadUrl, UploadTicket } from "@vows/contracts";
 
-import type { ProgressListener } from './put-file';
-import { isUploadMime, refusal } from './validate';
+import type { ProgressListener } from "./put-file";
+import { isUploadMime, refusal } from "./validate";
 
 /** Three files travel at once. The rest wait their turn. */
 export const MAX_PARALLEL = 3;
 
-export type UploadStatus = 'queued' | 'uploading' | 'error';
+export type UploadStatus = "queued" | "uploading" | "error";
 
 export interface UploadItem {
   /** The idempotency key: made once for this file and sent again on every retry. */
@@ -47,10 +47,10 @@ export interface Placement {
   position: number;
 }
 
-const FALLBACK = 'The upload did not finish. Check the connection and try again.';
+const FALLBACK = "The upload did not finish. Check the connection and try again.";
 
 function reason(error: unknown): string {
-  return error instanceof Error && error.name === 'ApiError' ? error.message : FALLBACK;
+  return error instanceof Error && error.name === "ApiError" ? error.message : FALLBACK;
 }
 
 /**
@@ -79,7 +79,7 @@ export class UploadQueue {
     const positions = new Set(fresh.map((placement) => placement.position));
     const kept = this.state.items.filter(
       (item) =>
-        item.albumId !== albumId || item.status !== 'error' || !positions.has(item.position),
+        item.albumId !== albumId || item.status !== "error" || !positions.has(item.position),
     );
     const items = fresh.map(
       ({ file, position }): UploadItem => ({
@@ -87,7 +87,7 @@ export class UploadQueue {
         albumId,
         position,
         file,
-        status: 'queued',
+        status: "queued",
         progress: 0,
         message: null,
       }),
@@ -103,7 +103,7 @@ export class UploadQueue {
 
   /** The same file, the same key, so the API answers with the same row. */
   retry(key: string): void {
-    this.patch(key, { status: 'queued', progress: 0, message: null });
+    this.patch(key, { status: "queued", progress: 0, message: null });
     this.pump();
   }
 
@@ -115,10 +115,10 @@ export class UploadQueue {
   }
 
   private pump(): void {
-    const running = this.state.items.filter((item) => item.status === 'uploading').length;
-    const waiting = this.state.items.filter((item) => item.status === 'queued');
+    const running = this.state.items.filter((item) => item.status === "uploading").length;
+    const waiting = this.state.items.filter((item) => item.status === "queued");
     for (const item of waiting.slice(0, Math.max(0, MAX_PARALLEL - running))) {
-      this.patch(item.key, { status: 'uploading' });
+      this.patch(item.key, { status: "uploading" });
       void this.run(item);
     }
   }
@@ -126,7 +126,7 @@ export class UploadQueue {
   private async run(item: UploadItem): Promise<void> {
     try {
       const contentType = item.file.type;
-      if (!isUploadMime(contentType)) throw new Error('unsupported');
+      if (!isUploadMime(contentType)) throw new Error("unsupported");
       const ticket = await this.deps.uploadUrl(
         item.albumId,
         { position: item.position, contentType, bytes: item.file.size },
@@ -143,7 +143,7 @@ export class UploadQueue {
         rejections: this.state.rejections,
       });
     } catch (error) {
-      this.patch(item.key, { status: 'error', message: reason(error) });
+      this.patch(item.key, { status: "error", message: reason(error) });
     } finally {
       this.pump();
     }

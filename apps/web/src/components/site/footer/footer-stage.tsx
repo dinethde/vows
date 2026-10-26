@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { createContext, use, useEffect, useRef, useState } from 'react';
-import type { ReactElement, ReactNode } from 'react';
+import { createContext, use, useEffect, useRef, useState } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 export interface FooterStageProps {
   children: ReactNode;
@@ -40,12 +40,12 @@ export function FooterStage({ children }: FooterStageProps): ReactElement {
       if (frame === 0) frame = requestAnimationFrame(check);
     };
     check();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
     };
   }, [revealed]);
 

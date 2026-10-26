@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { ReactElement } from "react";
 
 /** Shown while a Studio page is fetching. It says so to a screen reader as well. */
 export default function StudioLoading(): ReactElement {

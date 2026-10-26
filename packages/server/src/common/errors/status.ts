@@ -1,4 +1,4 @@
-import type { ErrorCode } from '@vows/contracts';
+import type { ErrorCode } from "@vows/contracts";
 
 /** Adding an error is a class and one row here. Every route gets it at once. */
 export const STATUS: Record<ErrorCode, number> = {

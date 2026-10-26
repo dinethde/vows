@@ -1,9 +1,10 @@
-import { cn } from '@vows/ui';
-import Link from 'next/link';
-import type { ReactElement } from 'react';
+import { cn } from "@vows/ui";
+import Link from "next/link";
 
-import { dashboardHref, FILTER_LABELS, FILTERS } from './view';
-import type { DashboardView } from './view';
+import type { ReactElement } from "react";
+
+import { FILTERS, FILTER_LABELS, dashboardHref } from "./view";
+import type { DashboardView } from "./view";
 
 export interface CollectionToolbarProps {
   view: DashboardView;
@@ -16,7 +17,7 @@ export interface ToolbarPartProps {
 }
 
 const ring =
-  'outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring';
+  "outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring";
 
 function SearchGlyph(): ReactElement {
   return (
@@ -64,15 +65,15 @@ function Search({ view }: ToolbarPartProps): ReactElement {
         enterKeyHint="search"
         className="type-studio-body-s text-primary placeholder:text-primary h-full min-w-0 flex-1 bg-transparent px-[11px] outline-none"
       />
-      {view.filter === 'all' ? null : <input type="hidden" name="stage" value={view.filter} />}
+      {view.filter === "all" ? null : <input type="hidden" name="stage" value={view.filter} />}
     </form>
   );
 }
 
 /* 28 tall as drawn. `before` takes the place a finger can land to 44. */
 const chip = cn(
-  'px-space-3 type-studio-caption relative flex h-[28px] items-center justify-center',
-  'before:absolute before:inset-x-0 before:-inset-y-2',
+  "px-space-3 type-studio-caption relative flex h-[28px] items-center justify-center",
+  "before:absolute before:inset-x-0 before:-inset-y-2",
   ring,
 );
 
@@ -88,8 +89,8 @@ function Filters({ view }: ToolbarPartProps): ReactElement {
           <Link
             key={filter}
             href={dashboardHref({ ...view, filter })}
-            aria-current={current ? 'true' : undefined}
-            className={cn(chip, current ? 'bg-surface text-primary shadow-card' : 'text-muted')}
+            aria-current={current ? "true" : undefined}
+            className={cn(chip, current ? "bg-surface text-primary shadow-card" : "text-muted")}
           >
             {FILTER_LABELS[filter]}
           </Link>
@@ -106,7 +107,7 @@ export function CollectionToolbar({ view, total }: CollectionToolbarProps): Reac
       <div className="flex items-end gap-[11px]">
         <h2 className="type-studio-heading text-heading">Your collection</h2>
         <p className="type-studio-caption text-placeholder pb-[7px]">
-          {total === 1 ? '1 album' : `${String(total)} albums`}
+          {total === 1 ? "1 album" : `${String(total)} albums`}
         </p>
       </div>
       <div className="tablet:flex-row tablet:items-center tablet:gap-[14px] flex flex-col gap-[10px]">

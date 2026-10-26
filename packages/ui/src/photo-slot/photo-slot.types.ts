@@ -1,7 +1,7 @@
 /** The Figma `State` values of `photo_slot`, spelled as Figma spells them.
  * `Update` is Uploaded with the Replace overlay held open; an Uploaded slot
  * shows the same overlay by itself on hover, focus and drag. */
-export type PhotoSlotState = 'Empty' | 'Uploading' | 'Uploaded' | 'Update' | 'Error';
+export type PhotoSlotState = "Empty" | "Uploading" | "Uploaded" | "Update" | "Error";
 
 export interface PhotoSlotProps {
   state: PhotoSlotState;

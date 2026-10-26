@@ -21,8 +21,8 @@ refers to be written in one transaction.
 
    ```ts
    await db.transaction(async (tx) => {
-     await tx.update(photo).set({ status: 'processing' }).where(eq(photo.id, id));
-     await boss.send('photo.derive', { photoId: id });
+     await tx.update(photo).set({ status: "processing" }).where(eq(photo.id, id));
+     await boss.send("photo.derive", { photoId: id });
    });
    ```
 

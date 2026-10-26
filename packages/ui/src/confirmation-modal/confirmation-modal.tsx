@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import type { ReactElement } from 'react';
+import type { ReactElement } from "react";
 
-import { Button } from '../button';
-import { cn } from '../lib/cn';
-import { focusRing } from '../lib/focus';
+import { Button } from "../button";
+import { cn } from "../lib/cn";
+import { focusRing } from "../lib/focus";
 import {
   Dialog,
   DialogClose,
@@ -13,22 +13,21 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '../primitives/dialog';
-
-import { CloseGlyph, InfoGlyph, WarningGlyph } from './confirmation-modal-glyphs';
-import type { ConfirmationModalProps } from './confirmation-modal.types';
-import { useModalFocus } from './use-modal-focus';
+} from "../primitives/dialog";
+import { CloseGlyph, InfoGlyph, WarningGlyph } from "./confirmation-modal-glyphs";
+import type { ConfirmationModalProps } from "./confirmation-modal.types";
+import { useModalFocus } from "./use-modal-focus";
 
 /* 14 as drawn; `before` takes the touch target to 44. */
 const close = cn(
-  'relative flex size-[14px] shrink-0 cursor-pointer items-center justify-center text-muted',
-  'before:absolute before:-inset-[15px]',
+  "relative flex size-[14px] shrink-0 cursor-pointer items-center justify-center text-muted",
+  "before:absolute before:-inset-[15px]",
   focusRing,
 );
 
 export function ConfirmationModal({
   open,
-  tone = 'primary',
+  tone = "primary",
   title,
   message,
   confirmLabel,
@@ -39,7 +38,7 @@ export function ConfirmationModal({
   container,
 }: ConfirmationModalProps): ReactElement {
   const focus = useModalFocus();
-  const danger = tone === 'danger';
+  const danger = tone === "danger";
 
   return (
     <Dialog
@@ -50,7 +49,7 @@ export function ConfirmationModal({
     >
       <DialogContent
         container={container}
-        role={danger ? 'alertdialog' : 'dialog'}
+        role={danger ? "alertdialog" : "dialog"}
         className="px-space-5 pt-space-5 gap-[14px] pb-[18px]"
         onOpenAutoFocus={focus.onOpenAutoFocus}
         onCloseAutoFocus={focus.onCloseAutoFocus}
@@ -65,7 +64,7 @@ export function ConfirmationModal({
           {danger ? <WarningGlyph /> : <InfoGlyph />}
           <DialogDescription className="min-w-0 flex-1">{message}</DialogDescription>
         </div>
-        {error !== undefined && error !== '' ? (
+        {error !== undefined && error !== "" ? (
           <p role="alert" className="type-studio-body text-status-error">
             {error}
           </p>
@@ -74,7 +73,7 @@ export function ConfirmationModal({
           <Button ref={focus.cancel} variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button variant={danger ? 'danger' : 'primary'} pending={pending} onClick={onConfirm}>
+          <Button variant={danger ? "danger" : "primary"} pending={pending} onClick={onConfirm}>
             {confirmLabel}
           </Button>
         </DialogFooter>

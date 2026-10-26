@@ -1,4 +1,4 @@
-import { enquiry, enquiryAccepted, enquiryList } from '@vows/contracts';
+import { enquiry, enquiryAccepted, enquiryList } from "@vows/contracts";
 import type {
   CreateEnquiry,
   Enquiry,
@@ -6,9 +6,9 @@ import type {
   EnquiryList,
   EnquiryListQuery,
   EnquiryStatus,
-} from '@vows/contracts';
+} from "@vows/contracts";
 
-import type { Transport } from './transport';
+import type { Transport } from "./transport";
 
 export interface EnquiriesApi {
   /** `visitor` is the signed address headers; without them the API counts the caller. */
@@ -20,8 +20,8 @@ export interface EnquiriesApi {
 export function enquiriesApi(request: Transport): EnquiriesApi {
   return {
     create: (body, visitor) =>
-      request('/v1/enquiries', {
-        method: 'POST',
+      request("/v1/enquiries", {
+        method: "POST",
         body,
         schema: enquiryAccepted,
         ...(visitor ? { headers: visitor } : {}),
@@ -32,12 +32,12 @@ export function enquiriesApi(request: Transport): EnquiriesApi {
           value === undefined ? [] : [[key, String(value)]],
         ),
       );
-      const suffix = params.size > 0 ? `?${params.toString()}` : '';
+      const suffix = params.size > 0 ? `?${params.toString()}` : "";
       return request(`/v1/studio/enquiries${suffix}`, { schema: enquiryList });
     },
     setStatus: (id, status) =>
       request(`/v1/studio/enquiries/${encodeURIComponent(id)}`, {
-        method: 'PATCH',
+        method: "PATCH",
         body: { status },
         schema: enquiry,
       }),

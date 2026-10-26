@@ -1,14 +1,15 @@
-'use client';
+"use client";
 
-import { Navbar } from '@vows/ui';
-import type { ReactElement } from 'react';
+import { Navbar } from "@vows/ui";
 
-import { fontVariables } from './fonts';
+import type { ReactElement } from "react";
 
-import { ServerErrorScreen } from '@/components/site/error-pages';
-import { routes } from '@/config/site';
+import { ServerErrorScreen } from "@/components/site/error-pages";
+import { routes } from "@/config/site";
 
-import '@/styles/globals.css';
+import { fontVariables } from "./fonts";
+
+import "@/styles/globals.css";
 
 /** The root layout itself failed, so this draws its own document. */
 export default function GlobalError(): ReactElement {
@@ -22,7 +23,7 @@ export default function GlobalError(): ReactElement {
         <main id="main" className="flex min-h-svh flex-col justify-center pt-[56px]">
           <ServerErrorScreen
             action={{
-              label: 'Reload the page',
+              label: "Reload the page",
               onClick: () => {
                 window.location.reload();
               },

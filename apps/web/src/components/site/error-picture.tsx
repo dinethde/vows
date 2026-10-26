@@ -1,11 +1,12 @@
-import type { StaticImageData } from 'next/image';
-import type { ReactElement } from 'react';
+import type { StaticImageData } from "next/image";
 
-import forbiddenStill from '@/assets/gifs/403.gif';
-import notFoundStill from '@/assets/gifs/404-still.webp';
-import notFound from '@/assets/gifs/404.webp';
-import serverErrorStill from '@/assets/gifs/500-still.webp';
-import serverError from '@/assets/gifs/500.webp';
+import type { ReactElement } from "react";
+
+import forbiddenStill from "@/assets/gifs/403.gif";
+import notFoundStill from "@/assets/gifs/404-still.webp";
+import notFound from "@/assets/gifs/404.webp";
+import serverErrorStill from "@/assets/gifs/500-still.webp";
+import serverError from "@/assets/gifs/500.webp";
 
 interface Clip {
   moving: StaticImageData;
@@ -18,10 +19,10 @@ interface Clip {
  * as they are: an optimiser would flatten the animation to one frame. The
  * 403 file has a single frame, so it is its own still.
  */
-const CLIPS: Record<'404' | '500' | '403', Clip> = {
-  '404': { moving: notFound, still: notFoundStill },
-  '500': { moving: serverError, still: serverErrorStill },
-  '403': { moving: forbiddenStill, still: forbiddenStill },
+const CLIPS: Record<"404" | "500" | "403", Clip> = {
+  "404": { moving: notFound, still: notFoundStill },
+  "500": { moving: serverError, still: serverErrorStill },
+  "403": { moving: forbiddenStill, still: forbiddenStill },
 };
 
 export interface ErrorPictureProps {

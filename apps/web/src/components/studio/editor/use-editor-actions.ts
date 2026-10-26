@@ -1,14 +1,14 @@
-import { useState, useTransition } from 'react';
+import { useState, useTransition } from "react";
 
-import { firstProblem, focusProblem } from './editor-problems';
-import type { AlbumForm } from './editor-problems';
-import type { Problems } from './publish-problems';
-import { useEditorRequests } from './use-editor-requests';
-import type { EditorRequests, EditorRequestsInput } from './use-editor-requests';
+import type { ConfirmationKind } from "@/components/studio/confirmations";
 
-import type { ConfirmationKind } from '@/components/studio/confirmations';
+import { firstProblem, focusProblem } from "./editor-problems";
+import type { AlbumForm } from "./editor-problems";
+import type { Problems } from "./publish-problems";
+import { useEditorRequests } from "./use-editor-requests";
+import type { EditorRequests, EditorRequestsInput } from "./use-editor-requests";
 
-export type EditorModal = Exclude<ConfirmationKind, 'deletePhoto'>;
+export type EditorModal = Exclude<ConfirmationKind, "deletePhoto">;
 
 export interface EditorActionsInput extends EditorRequestsInput {
   /** Everything the browser can already see is stopping the album going out. */
@@ -92,18 +92,18 @@ export function useEditorActions(input: EditorActionsInput): EditorActions {
         if (!(await fieldsValid(form))) return;
         const first = firstProblem(form, problems);
         if (first) focusProblem(form, first);
-        else open('publish');
+        else open("publish");
       });
     },
     pressDraft: () => {
       run(async () => {
         if (!(await fieldsValid(form))) return;
-        if (album.stage === 'published') open('moveToDraft');
+        if (album.stage === "published") open("moveToDraft");
         else await requests.saveDraft();
       });
     },
     pressLeave: () => {
-      if (isDirty) open('discard');
+      if (isDirty) open("discard");
       else requests.leave();
     },
     confirm: () => {

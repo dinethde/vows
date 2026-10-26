@@ -1,10 +1,10 @@
-import type { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from "react-hook-form";
 
-import { FIELD_ORDER } from './album-form.schema';
-import type { AlbumFieldName, AlbumFormValues } from './album-form.schema';
-import type { Problems } from './publish-problems';
+import type { ActionFailure } from "@/components/studio/action-result";
 
-import type { ActionFailure } from '@/components/studio/action-result';
+import { FIELD_ORDER } from "./album-form.schema";
+import type { AlbumFieldName, AlbumFormValues } from "./album-form.schema";
+import type { Problems } from "./publish-problems";
 
 export type AlbumForm = UseFormReturn<AlbumFormValues>;
 
@@ -20,7 +20,7 @@ export function applyFieldErrors(form: AlbumForm, failure: ActionFailure): Album
   const named = Object.entries(failure.fields).filter(([key]) => isField(key));
   for (const [key, message] of named) {
     if (!isField(key)) continue;
-    form.setError(key, { type: 'server', message });
+    form.setError(key, { type: "server", message });
   }
   const first = FIELD_ORDER.find((name) => named.some(([key]) => key === name));
   return first ?? null;
@@ -51,9 +51,9 @@ export function focusProblem(form: AlbumForm, key: string): void {
     form.setFocus(key);
     return;
   }
-  const marker = key === 'cover' ? 'photos.0' : key;
+  const marker = key === "cover" ? "photos.0" : key;
   const node = document.querySelector<HTMLElement>(`[data-problem="${marker}"]`);
-  const target = node?.matches('input') ? node : node?.querySelector<HTMLElement>('button');
+  const target = node?.matches("input") ? node : node?.querySelector<HTMLElement>("button");
   target?.focus();
-  target?.scrollIntoView({ block: 'center' });
+  target?.scrollIntoView({ block: "center" });
 }

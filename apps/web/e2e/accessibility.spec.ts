@@ -1,10 +1,10 @@
-import AxeBuilder from '@axe-core/playwright';
-import { expect, test } from '@playwright/test';
-import type { Page } from '@playwright/test';
+import AxeBuilder from "@axe-core/playwright";
+import { expect, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
-import { SEEDED_ALBUM } from './helpers';
+import { SEEDED_ALBUM } from "./helpers";
 
-const ROUTES = ['/contact', '/privacy', `/albums/${SEEDED_ALBUM.slug}`, '/no-such-page'];
+const ROUTES = ["/contact", "/privacy", `/albums/${SEEDED_ALBUM.slug}`, "/no-such-page"];
 
 /**
  * Two colour pairs in the Figma tokens are below the 4.5:1 that WCAG AA and
@@ -15,7 +15,7 @@ const ROUTES = ['/contact', '/privacy', `/albums/${SEEDED_ALBUM.slug}`, '/no-suc
  *   text/accent on bg/page  3.27:1  the small blue column labels
  *   text/muted  on bg/page  4.21:1  captions, the legal line, the error subline
  */
-const KNOWN_TOKEN_PAIRS = ['#1389ff on #f8f8f9', '#777779 on #f8f8f9'];
+const KNOWN_TOKEN_PAIRS = ["#1389ff on #f8f8f9", "#777779 on #f8f8f9"];
 
 interface ContrastData {
   fgColor?: string;
@@ -24,14 +24,14 @@ interface ContrastData {
 
 async function violations(page: Page): Promise<string[]> {
   const results = await new AxeBuilder({ page })
-    .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+    .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
     .analyze();
   return results.violations.flatMap((violation) =>
     violation.nodes
       .filter((node) => {
-        if (violation.id !== 'color-contrast') return true;
+        if (violation.id !== "color-contrast") return true;
         const data = node.any[0]?.data as ContrastData | undefined;
-        return !KNOWN_TOKEN_PAIRS.includes(`${data?.fgColor ?? ''} on ${data?.bgColor ?? ''}`);
+        return !KNOWN_TOKEN_PAIRS.includes(`${data?.fgColor ?? ""} on ${data?.bgColor ?? ""}`);
       })
       .map((node) => `${violation.id}: ${node.html.slice(0, 80)}`),
   );
@@ -44,10 +44,10 @@ for (const route of ROUTES) {
   });
 }
 
-test('the home page has no accessibility violations once the music question is answered', async ({
+test("the home page has no accessibility violations once the music question is answered", async ({
   page,
 }) => {
-  await page.goto('/');
-  await page.getByRole('button', { name: 'Continue without the music' }).click();
+  await page.goto("/");
+  await page.getByRole("button", { name: "Continue without the music" }).click();
   expect(await violations(page)).toEqual([]);
 });

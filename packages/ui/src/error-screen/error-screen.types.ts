@@ -1,11 +1,11 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
-import type { LinkComponent } from '../lib/link.types';
+import type { LinkComponent } from "../lib/link.types";
 
 /** What the photo card over the middle digit shows. `empty` is a slot with no
  * photograph (404), `burnt` a print spoiled in developing (500) and `locked`
  * the back of a print with a padlock (403). */
-export type ErrorScreenCard = 'empty' | 'burnt' | 'locked';
+export type ErrorScreenCard = "empty" | "burnt" | "locked";
 
 export interface ErrorScreenLink {
   label: string;

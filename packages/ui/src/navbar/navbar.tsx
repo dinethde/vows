@@ -1,28 +1,27 @@
-import type { ReactElement } from 'react';
+import type { ReactElement } from "react";
 
-import { Button } from '../button';
-import { navBackdrop } from '../lib/bar';
-import { cn } from '../lib/cn';
-import { focusRing } from '../lib/focus';
-
-import type { NavbarProps } from './navbar.types';
+import { Button } from "../button";
+import { navBackdrop } from "../lib/bar";
+import { cn } from "../lib/cn";
+import { focusRing } from "../lib/focus";
+import type { NavbarProps } from "./navbar.types";
 
 /* 56 tall at every width. Side padding 16 / 24 / 64, as the component and the
  * components board both draw it. The breakpoint is CSS, never a prop. */
 const bar = cn(
-  'relative isolate flex h-[56px] w-full items-center justify-between',
-  'px-space-4 tablet:px-space-6 desktop:px-space-10',
+  "relative isolate flex h-[56px] w-full items-center justify-between",
+  "px-space-4 tablet:px-space-6 desktop:px-space-10",
 );
 
 /* Drawn 24 and 32 tall; `before` takes each touch target to 44. */
 const wordmark = cn(
-  'relative type-nav-wordmark text-primary',
-  'before:absolute before:-inset-x-space-2 before:-inset-y-[10px]',
+  "relative type-nav-wordmark text-primary",
+  "before:absolute before:-inset-x-space-2 before:-inset-y-[10px]",
   focusRing,
 );
 const textLink = cn(
-  'relative flex h-space-7 min-w-[76px] items-center justify-center px-space-2 type-nav-link text-primary',
-  'before:absolute before:inset-x-0 before:-inset-y-[6px]',
+  "relative flex h-space-7 min-w-[76px] items-center justify-center px-space-2 type-nav-link text-primary",
+  "before:absolute before:inset-x-0 before:-inset-y-[6px]",
   focusRing,
 );
 
@@ -32,7 +31,7 @@ export function Navbar({
   cta,
   player,
   minimal = false,
-  linkComponent: Link = 'a',
+  linkComponent: Link = "a",
   className,
 }: NavbarProps): ReactElement {
   const full = !minimal;

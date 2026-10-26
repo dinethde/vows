@@ -1,11 +1,12 @@
-import type { Metadata } from 'next';
-import type { ReactElement } from 'react';
+import type { Metadata } from "next";
 
-import { NotFoundScreen } from '@/components/site/error-pages';
-import { MusicProvider } from '@/components/site/music/music-provider';
-import { SiteNavbar } from '@/components/site/site-navbar';
+import type { ReactElement } from "react";
 
-export const metadata: Metadata = { title: '404', robots: { index: false } };
+import { NotFoundScreen } from "@/components/site/error-pages";
+import { MusicProvider } from "@/components/site/music/music-provider";
+import { SiteNavbar } from "@/components/site/site-navbar";
+
+export const metadata: Metadata = { title: "404", robots: { index: false } };
 
 /** Served with a real 404. The normal bar, so a song that is playing keeps playing. */
 export default function NotFound(): ReactElement {

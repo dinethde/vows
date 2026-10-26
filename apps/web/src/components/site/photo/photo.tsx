@@ -1,7 +1,8 @@
-import type { Photo as PhotoData } from '@vows/contracts';
-import type { CSSProperties, ReactElement } from 'react';
+import type { Photo as PhotoData } from "@vows/contracts";
 
-import { placeholderFor, sourcesFor } from './sources';
+import type { CSSProperties, ReactElement } from "react";
+
+import { placeholderFor, sourcesFor } from "./sources";
 
 export interface PhotoProps {
   photo: PhotoData;
@@ -31,7 +32,7 @@ export function Photo({
   const sources = sourcesFor(photo);
   const placeholder = placeholderFor(photo);
   const style: CSSProperties = {
-    ...(placeholder ? { backgroundImage: `url(${placeholder})`, backgroundSize: 'cover' } : {}),
+    ...(placeholder ? { backgroundImage: `url(${placeholder})`, backgroundSize: "cover" } : {}),
     ...(focalPoint ? { objectPosition: `${String(focalPoint.x)}% ${String(focalPoint.y)}%` } : {}),
   };
   return (
@@ -42,11 +43,11 @@ export function Photo({
           optimiser would resize them a second time. */}
       <img
         src={sources.fallback}
-        alt={decorative ? '' : (photo.alt ?? '')}
+        alt={decorative ? "" : (photo.alt ?? "")}
         width={photo.width ?? undefined}
         height={photo.height ?? undefined}
-        loading={priority ? 'eager' : 'lazy'}
-        fetchPriority={priority ? 'high' : 'auto'}
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
         decoding="async"
         style={style}
         className={className}

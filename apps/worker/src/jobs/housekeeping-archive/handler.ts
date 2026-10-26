@@ -1,5 +1,5 @@
-import type { INestApplicationContext } from '@nestjs/common';
-import { CleanupService, HousekeepingService } from '@vows/server';
+import type { INestApplicationContext } from "@nestjs/common";
+import { CleanupService, HousekeepingService } from "@vows/server";
 
 /**
  * The nightly tidy: enquiries past twenty-four months go, and so does any

@@ -1,13 +1,13 @@
-import { page, photo, uploadTicket } from '@vows/contracts';
+import { page, photo, uploadTicket } from "@vows/contracts";
 import type {
   CreateUploadUrl,
   Photo,
   ReorderPhotos,
   UpdatePhoto,
   UploadTicket,
-} from '@vows/contracts';
+} from "@vows/contracts";
 
-import type { Transport } from './transport';
+import type { Transport } from "./transport";
 
 const photoList = page(photo);
 
@@ -35,27 +35,27 @@ export function photosApi(request: Transport): PhotosApi {
       ).data,
     uploadUrl: (albumId, body, idempotencyKey) =>
       request(`/v1/studio/albums/${encodeURIComponent(albumId)}/photos/upload-url`, {
-        method: 'POST',
+        method: "POST",
         body,
         idempotencyKey,
         schema: uploadTicket,
       }),
     markUploaded: (id) =>
       request(`/v1/studio/photos/${encodeURIComponent(id)}/uploaded`, {
-        method: 'POST',
+        method: "POST",
         schema: photo,
       }),
     update: (id, body) =>
       request(`/v1/studio/photos/${encodeURIComponent(id)}`, {
-        method: 'PATCH',
+        method: "PATCH",
         body,
         schema: photo,
       }),
-    remove: (id) => request(`/v1/studio/photos/${encodeURIComponent(id)}`, { method: 'DELETE' }),
+    remove: (id) => request(`/v1/studio/photos/${encodeURIComponent(id)}`, { method: "DELETE" }),
     reorder: async (albumId, body) =>
       (
         await request(`/v1/studio/albums/${encodeURIComponent(albumId)}/order`, {
-          method: 'PUT',
+          method: "PUT",
           body,
           schema: photoList,
         })

@@ -1,23 +1,23 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-import { albumId, derivativeId, photoId } from '../shared/ids';
+import { albumId, derivativeId, photoId } from "../shared/ids";
 
-export const PHOTO_STATUSES = ['pending', 'processing', 'ready', 'failed'] as const;
+export const PHOTO_STATUSES = ["pending", "processing", "ready", "failed"] as const;
 export const photoStatus = z.enum(PHOTO_STATUSES);
 export type PhotoStatus = z.infer<typeof photoStatus>;
 
-export const IMAGE_FORMATS = ['avif', 'webp'] as const;
+export const IMAGE_FORMATS = ["avif", "webp"] as const;
 export const DERIVATIVE_WIDTHS = [320, 640, 1024, 1600, 2400] as const;
 
 /** Slot 0 is the cover. Slots 1 to 18 are the gallery, in reading order. */
 export const COVER_POSITION = 0;
 export const GALLERY_SIZE = 18;
 export const MAX_UPLOAD_BYTES = 60 * 1024 * 1024;
-export const UPLOAD_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/tiff'] as const;
+export const UPLOAD_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/tiff"] as const;
 export const PHOTO_ERROR_CODES = [
-  'wrong_file_type',
-  'file_too_large',
-  'processing_failed',
+  "wrong_file_type",
+  "file_too_large",
+  "processing_failed",
 ] as const;
 
 export const photoPosition = z.number().int().min(COVER_POSITION).max(GALLERY_SIZE);
@@ -63,7 +63,7 @@ export type UploadTicket = z.infer<typeof uploadTicket>;
 export const updatePhoto = z
   .object({ alt: z.string().trim().min(1).max(300).nullable() })
   .partial()
-  .refine((body) => Object.keys(body).length > 0, 'Send at least one field.');
+  .refine((body) => Object.keys(body).length > 0, "Send at least one field.");
 export type UpdatePhoto = z.infer<typeof updatePhoto>;
 
 /** The whole gallery in one request: index 0 is slot 1. `null` is an empty slot. */

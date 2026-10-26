@@ -1,8 +1,8 @@
-export { ErrorScreen } from './error-screen';
+export { ErrorScreen } from "./error-screen";
 export type {
   ErrorScreenAction,
   ErrorScreenCard,
   ErrorScreenHandler,
   ErrorScreenLink,
   ErrorScreenProps,
-} from './error-screen.types';
+} from "./error-screen.types";

@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { auditLog, newId } from '@vows/db';
-import type { Tx } from '@vows/db';
+import { Injectable } from "@nestjs/common";
+import { auditLog, newId } from "@vows/db";
+import type { Tx } from "@vows/db";
 
-import type { Actor } from '../../common/request';
+import type { Actor } from "../../common/request";
 
 export interface AuditEntry {
   action: string;
-  entity: 'album' | 'photo' | 'enquiry' | 'setting';
+  entity: "album" | "photo" | "enquiry" | "setting";
   entityId: string;
   diff?: Record<string, unknown>;
 }
@@ -16,7 +16,7 @@ export interface AuditEntry {
 export class AuditService {
   async record(tx: Tx, actor: Actor, entry: AuditEntry): Promise<void> {
     await tx.insert(auditLog).values({
-      id: newId('audit'),
+      id: newId("audit"),
       actorClerkId: actor.clerkId,
       action: entry.action,
       entity: entry.entity,

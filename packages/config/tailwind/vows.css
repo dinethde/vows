@@ -21,7 +21,7 @@
  * depend on it in return.
  */
 
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @theme inline {
   /* The semantic tokens are the whole palette. Tailwind's own is switched off
@@ -145,6 +145,6 @@
 
 /* The Studio is the same component set in a different mode. One attribute
  * switches every token at once, exactly like the Studio mode in Figma. */
-[data-surface='studio'] {
+[data-surface="studio"] {
   color-scheme: light;
 }

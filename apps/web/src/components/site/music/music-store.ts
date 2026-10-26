@@ -2,21 +2,21 @@
  * The visitor's choice about the music, kept for the visit and no longer.
  * sessionStorage can be missing or blocked, so every read has a default.
  */
-export type MusicChoice = 'on' | 'off' | null;
+export type MusicChoice = "on" | "off" | null;
 
-const KEY = 'vows:music';
+const KEY = "vows:music";
 const listeners = new Set<() => void>();
 
 export function readChoice(): MusicChoice {
   try {
     const value = window.sessionStorage.getItem(KEY);
-    return value === 'on' || value === 'off' ? value : null;
+    return value === "on" || value === "off" ? value : null;
   } catch {
     return null;
   }
 }
 
-export function writeChoice(choice: 'on' | 'off'): void {
+export function writeChoice(choice: "on" | "off"): void {
   try {
     window.sessionStorage.setItem(KEY, choice);
   } catch {

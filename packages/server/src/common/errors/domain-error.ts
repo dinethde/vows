@@ -1,4 +1,4 @@
-import type { ErrorCode } from '@vows/contracts';
+import type { ErrorCode } from "@vows/contracts";
 
 /**
  * What a service throws. It knows a code and a sentence for the photographer,
@@ -16,26 +16,26 @@ export class DomainError extends Error {
 }
 
 export class NotFoundError extends DomainError {
-  constructor(code: ErrorCode = 'not_found', message = 'We could not find that.') {
+  constructor(code: ErrorCode = "not_found", message = "We could not find that.") {
     super(code, message);
   }
 }
 
 export class UnauthorizedError extends DomainError {
   constructor() {
-    super('unauthorized', 'Unauthorized');
+    super("unauthorized", "Unauthorized");
   }
 }
 
 export class ForbiddenError extends DomainError {
   constructor() {
-    super('forbidden', 'Forbidden');
+    super("forbidden", "Forbidden");
   }
 }
 
 export class ValidationError extends DomainError {
   constructor(fields: Record<string, string>) {
-    super('bad_request', 'Some of what was sent is not right. Check the marked fields.', fields);
+    super("bad_request", "Some of what was sent is not right. Check the marked fields.", fields);
   }
 }
 
@@ -44,7 +44,7 @@ export class RateLimitedError extends DomainError {
     message: string,
     readonly retryAfterSeconds: number,
   ) {
-    super('rate_limited', message);
+    super("rate_limited", message);
   }
 }
 

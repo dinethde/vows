@@ -1,7 +1,7 @@
-import type { PipeTransform } from '@nestjs/common';
-import type { ZodType, ZodTypeDef } from 'zod';
+import type { PipeTransform } from "@nestjs/common";
+import type { ZodType, ZodTypeDef } from "zod";
 
-import { ValidationError } from '../errors/domain-error';
+import { ValidationError } from "../errors/domain-error";
 
 /**
  * A controller only ever receives the parsed value. The raw body is out of
@@ -16,7 +16,7 @@ export class ZodPipe<Output> implements PipeTransform<unknown, Output> {
 
     const fields: Record<string, string> = {};
     for (const issue of parsed.error.issues) {
-      const path = issue.path.join('.') || 'body';
+      const path = issue.path.join(".") || "body";
       fields[path] ??= issue.message;
     }
     throw new ValidationError(fields);

@@ -1,11 +1,12 @@
-'use client';
+"use client";
 
-import { Navbar } from '@vows/ui';
-import { useState } from 'react';
-import type { ReactElement } from 'react';
+import { Navbar } from "@vows/ui";
 
-import { ServerErrorScreen } from '@/components/site/error-pages';
-import { routes } from '@/config/site';
+import { useState } from "react";
+import type { ReactElement } from "react";
+
+import { ServerErrorScreen } from "@/components/site/error-pages";
+import { routes } from "@/config/site";
 
 export interface ErrorPageProps {
   error: Error & { digest?: string };
@@ -20,13 +21,13 @@ export default function ErrorPage({ reset }: ErrorPageProps): ReactElement {
   const [tried, setTried] = useState(false);
   const action = tried
     ? {
-        label: 'Reload the page',
+        label: "Reload the page",
         onClick: () => {
           window.location.reload();
         },
       }
     : {
-        label: 'Try again',
+        label: "Try again",
         onClick: () => {
           setTried(true);
           reset();

@@ -1,3 +1,3 @@
-import node from '@vows/config/eslint/node';
+import node from "@vows/config/eslint/node";
 
 export default node;

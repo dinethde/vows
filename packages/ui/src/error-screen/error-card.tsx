@@ -1,8 +1,7 @@
-import type { ReactElement, ReactNode } from 'react';
+import type { ReactElement, ReactNode } from "react";
 
-import { cn } from '../lib/cn';
-
-import type { ErrorScreenCard } from './error-screen.types';
+import { cn } from "../lib/cn";
+import type { ErrorScreenCard } from "./error-screen.types";
 
 /* The card is drawn once, at the desktop size of 164 × 192, in the units of
  * the Figma frame. The screen scales it; nothing here knows the width.
@@ -10,23 +9,23 @@ import type { ErrorScreenCard } from './error-screen.types';
  * Two soft shadows lift it off the numeral: 0 2 6 at 5.5 per cent and
  * 0 20 44 −6 at 8.5 per cent. No elevation token describes them. */
 const card = cn(
-  'relative block h-[192px] w-[164px] overflow-hidden rounded-[1.6px]',
-  'shadow-[0_2px_6px_0_color-mix(in_srgb,var(--vows-color-ink-900)_5.5%,transparent),0_20px_44px_-6px_color-mix(in_srgb,var(--vows-color-ink-900)_8.5%,transparent)]',
+  "relative block h-[192px] w-[164px] overflow-hidden rounded-[1.6px]",
+  "shadow-[0_2px_6px_0_color-mix(in_srgb,var(--vows-color-ink-900)_5.5%,transparent),0_20px_44px_-6px_color-mix(in_srgb,var(--vows-color-ink-900)_8.5%,transparent)]",
 );
 
 /* 500: a light leak across the print, from ink/100 through white and back,
  * deepening towards the two far corners. */
 const lightLeak =
-  'bg-[linear-gradient(140deg,var(--vows-color-ink-200)_14%,var(--vows-color-ink-100)_36%,var(--vows-color-ink-0)_47%,var(--vows-color-ink-0)_54%,var(--vows-color-ink-100)_66%,var(--vows-color-ink-300)_88%)]';
+  "bg-[linear-gradient(140deg,var(--vows-color-ink-200)_14%,var(--vows-color-ink-100)_36%,var(--vows-color-ink-0)_47%,var(--vows-color-ink-0)_54%,var(--vows-color-ink-100)_66%,var(--vows-color-ink-300)_88%)]";
 
 const surfaces: Record<ErrorScreenCard, string> = {
-  empty: 'bg-slot',
+  empty: "bg-slot",
   burnt: lightLeak,
-  locked: 'bg-surface',
+  locked: "bg-surface",
 };
 
-const strong = 'stroke-(--vows-border-strong)';
-const strongFill = 'fill-(--vows-border-strong) stroke-none';
+const strong = "stroke-(--vows-border-strong)";
+const strongFill = "fill-(--vows-border-strong) stroke-none";
 
 function Hairline(): ReactElement {
   return (
@@ -144,7 +143,7 @@ const drawings: Record<ErrorScreenCard, () => ReactElement> = {
 
 /* A picture fills the print, cropped to it, with the print's hairline over
  * its edge so it still reads as a photograph in a frame. */
-const filled = '[&_img]:absolute [&_img]:inset-0 [&_img]:size-full [&_img]:object-cover';
+const filled = "[&_img]:absolute [&_img]:inset-0 [&_img]:size-full [&_img]:object-cover";
 
 export function ErrorCard({
   variant,
@@ -157,7 +156,7 @@ export function ErrorCard({
 }): ReactElement {
   if (picture) {
     return (
-      <span className={cn(card, 'bg-slot', filled, className)} data-card={variant}>
+      <span className={cn(card, "bg-slot", filled, className)} data-card={variant}>
         {picture}
         <svg className="absolute inset-0 size-full fill-none" viewBox="0 0 164 192">
           <Hairline />

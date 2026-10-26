@@ -1,6 +1,6 @@
-import type { ComponentProps } from 'react';
+import type { ComponentProps } from "react";
 
-export interface CtaButtonProps extends ComponentProps<'button'> {
+export interface CtaButtonProps extends ComponentProps<"button"> {
   /** The long arrow before the label. On for "Let's talk" and the error pages,
    * off for "Send" in the contact form. Defaults to true. */
   arrow?: boolean;

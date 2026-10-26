@@ -1,26 +1,27 @@
-'use client';
+"use client";
 
-import { cn } from '@vows/ui';
-import type { KeyboardEvent, ReactElement } from 'react';
+import { cn } from "@vows/ui";
+
+import type { KeyboardEvent, ReactElement } from "react";
+
+import { focusRing } from "@/components/shared/focus";
+import { fullDate } from "@/lib/format/dates";
 
 import {
+  WEEKDAYS,
   dayOfMonth,
   monthTitle,
   monthWeeks,
   moveByKey,
   sameMonth,
   shiftMonths,
-  WEEKDAYS,
-} from './calendar';
-import type { CalendarGridProps, DayCellProps, MonthStepProps } from './date-picker.types';
-
-import { focusRing } from '@/components/shared/focus';
-import { fullDate } from '@/lib/format/dates';
+} from "./calendar";
+import type { CalendarGridProps, DayCellProps, MonthStepProps } from "./date-picker.types";
 
 /* The chevron is 6 × 10 as drawn; the button around it is 44 so a finger can land. */
 const step = cn(
-  'text-muted relative flex size-[28px] cursor-pointer items-center justify-center rounded-sm',
-  'before:absolute before:-inset-2',
+  "text-muted relative flex size-[28px] cursor-pointer items-center justify-center rounded-sm",
+  "before:absolute before:-inset-2",
   focusRing,
 );
 
@@ -29,12 +30,12 @@ function MonthStep({ back, onClick }: MonthStepProps): ReactElement {
     <button
       type="button"
       className={step}
-      aria-label={back ? 'Previous month' : 'Next month'}
+      aria-label={back ? "Previous month" : "Next month"}
       onClick={onClick}
     >
       <svg aria-hidden="true" width="6" height="10" viewBox="0 0 6 10" fill="none">
         <path
-          d={back ? 'M5 1 1 5l4 4' : 'M1 1l4 4-4 4'}
+          d={back ? "M5 1 1 5l4 4" : "M1 1l4 4-4 4"}
           stroke="currentColor"
           strokeWidth="1.5"
           strokeLinecap="round"
@@ -46,13 +47,13 @@ function MonthStep({ back, onClick }: MonthStepProps): ReactElement {
 }
 
 const cell = cn(
-  'type-ui-caption flex size-[36px] cursor-pointer items-center justify-center rounded-sm',
+  "type-ui-caption flex size-[36px] cursor-pointer items-center justify-center rounded-sm",
   focusRing,
 );
 
 function tone(chosen: boolean, inMonth: boolean): string {
-  if (chosen) return 'bg-inverse text-inverse';
-  return cn('hover:bg-field-muted', inMonth ? 'text-heading' : 'text-placeholder');
+  if (chosen) return "bg-inverse text-inverse";
+  return cn("hover:bg-field-muted", inMonth ? "text-heading" : "text-placeholder");
 }
 
 /** One day. Only the focused day is in the tab order; the arrows reach the rest. */

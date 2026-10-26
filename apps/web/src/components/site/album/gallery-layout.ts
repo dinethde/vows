@@ -25,7 +25,7 @@ export interface Frame {
 
 const box = (x: number, w: number, h: number, y = 0): Box => ({ x, y, w, h });
 
-export const FRAMES: Record<'mobile' | 'tablet' | 'desktop', Frame> = {
+export const FRAMES: Record<"mobile" | "tablet" | "desktop", Frame> = {
   desktop: {
     width: 1440,
     gap: 350,

@@ -1,12 +1,13 @@
-'use client';
+"use client";
 
-import { Navbar, Player } from '@vows/ui';
-import Link from 'next/link';
-import type { ReactElement } from 'react';
+import { Navbar, Player } from "@vows/ui";
+import Link from "next/link";
 
-import { useMusic } from './music/music-provider';
+import type { ReactElement } from "react";
 
-import { routes, site } from '@/config/site';
+import { routes, site } from "@/config/site";
+
+import { useMusic } from "./music/music-provider";
 
 export interface SiteNavbarProps {
   className?: string;

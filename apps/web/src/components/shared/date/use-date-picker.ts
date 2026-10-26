@@ -1,12 +1,12 @@
-import { useRef, useState } from 'react';
-import type { ChangeEvent, KeyboardEvent, RefObject } from 'react';
+import { useRef, useState } from "react";
+import type { ChangeEvent, KeyboardEvent, RefObject } from "react";
 
-import { todayIso } from './calendar';
-import type { DatePickerProps } from './date-picker.types';
-import { formatDateText, parseDateText } from './date-text';
+import { useDismiss } from "@/components/shared/use-dismiss";
+import type { Dismissable } from "@/components/shared/use-dismiss";
 
-import { useDismiss } from '@/components/shared/use-dismiss';
-import type { Dismissable } from '@/components/shared/use-dismiss';
+import { todayIso } from "./calendar";
+import type { DatePickerProps } from "./date-picker.types";
+import { formatDateText, parseDateText } from "./date-text";
 
 interface GridFocus {
   day: string;
@@ -37,7 +37,7 @@ export interface DatePickerState {
 export function useDatePicker({
   value,
   onChange,
-}: Pick<DatePickerProps, 'value' | 'onChange'>): DatePickerState {
+}: Pick<DatePickerProps, "value" | "onChange">): DatePickerState {
   const input = useRef<HTMLInputElement | null>(null);
   const returning = useRef(false);
   const backToBox = (): void => {
@@ -67,7 +67,7 @@ export function useDatePicker({
       onChange(event.target.value);
     },
     onKeyDown: (event) => {
-      if (event.key !== 'ArrowDown') return;
+      if (event.key !== "ArrowDown") return;
       event.preventDefault();
       popover.show();
       setGrid({ day: selected ?? grid.day, take: true });

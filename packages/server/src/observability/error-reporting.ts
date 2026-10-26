@@ -1,7 +1,7 @@
-import * as Sentry from '@sentry/node';
+import * as Sentry from "@sentry/node";
 
-import type { Env } from '../config/env';
-import { CRON_TIMEZONE } from '../queue/catalogue';
+import type { Env } from "../config/env";
+import { CRON_TIMEZONE } from "../queue/catalogue";
 
 /**
  * Sentry, for the API and the worker. Nothing is sent unless SENTRY_DSN is
@@ -49,7 +49,7 @@ export async function monitored<T>(
   work: () => Promise<T>,
 ): Promise<T> {
   const config = {
-    schedule: { type: 'crontab' as const, value: schedule.cron },
+    schedule: { type: "crontab" as const, value: schedule.cron },
     timezone: CRON_TIMEZONE,
     checkinMargin: 10,
     maxRuntime: Math.ceil(schedule.maxSeconds / 60) + 1,
@@ -57,17 +57,17 @@ export async function monitored<T>(
     recoveryThreshold: 1,
   };
   const started = Date.now();
-  const checkInId = Sentry.captureCheckIn({ monitorSlug: slug, status: 'in_progress' }, config);
-  const finish = (status: 'ok' | 'error'): void => {
+  const checkInId = Sentry.captureCheckIn({ monitorSlug: slug, status: "in_progress" }, config);
+  const finish = (status: "ok" | "error"): void => {
     const duration = (Date.now() - started) / 1000;
     Sentry.captureCheckIn({ checkInId, monitorSlug: slug, status, duration }, config);
   };
   try {
     const result = await work();
-    finish('ok');
+    finish("ok");
     return result;
   } catch (error) {
-    finish('error');
+    finish("error");
     throw error;
   }
 }

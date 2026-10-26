@@ -1,11 +1,12 @@
-'use client';
+"use client";
 
-import { useAuth } from '@clerk/nextjs';
-import { createContext, useContext, useMemo } from 'react';
-import type { ReactElement, ReactNode } from 'react';
+import { useAuth } from "@clerk/nextjs";
 
-import { authedApi } from '@/lib/api';
-import type { ApiClient } from '@/lib/api';
+import { createContext, useContext, useMemo } from "react";
+import type { ReactElement, ReactNode } from "react";
+
+import { authedApi } from "@/lib/api";
+import type { ApiClient } from "@/lib/api";
 
 const ApiContext = createContext<ApiClient | null>(null);
 
@@ -26,6 +27,6 @@ export function ApiProvider({ children }: ApiProviderProps): ReactElement {
 
 export function useApi(): ApiClient {
   const api = useContext(ApiContext);
-  if (!api) throw new Error('useApi must be used inside the Studio layout.');
+  if (!api) throw new Error("useApi must be used inside the Studio layout.");
   return api;
 }

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import type { FocusEvent, KeyboardEvent } from 'react';
+import { useState } from "react";
+import type { FocusEvent, KeyboardEvent } from "react";
 
 export interface Dismissable {
   open: boolean;
@@ -42,7 +42,7 @@ export function useDismiss(onEscape?: () => void): Dismissable {
         }, 0);
       },
       onKeyDown: (event) => {
-        if (event.key !== 'Escape' || !open) return;
+        if (event.key !== "Escape" || !open) return;
         event.stopPropagation();
         setOpen(false);
         onEscape?.();

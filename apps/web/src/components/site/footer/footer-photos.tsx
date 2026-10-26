@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import type { ReactElement, ReactNode } from 'react';
+import { useEffect, useRef } from "react";
+import type { ReactElement, ReactNode } from "react";
 
-import { FALL_MS, fallKeyframes, staggers } from './fall';
-import { footerPhotosCss } from './footer-photos-layout';
-import { useFooterRevealed } from './footer-stage';
+import { prefersReducedMotion } from "@/lib/motion/float";
+import { FloatEngine } from "@/lib/motion/float-engine";
 
-import { prefersReducedMotion } from '@/lib/motion/float';
-import { FloatEngine } from '@/lib/motion/float-engine';
+import { FALL_MS, fallKeyframes, staggers } from "./fall";
+import { footerPhotosCss } from "./footer-photos-layout";
+import { useFooterRevealed } from "./footer-stage";
 
 export interface FooterPhotosProps {
   /** Up to eight pictures. Decoration: they carry no description and take no focus. */
@@ -29,10 +29,10 @@ export function FooterPhotos({ pictures }: FooterPhotosProps): ReactElement {
   useEffect(() => {
     const element = field.current;
     if (!element || !revealed) return;
-    const photos = [...element.querySelectorAll<HTMLElement>('[data-footer-photo]')];
+    const photos = [...element.querySelectorAll<HTMLElement>("[data-footer-photo]")];
     const engine = new FloatEngine();
     const land = (photo: HTMLElement): void => {
-      photo.style.opacity = '1';
+      photo.style.opacity = "1";
       const inner = photo.firstElementChild;
       if (inner instanceof HTMLElement) engine.add(inner);
     };
@@ -44,14 +44,14 @@ export function FooterPhotos({ pictures }: FooterPhotosProps): ReactElement {
     }
     const delays = staggers(photos.length);
     const falls = photos.map((photo, index) => {
-      const rotation = getComputedStyle(photo).getPropertyValue('--rest') || '0deg';
+      const rotation = getComputedStyle(photo).getPropertyValue("--rest") || "0deg";
       const dropFrom = photo.offsetTop + photo.offsetHeight + 80;
       const fall = photo.animate(fallKeyframes(dropFrom, rotation), {
         duration: FALL_MS,
         delay: delays[index] ?? 0,
-        fill: 'backwards',
+        fill: "backwards",
       });
-      fall.addEventListener('finish', () => {
+      fall.addEventListener("finish", () => {
         land(photo);
       });
       return fall;

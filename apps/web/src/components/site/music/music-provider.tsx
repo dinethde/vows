@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   createContext,
@@ -8,13 +8,13 @@ import {
   useRef,
   useState,
   useSyncExternalStore,
-} from 'react';
-import type { ReactElement, ReactNode } from 'react';
+} from "react";
+import type { ReactElement, ReactNode } from "react";
 
-import { readChoice, serverChoice, subscribe, writeChoice } from './music-store';
-import type { MusicChoice } from './music-store';
+import { music } from "@/config/site";
 
-import { music } from '@/config/site';
+import { readChoice, serverChoice, subscribe, writeChoice } from "./music-store";
+import type { MusicChoice } from "./music-store";
 
 export interface MusicContextValue {
   playing: boolean;
@@ -22,14 +22,14 @@ export interface MusicContextValue {
   choice: MusicChoice;
   toggle: () => void;
   /** The first-load prompt: start the song, or carry on without it. */
-  choose: (choice: 'on' | 'off') => void;
+  choose: (choice: "on" | "off") => void;
 }
 
 const MusicContext = createContext<MusicContextValue | null>(null);
 
 export function useMusic(): MusicContextValue {
   const value = use(MusicContext);
-  if (!value) throw new Error('useMusic needs a MusicProvider above it.');
+  if (!value) throw new Error("useMusic needs a MusicProvider above it.");
   return value;
 }
 
@@ -57,17 +57,17 @@ export function MusicProvider({ children }: MusicProviderProps): ReactElement {
   const toggle = useCallback(() => {
     if (playing) {
       audio.current?.pause();
-      writeChoice('off');
+      writeChoice("off");
     } else {
       play();
-      writeChoice('on');
+      writeChoice("on");
     }
   }, [playing, play]);
 
   const choose = useCallback(
-    (next: 'on' | 'off') => {
+    (next: "on" | "off") => {
       writeChoice(next);
-      if (next === 'on') play();
+      if (next === "on") play();
     },
     [play],
   );

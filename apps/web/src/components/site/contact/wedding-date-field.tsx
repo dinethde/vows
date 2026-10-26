@@ -1,14 +1,15 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import type { ReactElement } from 'react';
-import { useController } from 'react-hook-form';
-import type { Control } from 'react-hook-form';
+import { useController } from "react-hook-form";
+import type { Control } from "react-hook-form";
 
-import type { EnquiryFields } from './enquiry-form.schema';
+import { useState } from "react";
+import type { ReactElement } from "react";
 
-import { DatePicker } from '@/components/shared/date/date-picker';
-import { formatDateText, parseDateText } from '@/components/shared/date/date-text';
+import { DatePicker } from "@/components/shared/date/date-picker";
+import { formatDateText, parseDateText } from "@/components/shared/date/date-text";
+
+import type { EnquiryFields } from "./enquiry-form.schema";
 
 export interface WeddingDateFieldProps {
   control: Control<EnquiryFields>;
@@ -20,7 +21,7 @@ export interface WeddingDateFieldProps {
  * was typed, so the schema refuses it and the visitor sees why.
  */
 export function WeddingDateField({ control }: WeddingDateFieldProps): ReactElement {
-  const { field, fieldState } = useController({ control, name: 'weddingDate' });
+  const { field, fieldState } = useController({ control, name: "weddingDate" });
   const [text, setText] = useState(() => formatDateText(parseDateText(field.value)));
   const message = fieldState.error?.message;
 

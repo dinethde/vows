@@ -1,8 +1,8 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
 /** `danger` is for the uses that take something away: the confirm button turns
  * red, the icon becomes the warning triangle and the role is `alertdialog`. */
-export type ConfirmationModalTone = 'primary' | 'danger';
+export type ConfirmationModalTone = "primary" | "danger";
 
 export interface ConfirmationModalProps {
   open: boolean;

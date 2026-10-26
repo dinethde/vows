@@ -1,10 +1,10 @@
-import type { PhotoSlotProps } from './photo-slot.types';
+import type { PhotoSlotProps } from "./photo-slot.types";
 
-type Naming = Pick<PhotoSlotProps, 'state' | 'number' | 'total' | 'subject' | 'progress'>;
+type Naming = Pick<PhotoSlotProps, "state" | "number" | "total" | "subject" | "progress">;
 
 function subjectOf({ subject, number, total }: Naming): string {
   if (subject !== undefined) return subject;
-  if (number === undefined) return 'this slot';
+  if (number === undefined) return "this slot";
   return total === undefined
     ? `slot ${String(number)}`
     : `slot ${String(number)} of ${String(total)}`;
@@ -21,14 +21,14 @@ export function slotName(naming: Naming): string {
   const subject = subjectOf(naming);
 
   switch (naming.state) {
-    case 'Empty':
+    case "Empty":
       return `Add photo for ${subject}`;
-    case 'Uploading':
+    case "Uploading":
       return `Uploading photo for ${subject}, ${percent(naming.progress)}`;
-    case 'Error':
+    case "Error":
       return `Upload failed for ${subject}. Try again`;
-    case 'Uploaded':
-    case 'Update':
+    case "Uploaded":
+    case "Update":
       return `Replace photo for ${subject}`;
   }
 }

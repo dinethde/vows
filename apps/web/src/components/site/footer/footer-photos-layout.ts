@@ -65,7 +65,7 @@ function rules(frame: FooterFrame): string {
       return `.fp-${String(frame.photos.length + extra)}{display:none}`;
     },
   );
-  return [...placed, ...hidden].join('');
+  return [...placed, ...hidden].join("");
 }
 
 export function footerPhotosCss(): string {
@@ -73,5 +73,5 @@ export function footerPhotosCss(): string {
     rules(FOOTER_FRAMES.mobile),
     `@media (min-width:40rem){${rules(FOOTER_FRAMES.tablet)}}`,
     `@media (min-width:64rem){${rules(FOOTER_FRAMES.desktop)}}`,
-  ].join('');
+  ].join("");
 }

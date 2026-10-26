@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
-import type { ReactElement } from 'react';
+import { useEffect, useRef, useState } from "react";
+import type { ReactElement } from "react";
 
-import { scramble } from './scramble';
-import type { Phase } from './scramble';
+import { prefersReducedMotion } from "@/lib/motion/float";
 
-import { prefersReducedMotion } from '@/lib/motion/float';
+import { scramble } from "./scramble";
+import type { Phase } from "./scramble";
 
-const LINES = ['Wedding photography & videography', 'VOWS Weddings', 'Colombo, Sri Lanka'] as const;
-const KEY = 'vows:loaded';
+const LINES = ["Wedding photography & videography", "VOWS Weddings", "Colombo, Sri Lanka"] as const;
+const KEY = "vows:loaded";
 const IN_MS = 900;
 /** Long enough for the decode to finish; the page being ready ends it sooner than the ceiling. */
 const HOLD_MIN_MS = 1200;
@@ -18,7 +18,7 @@ const OUT_MS = 650;
 
 function seenThisVisit(): boolean {
   try {
-    return window.sessionStorage.getItem(KEY) === '1';
+    return window.sessionStorage.getItem(KEY) === "1";
   } catch {
     return false;
   }
@@ -26,7 +26,7 @@ function seenThisVisit(): boolean {
 
 function remember(): void {
   try {
-    window.sessionStorage.setItem(KEY, '1');
+    window.sessionStorage.setItem(KEY, "1");
   } catch {
     // Private mode. It simply plays again on the next page load.
   }
@@ -36,10 +36,10 @@ function phaseAt(
   elapsed: number,
   holdMs: number,
 ): { phase: Phase; progress: number; done: boolean } {
-  if (elapsed < IN_MS) return { phase: 'in', progress: elapsed / IN_MS, done: false };
-  if (elapsed < IN_MS + holdMs) return { phase: 'hold', progress: 1, done: false };
+  if (elapsed < IN_MS) return { phase: "in", progress: elapsed / IN_MS, done: false };
+  if (elapsed < IN_MS + holdMs) return { phase: "hold", progress: 1, done: false };
   const out = (elapsed - IN_MS - holdMs) / OUT_MS;
-  return { phase: 'out', progress: out, done: out >= 1 };
+  return { phase: "out", progress: out, done: out >= 1 };
 }
 
 interface Decode {
@@ -65,8 +65,8 @@ function useDecode(): Decode {
     const ready = (): void => {
       holdMs = Math.max(HOLD_MIN_MS, Math.min(HOLD_MAX_MS, performance.now() - started - IN_MS));
     };
-    if (document.readyState === 'complete') ready();
-    else window.addEventListener('load', ready, { once: true });
+    if (document.readyState === "complete") ready();
+    else window.addEventListener("load", ready, { once: true });
 
     let frame = 0;
     const tick = (now: number): void => {
@@ -75,7 +75,7 @@ function useDecode(): Decode {
         const text = LINES[index];
         if (span && text) span.textContent = still ? text : scramble(text, phase, progress);
       }
-      if (phase === 'out') setLeaving(true);
+      if (phase === "out") setLeaving(true);
       if (done) {
         remember();
         setGone(true);
@@ -86,7 +86,7 @@ function useDecode(): Decode {
     frame = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener('load', ready);
+      window.removeEventListener("load", ready);
     };
   }, []);
 
@@ -102,12 +102,12 @@ export function Loader(): ReactElement | null {
   const { gone, leaving, spans } = useDecode();
   if (gone) return null;
   const line =
-    'type-ui-caption text-secondary tablet:flex hidden items-center gap-[10px] whitespace-pre';
+    "type-ui-caption text-secondary tablet:flex hidden items-center gap-[10px] whitespace-pre";
   return (
     <div
-      className={`bg-page px-space-5 tablet:px-space-8 fixed inset-0 z-[60] flex items-center justify-between transition-opacity duration-[450ms] ${leaving ? 'opacity-0' : 'opacity-100'}`}
+      className={`bg-page px-space-5 tablet:px-space-8 fixed inset-0 z-[60] flex items-center justify-between transition-opacity duration-[450ms] ${leaving ? "opacity-0" : "opacity-100"}`}
     >
-      <p className="sr-only">{LINES.join('. ')}</p>
+      <p className="sr-only">{LINES.join(". ")}</p>
       <p aria-hidden="true" className={line}>
         <span className="rounded-pill bg-(--vows-color-orange-500) size-[8px]" />
         <span

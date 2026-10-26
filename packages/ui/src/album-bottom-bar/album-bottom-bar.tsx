@@ -1,9 +1,8 @@
-import type { ReactElement } from 'react';
+import type { ReactElement } from "react";
 
-import { albumBackdrop } from '../lib/bar';
-import { cn } from '../lib/cn';
-
-import type { AlbumBottomBarDetailProps, AlbumBottomBarProps } from './album-bottom-bar.types';
+import { albumBackdrop } from "../lib/bar";
+import { cn } from "../lib/cn";
+import type { AlbumBottomBarDetailProps, AlbumBottomBarProps } from "./album-bottom-bar.types";
 
 /* Figma `2289:7026`. The bar hugs its content and has no fixed height. A
  * phone stacks three lines, a tablet two rows, and a desktop puts all four
@@ -11,17 +10,17 @@ import type { AlbumBottomBarDetailProps, AlbumBottomBarProps } from './album-bot
  * padding 20 / 32 / 64. Only the names are required; an empty field is left
  * out and the rest close up. */
 const bar = cn(
-  'relative isolate flex w-full flex-col gap-space-3 px-space-5 py-space-3 text-primary',
-  'tablet:gap-space-4 tablet:px-space-7',
-  'desktop:flex-row desktop:items-center desktop:gap-space-9 desktop:px-space-10',
+  "relative isolate flex w-full flex-col gap-space-3 px-space-5 py-space-3 text-primary",
+  "tablet:gap-space-4 tablet:px-space-7",
+  "desktop:flex-row desktop:items-center desktop:gap-space-9 desktop:px-space-10",
 );
 
 /* On a desktop this row dissolves, so the names, the paragraph and the details
  * become three siblings of the bar and `order` can put the paragraph between. */
 const row = cn(
-  'relative flex flex-col gap-space-3',
-  'tablet:flex-row tablet:items-center tablet:justify-between',
-  'desktop:contents',
+  "relative flex flex-col gap-space-3",
+  "tablet:flex-row tablet:items-center tablet:justify-between",
+  "desktop:contents",
 );
 
 /* Each caption sits on the left edge of its value, as the redrawn bar has them. */
@@ -43,7 +42,7 @@ export function AlbumBottomBar({
   date,
   dateTime,
   labels,
-  headingLevel: Heading = 'h1',
+  headingLevel: Heading = "h1",
   className,
 }: AlbumBottomBarProps): ReactElement {
   // An empty string is as good as missing here, so these test for any text.
@@ -60,7 +59,7 @@ export function AlbumBottomBar({
             {type ? <Detail label={labels.type}>{type}</Detail> : null}
             {place ? <Detail label={labels.place}>{place}</Detail> : null}
             {date ? (
-              <Detail label={timeOfDay ? timeOfDay : (labels.date ?? 'date')}>
+              <Detail label={timeOfDay ? timeOfDay : (labels.date ?? "date")}>
                 <time dateTime={dateTime}>{date}</time>
               </Detail>
             ) : null}

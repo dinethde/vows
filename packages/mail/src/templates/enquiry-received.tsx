@@ -1,14 +1,15 @@
-import { Heading, Hr, Text } from '@react-email/components';
-import type { ReactElement } from 'react';
+import { Heading, Hr, Text } from "@react-email/components";
 
-import { Layout, styles } from './layout';
+import type { ReactElement } from "react";
+
+import { Layout, styles } from "./layout";
 
 export interface EnquiryReceivedProps {
   name: string;
   phone: string;
 }
 
-export const ENQUIRY_RECEIVED_SUBJECT = 'We have your message — Vows';
+export const ENQUIRY_RECEIVED_SUBJECT = "We have your message — Vows";
 
 /** To the couple: it arrived, what happens next, how long. Nothing else. */
 export function EnquiryReceived({ name, phone }: EnquiryReceivedProps): ReactElement {

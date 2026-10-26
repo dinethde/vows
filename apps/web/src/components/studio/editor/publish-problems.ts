@@ -1,7 +1,7 @@
-import { COVER_POSITION, GALLERY_SIZE } from '@vows/contracts';
-import type { Photo } from '@vows/contracts';
+import { COVER_POSITION, GALLERY_SIZE } from "@vows/contracts";
+import type { Photo } from "@vows/contracts";
 
-import { parseDateText } from '@/components/shared/date/date-text';
+import { parseDateText } from "@/components/shared/date/date-text";
 
 /**
  * Why an album cannot go out, keyed the way the API keys its 422:
@@ -21,13 +21,13 @@ export interface PublishInput {
 
 function slotName(position: number): string {
   return position === COVER_POSITION
-    ? 'The cover photograph'
+    ? "The cover photograph"
     : `The photograph in slot ${String(position)}`;
 }
 
 function describe(position: number): string {
   return position === COVER_POSITION
-    ? 'Describe the cover photograph.'
+    ? "Describe the cover photograph."
     : `Describe the photograph in slot ${String(position)}.`;
 }
 
@@ -37,12 +37,12 @@ function slotProblem(
   uploading: boolean,
 ): [string, string] | null {
   const key = `photos.${String(position)}`;
-  if (uploading || (photo && photo.status !== 'ready')) {
+  if (uploading || (photo && photo.status !== "ready")) {
     return [key, `${slotName(position)} has not finished uploading.`];
   }
   if (!photo) {
     return position === COVER_POSITION
-      ? ['cover', 'Add a cover photograph.']
+      ? ["cover", "Add a cover photograph."]
       : [key, `Slot ${String(position)} is empty. Add a photograph.`];
   }
   return photo.alt?.trim() ? null : [`${key}.alt`, describe(position)];
@@ -56,9 +56,9 @@ function slotProblem(
 export function findProblems({ coupleNames, shotOn, photos, uploading }: PublishInput): Problems {
   const problems: Problems = {};
   if (!coupleNames.trim()) {
-    problems.coupleNames = 'Add the couple’s names. Every album needs a title.';
+    problems.coupleNames = "Add the couple’s names. Every album needs a title.";
   }
-  if (!shotOn.trim() || parseDateText(shotOn) === null) problems.shotOn = 'Add the wedding date.';
+  if (!shotOn.trim() || parseDateText(shotOn) === null) problems.shotOn = "Add the wedding date.";
 
   const bySlot = new Map(photos.map((photo) => [photo.position, photo]));
   for (let position = COVER_POSITION; position <= GALLERY_SIZE; position += 1) {
@@ -70,14 +70,14 @@ export function findProblems({ coupleNames, shotOn, photos, uploading }: Publish
 
 /** "2 things need fixing before this album can go live." */
 export function problemSummary(count: number): string {
-  const things = count === 1 ? '1 thing needs' : `${String(count)} things need`;
+  const things = count === 1 ? "1 thing needs" : `${String(count)} things need`;
   return `${things} fixing before this album can go live.`;
 }
 
 /** The line beside the faded Publish button, which is also what it is described by. */
 export function blockedNote(count: number): string {
-  if (count === 1) return 'Publishing is blocked until this one thing is fixed.';
-  if (count === 2) return 'Publishing is blocked until both things are fixed.';
+  if (count === 1) return "Publishing is blocked until this one thing is fixed.";
+  if (count === 2) return "Publishing is blocked until both things are fixed.";
   return `Publishing is blocked until all ${String(count)} things are fixed.`;
 }
 
@@ -93,5 +93,5 @@ export function slotProblems(
 
 /** The key whose control focus should move to when a slot is the first problem. */
 export function problemKeyForSlot(position: number, alt: boolean): string {
-  return `photos.${String(position)}${alt ? '.alt' : ''}`;
+  return `photos.${String(position)}${alt ? ".alt" : ""}`;
 }

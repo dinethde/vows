@@ -1,14 +1,13 @@
-import { randomUUID } from 'node:crypto';
+import { Inject, Injectable } from "@nestjs/common";
+import type { CallHandler, ExecutionContext, NestInterceptor } from "@nestjs/common";
+import type { NextFunction, Response } from "express";
+import { randomUUID } from "node:crypto";
+import { tap } from "rxjs";
+import type { Observable } from "rxjs";
 
-import { Inject, Injectable } from '@nestjs/common';
-import type { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
-import type { NextFunction, Response } from 'express';
-import { tap } from 'rxjs';
-import type { Observable } from 'rxjs';
-
-import { LOGGER } from '../logger';
-import type { Logger } from '../logger';
-import type { VowsRequest } from '../request';
+import { LOGGER } from "../logger";
+import type { Logger } from "../logger";
+import type { VowsRequest } from "../request";
 
 /**
  * Runs before everything, guards included, so even a 401 carries a request id.
@@ -19,9 +18,9 @@ export function attachRequestId(
   response: Response,
   next: NextFunction,
 ): void {
-  const sent = request.header('x-request-id');
-  request.requestId = sent && sent.length <= 64 ? sent : `req_${randomUUID().replaceAll('-', '')}`;
-  response.setHeader('x-request-id', request.requestId);
+  const sent = request.header("x-request-id");
+  request.requestId = sent && sent.length <= 64 ? sent : `req_${randomUUID().replaceAll("-", "")}`;
+  response.setHeader("x-request-id", request.requestId);
   next();
 }
 
@@ -43,7 +42,7 @@ export class RequestLogInterceptor implements NestInterceptor {
             route,
             durationMs: Date.now() - started,
           },
-          'request',
+          "request",
         );
       }),
     );

@@ -1,16 +1,15 @@
-import type { ReactElement } from 'react';
+import type { ReactElement } from "react";
 
-import { bottomBackdrop } from '../lib/bar';
-import { cn } from '../lib/cn';
-
-import type { BottomBarProps } from './bottom-bar.types';
+import { bottomBackdrop } from "../lib/bar";
+import { cn } from "../lib/cn";
+import type { BottomBarProps } from "./bottom-bar.types";
 
 /* 102 tall on a phone, where the paragraph sits above a row holding the
  * wordmark and the year. 72 from the tablet up, with the three on one line.
  * Side padding 20 / 32 / 40. */
 const bar = cn(
-  'relative isolate grid w-full grid-cols-2 items-center gap-y-space-1 px-space-5 py-space-3 text-primary',
-  'tablet:flex tablet:justify-between tablet:gap-[10px] tablet:px-space-7 desktop:px-space-8',
+  "relative isolate grid w-full grid-cols-2 items-center gap-y-space-1 px-space-5 py-space-3 text-primary",
+  "tablet:flex tablet:justify-between tablet:gap-[10px] tablet:px-space-7 desktop:px-space-8",
 );
 
 export function BottomBar({ wordmark, intro, since, className }: BottomBarProps): ReactElement {

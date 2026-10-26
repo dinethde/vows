@@ -1,23 +1,23 @@
-import { Inject, Injectable } from '@nestjs/common';
-import type { CanActivate, ExecutionContext } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { jwtVerify } from 'jose';
-import type { JWTVerifyGetKey } from 'jose';
+import { Inject, Injectable } from "@nestjs/common";
+import type { CanActivate, ExecutionContext } from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { jwtVerify } from "jose";
+import type { JWTVerifyGetKey } from "jose";
 
-import { ENV } from '../../config/env';
-import type { Env } from '../../config/env';
-import { ROLES_KEY } from '../decorators/auth';
-import { ForbiddenError, UnauthorizedError } from '../errors/domain-error';
-import { LOGGER } from '../logger';
-import type { Logger } from '../logger';
-import type { Role, VowsRequest } from '../request';
+import { ENV } from "../../config/env";
+import type { Env } from "../../config/env";
+import { ROLES_KEY } from "../decorators/auth";
+import { ForbiddenError, UnauthorizedError } from "../errors/domain-error";
+import { LOGGER } from "../logger";
+import type { Logger } from "../logger";
+import type { Role, VowsRequest } from "../request";
 
-export const JWKS = Symbol('JWKS');
-const ROLES: readonly string[] = ['owner', 'editor'];
+export const JWKS = Symbol("JWKS");
+const ROLES: readonly string[] = ["owner", "editor"];
 
 function readRole(metadata: unknown): Role | undefined {
   const role = (metadata as { role?: unknown } | undefined)?.role;
-  return typeof role === 'string' && ROLES.includes(role) ? (role as Role) : undefined;
+  return typeof role === "string" && ROLES.includes(role) ? (role as Role) : undefined;
 }
 
 /**
@@ -46,13 +46,13 @@ export class ClerkGuard implements CanActivate {
 
     // A Clerk token is valid everywhere on the instance. Without this check a
     // token minted for another app would pass the signature and the issuer.
-    if (typeof payload.azp !== 'string' || !this.env.WEB_ORIGINS.includes(payload.azp)) {
-      this.log.warn({ requestId: request.requestId, claim: 'azp' }, 'token refused');
+    if (typeof payload.azp !== "string" || !this.env.WEB_ORIGINS.includes(payload.azp)) {
+      this.log.warn({ requestId: request.requestId, claim: "azp" }, "token refused");
       throw new UnauthorizedError();
     }
 
     const role = readRole(payload.public_metadata);
-    if (!role || typeof payload.sub !== 'string') throw new ForbiddenError();
+    if (!role || typeof payload.sub !== "string") throw new ForbiddenError();
     if (!required.includes(role)) throw new ForbiddenError();
 
     request.actor = { clerkId: payload.sub, role };
@@ -60,8 +60,8 @@ export class ClerkGuard implements CanActivate {
   }
 
   private async verify(request: VowsRequest): Promise<Record<string, unknown>> {
-    const header = request.header('authorization') ?? '';
-    const token = header.startsWith('Bearer ') ? header.slice('Bearer '.length) : '';
+    const header = request.header("authorization") ?? "";
+    const token = header.startsWith("Bearer ") ? header.slice("Bearer ".length) : "";
     if (!token) throw new UnauthorizedError();
     try {
       const { payload } = await jwtVerify(token, this.jwks, {
@@ -70,8 +70,8 @@ export class ClerkGuard implements CanActivate {
       });
       return payload;
     } catch (error) {
-      const reason = error instanceof Error ? error.name : 'unknown';
-      this.log.warn({ requestId: request.requestId, reason }, 'token refused');
+      const reason = error instanceof Error ? error.name : "unknown";
+      this.log.warn({ requestId: request.requestId, reason }, "token refused");
       throw new UnauthorizedError();
     }
   }

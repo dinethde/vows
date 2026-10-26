@@ -1,11 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 
-import { ENV } from '../../config/env';
-
-import { EnquiryController } from './enquiry.controller';
-import { EnquiryRepository } from './enquiry.repository';
-import { EnquiryService } from './enquiry.service';
-import { MAILER, mailerFrom, NotifyService } from './notify.service';
+import { ENV } from "../../config/env";
+import { EnquiryController } from "./enquiry.controller";
+import { EnquiryRepository } from "./enquiry.repository";
+import { EnquiryService } from "./enquiry.service";
+import { MAILER, NotifyService, mailerFrom } from "./notify.service";
 
 @Module({
   controllers: [EnquiryController],

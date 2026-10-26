@@ -1,6 +1,6 @@
-import type { UploadQueue } from './queue';
-import { planSlots } from './slots';
-import { refusal } from './validate';
+import type { UploadQueue } from "./queue";
+import { planSlots } from "./slots";
+import { refusal } from "./validate";
 
 export interface Drop {
   albumId: string;

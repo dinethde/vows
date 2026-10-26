@@ -1,4 +1,4 @@
-import { GALLERY_SIZE } from '@vows/contracts';
+import { GALLERY_SIZE } from "@vows/contracts";
 
 export interface SlotPlan {
   /** The slot each file goes to, in the order the files were given. */

@@ -1,18 +1,19 @@
-'use client';
+"use client";
 
-import { COVER_POSITION, GALLERY_SIZE } from '@vows/contracts';
-import { cn } from '@vows/ui';
-import type { ReactElement } from 'react';
+import { COVER_POSITION, GALLERY_SIZE } from "@vows/contracts";
+import { cn } from "@vows/ui";
 
-import { PhotoNotices } from './photo-notices';
-import { SlotCard } from './slot-card';
-import { useSlots } from './slots-context';
+import type { ReactElement } from "react";
+
+import { PhotoNotices } from "./photo-notices";
+import { SlotCard } from "./slot-card";
+import { useSlots } from "./slots-context";
 
 const POSITIONS = Array.from({ length: GALLERY_SIZE }, (_, index) => index + 1);
 
 /* Tall on a phone, where a slot is the width of the screen; near square in the
  * four-across grid of a tablet, the shape of the Figma master (89 × 86). */
-const box = 'h-[300px] tablet:h-auto tablet:aspect-[89/86]';
+const box = "h-[300px] tablet:h-auto tablet:aspect-[89/86]";
 
 /**
  * The edit-first layout, below the desktop width: every slot in a plain grid,
@@ -36,8 +37,8 @@ export function PhotoGrid(): ReactElement {
         </div>
         <p
           className={cn(
-            'type-studio-label-l shrink-0 pt-[6px]',
-            done ? 'text-status-success' : 'text-status-warning',
+            "type-studio-label-l shrink-0 pt-[6px]",
+            done ? "text-status-success" : "text-status-warning",
           )}
         >
           {`${String(photos.added)} of ${String(GALLERY_SIZE)} added`}

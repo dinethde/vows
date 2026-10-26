@@ -675,7 +675,8 @@ TypeScript strict, no exceptions. Specific house rules:
   outside React.
 - Memoise only after measuring.
 - Shared logic becomes a custom hook; markup and logic live apart.
-- Import order: third-party → react → aliases → relative.
+- Import order: third-party → react → aliases → relative, sorted by Prettier
+  (`prettier.config.cjs`); ESLint's `import/order` is off so the two never fight.
 - Keys are stable and unique across the app, never an array index.
 - Props use a named exported interface in a `.types.ts` beside the component,
   never inline in the signature.

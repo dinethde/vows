@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 /** A calendar day, `2026-03-14`. No time and no zone. */
 export const isoDate = z.string().date();

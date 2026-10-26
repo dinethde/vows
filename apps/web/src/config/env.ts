@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * The only file in the web app that reads process.env. Each name is written
@@ -13,7 +13,7 @@ const schema = z.object({
   ANALYTICS_TOKEN: z
     .string()
     .optional()
-    .transform((token) => (token === '' ? undefined : token)),
+    .transform((token) => (token === "" ? undefined : token)),
 });
 
 const parsed = schema.safeParse({
@@ -25,7 +25,7 @@ const parsed = schema.safeParse({
 });
 
 if (!parsed.success) {
-  const missing = Object.keys(parsed.error.flatten().fieldErrors).join(', ');
+  const missing = Object.keys(parsed.error.flatten().fieldErrors).join(", ");
   throw new Error(`Invalid environment. Refusing to start. Check: ${missing}`);
 }
 
@@ -34,6 +34,6 @@ export const env = parsed.data;
 /** Server only: signs nothing here, it is what the rebuild endpoint checks against. */
 export function revalidateSecret(): string {
   const secret = process.env.REVALIDATE_SECRET;
-  if (!secret || secret.length < 32) throw new Error('REVALIDATE_SECRET is missing or too short.');
+  if (!secret || secret.length < 32) throw new Error("REVALIDATE_SECRET is missing or too short.");
   return secret;
 }

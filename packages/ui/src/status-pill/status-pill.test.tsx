@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
-import { StatusPill } from './status-pill';
-import type { StatusPillState } from './status-pill.types';
+import { StatusPill } from "./status-pill";
+import type { StatusPillState } from "./status-pill.types";
 
-describe('StatusPill', () => {
-  it.each<StatusPillState>(['Published', 'Draft', 'Untouched'])(
-    'says %s in words, not only in colour',
+describe("StatusPill", () => {
+  it.each<StatusPillState>(["Published", "Draft", "Untouched"])(
+    "says %s in words, not only in colour",
     (state) => {
       render(<StatusPill state={state} />);
 
@@ -14,7 +14,7 @@ describe('StatusPill', () => {
     },
   );
 
-  it('colours each state differently', () => {
+  it("colours each state differently", () => {
     render(
       <>
         <StatusPill state="Published" />
@@ -22,7 +22,7 @@ describe('StatusPill', () => {
         <StatusPill state="Untouched" />
       </>,
     );
-    const classes = ['Published', 'Draft', 'Untouched'].map(
+    const classes = ["Published", "Draft", "Untouched"].map(
       (state) => screen.getByText(state).className,
     );
 

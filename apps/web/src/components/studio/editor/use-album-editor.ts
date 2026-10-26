@@ -1,24 +1,25 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import type { StudioAlbum } from '@vows/contracts';
-import type { BannerState, StatusPillState } from '@vows/ui';
-import { useState } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { StudioAlbum } from "@vows/contracts";
+import type { BannerState, StatusPillState } from "@vows/ui";
+import { useForm, useWatch } from "react-hook-form";
 
-import { albumFormSchema, toFormValues } from './album-form.schema';
-import type { AlbumFieldName, AlbumFormValues } from './album-form.schema';
-import { countProblems } from './editor-problems';
-import type { AlbumForm } from './editor-problems';
-import { findProblems, problemSummary } from './publish-problems';
-import type { Problems } from './publish-problems';
-import { useAlbumPhotos } from './use-album-photos';
-import type { AlbumPhotos } from './use-album-photos';
-import { useEditorActions } from './use-editor-actions';
-import type { EditorActions } from './use-editor-actions';
-import { usePhotoMutations } from './use-photo-mutations';
-import type { PhotoMutations } from './use-photo-mutations';
-import { useUnsavedWarning } from './use-unsaved-warning';
+import { useState } from "react";
 
-import { pillFor } from '@/components/studio/stage';
+import { pillFor } from "@/components/studio/stage";
+
+import { albumFormSchema, toFormValues } from "./album-form.schema";
+import type { AlbumFieldName, AlbumFormValues } from "./album-form.schema";
+import { countProblems } from "./editor-problems";
+import type { AlbumForm } from "./editor-problems";
+import { findProblems, problemSummary } from "./publish-problems";
+import type { Problems } from "./publish-problems";
+import { useAlbumPhotos } from "./use-album-photos";
+import type { AlbumPhotos } from "./use-album-photos";
+import { useEditorActions } from "./use-editor-actions";
+import type { EditorActions } from "./use-editor-actions";
+import { usePhotoMutations } from "./use-photo-mutations";
+import type { PhotoMutations } from "./use-photo-mutations";
+import { useUnsavedWarning } from "./use-unsaved-warning";
 
 export interface EditorBanner {
   state: BannerState;
@@ -44,8 +45,8 @@ export interface AlbumEditorState {
   fieldError: (name: AlbumFieldName) => string | undefined;
 }
 
-const UNSAVED = 'Unsaved changes — publish to put them on the website.';
-const SAVED = 'Saved. These changes are live on the album page.';
+const UNSAVED = "Unsaved changes — publish to put them on the website.";
+const SAVED = "Saved. These changes are live on the album page.";
 
 interface BannerInput {
   wrong: number;
@@ -56,16 +57,16 @@ interface BannerInput {
 
 /** One strip at a time, and the most urgent one wins. */
 export function chooseBanner({ wrong, failure, dirty, saved }: BannerInput): EditorBanner | null {
-  if (wrong > 0) return { state: 'Error', text: problemSummary(wrong) };
-  if (failure) return { state: 'Error', text: failure };
-  if (dirty) return { state: 'Unsaved', text: UNSAVED };
-  if (saved) return { state: 'Saved', text: SAVED };
+  if (wrong > 0) return { state: "Error", text: problemSummary(wrong) };
+  if (failure) return { state: "Error", text: failure };
+  if (dirty) return { state: "Unsaved", text: UNSAVED };
+  if (saved) return { state: "Saved", text: SAVED };
   return null;
 }
 
 /** An album with nothing in it stops being Untouched the moment something is added. */
 function pillOf(album: StudioAlbum, touched: boolean): StatusPillState {
-  return album.stage === 'untouched' && touched ? 'Draft' : pillFor(album.stage);
+  return album.stage === "untouched" && touched ? "Draft" : pillFor(album.stage);
 }
 
 function useDetailsForm(album: StudioAlbum): AlbumForm {
@@ -74,7 +75,7 @@ function useDetailsForm(album: StudioAlbum): AlbumForm {
     defaultValues: toFormValues(album),
     // Checked when the person leaves a field, then on every change, so an
     // error clears the moment the field is right.
-    mode: 'onTouched',
+    mode: "onTouched",
   });
 }
 
@@ -82,7 +83,7 @@ function useDetailsForm(album: StudioAlbum): AlbumForm {
 function useLocalProblems(form: AlbumForm, photos: AlbumPhotos): Problems {
   const [coupleNames, shotOn] = useWatch({
     control: form.control,
-    name: ['coupleNames', 'shotOn'],
+    name: ["coupleNames", "shotOn"],
   });
   return findProblems({
     coupleNames,

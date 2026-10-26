@@ -1,12 +1,13 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useEffect, useRef } from 'react';
-import type { ReactElement, ReactNode } from 'react';
+import Link from "next/link";
 
-import { showBars } from './bars-store';
-import { CanvasEngine } from './canvas-engine';
-import { homeCss } from './home-layout';
+import { useEffect, useRef } from "react";
+import type { ReactElement, ReactNode } from "react";
+
+import { showBars } from "./bars-store";
+import { CanvasEngine } from "./canvas-engine";
+import { homeCss } from "./home-layout";
 
 export interface HomeTile {
   /** Unique on the canvas: the album, and which of its photographs. */
@@ -35,7 +36,7 @@ export function HomeCanvas({ tiles }: HomeCanvasProps): ReactElement {
     if (!element) return;
     const engine = new CanvasEngine(
       element,
-      [...element.querySelectorAll<HTMLElement>('[data-tile]')],
+      [...element.querySelectorAll<HTMLElement>("[data-tile]")],
       showBars,
     );
     return () => {

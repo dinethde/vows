@@ -1,15 +1,15 @@
-import { useQuery } from '@tanstack/react-query';
-import { COVER_POSITION, GALLERY_SIZE } from '@vows/contracts';
-import type { Photo, StudioAlbum } from '@vows/contracts';
+import { useQuery } from "@tanstack/react-query";
+import { COVER_POSITION, GALLERY_SIZE } from "@vows/contracts";
+import type { Photo, StudioAlbum } from "@vows/contracts";
 
-import { needsPolling, slotView } from './slot-view';
-import type { SlotView } from './slot-view';
+import { PHOTO_POLL_MS, studioKeys } from "@/components/studio/query-keys";
+import { useApi } from "@/components/studio/shell/api-context";
+import { useAlbumUploads, useUploadQueue } from "@/components/studio/shell/upload-context";
+import { placeFiles } from "@/lib/upload/place";
+import type { Rejection } from "@/lib/upload/queue";
 
-import { PHOTO_POLL_MS, studioKeys } from '@/components/studio/query-keys';
-import { useApi } from '@/components/studio/shell/api-context';
-import { useAlbumUploads, useUploadQueue } from '@/components/studio/shell/upload-context';
-import { placeFiles } from '@/lib/upload/place';
-import type { Rejection } from '@/lib/upload/queue';
+import { needsPolling, slotView } from "./slot-view";
+import type { SlotView } from "./slot-view";
 
 export interface AlbumPhotos {
   photos: Photo[];
@@ -56,14 +56,14 @@ export function useAlbumPhotos(album: StudioAlbum): AlbumPhotos {
     views.set(position, slotView(bySlot.get(position), sending.get(position)));
   }
   const uploading = new Set(
-    uploads.items.filter((item) => item.status !== 'error').map((item) => item.position),
+    uploads.items.filter((item) => item.status !== "error").map((item) => item.position),
   );
 
   return {
     photos,
     views,
     uploading,
-    added: photos.filter((photo) => photo.position !== COVER_POSITION && photo.status === 'ready')
+    added: photos.filter((photo) => photo.position !== COVER_POSITION && photo.status === "ready")
       .length,
     rejections: uploads.rejections,
     stale: query.isError,

@@ -1,11 +1,12 @@
-import type { StudioAlbumSummary } from '@vows/contracts';
-import { Button } from '@vows/ui';
-import Link from 'next/link';
-import type { ReactElement } from 'react';
+import type { StudioAlbumSummary } from "@vows/contracts";
+import { Button } from "@vows/ui";
+import Link from "next/link";
 
-import { AlbumCard } from './album-card';
-import { FILTER_LABELS } from './view';
-import type { DashboardView } from './view';
+import type { ReactElement } from "react";
+
+import { AlbumCard } from "./album-card";
+import { FILTER_LABELS } from "./view";
+import type { DashboardView } from "./view";
 
 export interface AlbumGridProps {
   albums: StudioAlbumSummary[];

@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useSyncExternalStore } from 'react';
-import type { ReactElement } from 'react';
+import { useSyncExternalStore } from "react";
+import type { ReactElement } from "react";
 
 export interface EmailLinkProps {
   user: string;

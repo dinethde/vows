@@ -1,4 +1,4 @@
-import type { ErrorCode } from '@vows/contracts';
+import type { ErrorCode } from "@vows/contracts";
 
 export interface ApiErrorDetails {
   status: number;
@@ -17,7 +17,7 @@ export class ApiError extends Error {
 
   constructor(details: ApiErrorDetails) {
     super(details.message);
-    this.name = 'ApiError';
+    this.name = "ApiError";
     this.status = details.status;
     this.code = details.code;
     this.requestId = details.requestId;

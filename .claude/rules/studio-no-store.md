@@ -1,5 +1,5 @@
 ---
-paths: ['apps/web/src/app/studio/**']
+paths: ["apps/web/src/app/studio/**"]
 ---
 
 Every authenticated fetch carries `cache: 'no-store'`. Without it Next can cache

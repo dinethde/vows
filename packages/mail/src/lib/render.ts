@@ -1,5 +1,6 @@
-import { render } from '@react-email/components';
-import type { ReactElement } from 'react';
+import { render } from "@react-email/components";
+
+import type { ReactElement } from "react";
 
 export interface RenderedMail {
   subject: string;

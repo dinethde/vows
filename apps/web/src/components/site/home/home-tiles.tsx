@@ -1,10 +1,10 @@
-import type { Album, Photo as PhotoData } from '@vows/contracts';
+import type { Album, Photo as PhotoData } from "@vows/contracts";
 
-import type { HomeTile } from './home-canvas';
-import { MAX_TILES } from './home-layout';
+import { Photo } from "@/components/site/photo/photo";
+import { publicApi } from "@/lib/api";
 
-import { Photo } from '@/components/site/photo/photo';
-import { publicApi } from '@/lib/api';
+import type { HomeTile } from "./home-canvas";
+import { MAX_TILES } from "./home-layout";
 
 function tile(album: Album, photo: PhotoData): HomeTile {
   return {

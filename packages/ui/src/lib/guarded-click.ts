@@ -1,4 +1,4 @@
-import type { MouseEvent, MouseEventHandler } from 'react';
+import type { MouseEvent, MouseEventHandler } from "react";
 
 function swallow(event: MouseEvent): void {
   event.preventDefault();

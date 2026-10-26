@@ -1,17 +1,18 @@
-'use client';
+"use client";
 
-import { cn, Field } from '@vows/ui';
-import { createContext, useContext, useId, useState } from 'react';
-import type { ReactElement } from 'react';
-import { Controller } from 'react-hook-form';
+import { Field, cn } from "@vows/ui";
+import { Controller } from "react-hook-form";
 
-import type { AlbumFieldName } from './album-form.schema';
-import { ADDRESS_PREFIX, HELP, SLUG_WARNING, TEXT_FIELDS } from './details-copy';
-import type { TextFieldSpec } from './details-copy';
-import type { HelpedProps, TextFieldProps } from './details-form.types';
-import { useEditor } from './editor-context';
+import { createContext, useContext, useId, useState } from "react";
+import type { ReactElement } from "react";
 
-import { DatePicker } from '@/components/shared/date/date-picker';
+import { DatePicker } from "@/components/shared/date/date-picker";
+
+import type { AlbumFieldName } from "./album-form.schema";
+import { ADDRESS_PREFIX, HELP, SLUG_WARNING, TEXT_FIELDS } from "./details-copy";
+import type { TextFieldSpec } from "./details-copy";
+import type { HelpedProps, TextFieldProps } from "./details-form.types";
+import { useEditor } from "./editor-context";
 
 interface FieldHelp {
   error: string | undefined;
@@ -57,7 +58,7 @@ function useFieldHelp(name: AlbumFieldName, text: string): FieldHelp {
  * component, 7 below it as the error line is, and the field is described by it. */
 function Helped({ help, helpId, children, className }: HelpedProps): ReactElement {
   return (
-    <div className={cn('flex flex-col gap-[7px]', className)}>
+    <div className={cn("flex flex-col gap-[7px]", className)}>
       {children}
       {help ? (
         <p id={helpId} className="type-studio-caption text-placeholder">
@@ -90,7 +91,7 @@ function TextField({ spec }: TextFieldProps): ReactElement {
 
 function DateField(): ReactElement {
   const { form } = useEditor();
-  const state = useFieldHelp('shotOn', HELP.shotOn);
+  const state = useFieldHelp("shotOn", HELP.shotOn);
   return (
     <Helped help={state.help} helpId={state.helpId}>
       <Controller
@@ -117,9 +118,9 @@ function DateField(): ReactElement {
 
 function SlugField(): ReactElement {
   const { form, album } = useEditor();
-  const moved = form.formState.dirtyFields.slug === true && album.stage === 'published';
-  const state = useFieldHelp('slug', moved ? SLUG_WARNING : HELP.slug);
-  const registered = form.register('slug');
+  const moved = form.formState.dirtyFields.slug === true && album.stage === "published";
+  const state = useFieldHelp("slug", moved ? SLUG_WARNING : HELP.slug);
+  const registered = form.register("slug");
   return (
     <Helped help={state.help} helpId={state.helpId}>
       <Field
@@ -140,8 +141,8 @@ function SlugField(): ReactElement {
 
 function StoryField(): ReactElement {
   const { form } = useEditor();
-  const state = useFieldHelp('story', HELP.story);
-  const registered = form.register('story');
+  const state = useFieldHelp("story", HELP.story);
+  const registered = form.register("story");
   return (
     <Helped
       help={state.help}

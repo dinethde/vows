@@ -1,6 +1,6 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from "react";
 
-import type { SlotView } from './slot-view';
+import type { SlotView } from "./slot-view";
 
 export interface SlotCardProps {
   /** 0 is the cover. 1 to 18 are the gallery, in the order visitors see them. */

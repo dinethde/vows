@@ -1,6 +1,6 @@
-import type { ErrorCode } from '@vows/contracts';
+import type { ErrorCode } from "@vows/contracts";
 
-import { ApiError } from '@/lib/api';
+import { ApiError } from "@/lib/api";
 
 export interface ActionFailure {
   ok: false;
@@ -19,7 +19,7 @@ export interface ActionSuccess<Data> {
 /** What every Studio server action answers with: the new state, or why not. */
 export type ActionResult<Data> = ActionSuccess<Data> | ActionFailure;
 
-const UNREACHABLE = 'We could not reach the Studio’s server. Check the connection and try again.';
+const UNREACHABLE = "We could not reach the Studio’s server. Check the connection and try again.";
 
 /** A refusal becomes a value, because an error thrown in an action loses its fields. */
 export async function toResult<Data>(work: Promise<Data>): Promise<ActionResult<Data>> {
@@ -30,10 +30,10 @@ export async function toResult<Data>(work: Promise<Data>): Promise<ActionResult<
       return { ok: false, code: error.code, message: error.message, fields: error.fields };
     }
     console.error(error);
-    return { ok: false, code: 'internal_error', message: UNREACHABLE, fields: {} };
+    return { ok: false, code: "internal_error", message: UNREACHABLE, fields: {} };
   }
 }
 
 export function invalid(message: string): ActionFailure {
-  return { ok: false, code: 'bad_request', message, fields: {} };
+  return { ok: false, code: "bad_request", message, fields: {} };
 }

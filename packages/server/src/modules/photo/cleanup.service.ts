@@ -1,10 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { album, photo, photoDerivative } from '@vows/db';
-import type { Db } from '@vows/db';
-import { and, eq, inArray, isNotNull, lt, or, sql } from 'drizzle-orm';
+import { Inject, Injectable } from "@nestjs/common";
+import { album, photo, photoDerivative } from "@vows/db";
+import type { Db } from "@vows/db";
+import { and, eq, inArray, isNotNull, lt, or, sql } from "drizzle-orm";
 
-import { DB } from '../../database/database.module';
-import { StorageService } from '../../storage/storage.service';
+import { DB } from "../../database/database.module";
+import { StorageService } from "../../storage/storage.service";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 /** A photograph someone could have been looking at gets thirty days. */

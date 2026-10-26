@@ -1,8 +1,8 @@
-import { eq } from 'drizzle-orm';
+import { eq } from "drizzle-orm";
 
-import { createDatabase } from '../client';
-import type { Db } from '../client';
-import { album, setting } from '../schema';
+import { createDatabase } from "../client";
+import type { Db } from "../client";
+import { album, setting } from "../schema";
 
 /**
  * Sample words for a development branch. The 22 album rows already exist, put
@@ -12,40 +12,40 @@ import { album, setting } from '../schema';
  */
 // A setting with no value has no row, so the Instagram handle is left out.
 const SETTINGS: Record<string, string> = {
-  notifyEmail: 'info.vowslk@gmail.com',
-  phone: '+94 71 657 0999',
-  trackName: 'First Light',
+  notifyEmail: "info.vowslk@gmail.com",
+  phone: "+94 71 657 0999",
+  trackName: "First Light",
 };
 
 const ALBUMS = [
   {
-    id: 'alb_000001',
-    slug: 'benali-yasiru',
-    title: 'Benali & Yasiru',
-    coupleNames: 'Benali & Yasiru',
-    shotOn: '2022-01-02',
-    timeOfDay: 'Morning',
-    weddingType: 'Modern Classic',
-    location: 'Hilton Residencies',
+    id: "alb_000001",
+    slug: "benali-yasiru",
+    title: "Benali & Yasiru",
+    coupleNames: "Benali & Yasiru",
+    shotOn: "2022-01-02",
+    timeOfDay: "Morning",
+    weddingType: "Modern Classic",
+    location: "Hilton Residencies",
     story:
-      'An intimate celebration beneath the late-summer sky, filled with quiet glances, joyful tears, and the people they love most.',
+      "An intimate celebration beneath the late-summer sky, filled with quiet glances, joyful tears, and the people they love most.",
   },
   {
-    id: 'alb_000002',
-    slug: 'amaya-ruwan',
-    title: 'Amaya & Ruwan',
-    coupleNames: 'Amaya & Ruwan',
-    shotOn: '2025-01-17',
-    timeOfDay: 'Evening',
-    weddingType: 'Beach',
-    location: 'Mount Lavinia Hotel',
-    story: 'A sunset ceremony on the sand, and a dance floor that did not empty until two.',
+    id: "alb_000002",
+    slug: "amaya-ruwan",
+    title: "Amaya & Ruwan",
+    coupleNames: "Amaya & Ruwan",
+    shotOn: "2025-01-17",
+    timeOfDay: "Evening",
+    weddingType: "Beach",
+    location: "Mount Lavinia Hotel",
+    story: "A sunset ceremony on the sand, and a dance floor that did not empty until two.",
   },
   {
-    id: 'alb_000003',
-    slug: 'album-03',
-    title: 'Dilini & Kasun',
-    coupleNames: 'Dilini & Kasun',
+    id: "alb_000003",
+    slug: "album-03",
+    title: "Dilini & Kasun",
+    coupleNames: "Dilini & Kasun",
     shotOn: null,
     timeOfDay: null,
     weddingType: null,
@@ -68,7 +68,7 @@ async function seed(db: Db): Promise<void> {
 
 async function main(): Promise<void> {
   const url = process.env.DATABASE_URL;
-  if (!url) throw new Error('DATABASE_URL is not set');
+  if (!url) throw new Error("DATABASE_URL is not set");
 
   const { db, pool } = createDatabase(url, 1);
   try {

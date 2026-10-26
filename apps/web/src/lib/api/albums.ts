@@ -1,13 +1,13 @@
-import { album, albumSummary, page, studioAlbum, studioAlbumList } from '@vows/contracts';
+import { album, albumSummary, page, studioAlbum, studioAlbumList } from "@vows/contracts";
 import type {
   Album,
   AlbumSummary,
   StudioAlbum,
   StudioAlbumList,
   UpdateAlbum,
-} from '@vows/contracts';
+} from "@vows/contracts";
 
-import type { Transport } from './transport';
+import type { Transport } from "./transport";
 
 const albumList = page(albumSummary);
 
@@ -24,29 +24,29 @@ export interface AlbumsApi {
 export function albumsApi(request: Transport): AlbumsApi {
   return {
     list: async () =>
-      (await request('/v1/albums', { schema: albumList, next: { tags: ['albums'] } })).data,
+      (await request("/v1/albums", { schema: albumList, next: { tags: ["albums"] } })).data,
     get: (slug) =>
       request(`/v1/albums/${encodeURIComponent(slug)}`, {
         schema: album,
-        next: { tags: ['albums', `album:${slug}`] },
+        next: { tags: ["albums", `album:${slug}`] },
       }),
-    listForStudio: () => request('/v1/studio/albums', { schema: studioAlbumList }),
+    listForStudio: () => request("/v1/studio/albums", { schema: studioAlbumList }),
     getForStudio: (id) =>
       request(`/v1/studio/albums/${encodeURIComponent(id)}`, { schema: studioAlbum }),
     update: (id, body) =>
       request(`/v1/studio/albums/${encodeURIComponent(id)}`, {
-        method: 'PATCH',
+        method: "PATCH",
         body,
         schema: studioAlbum,
       }),
     publish: (id) =>
       request(`/v1/studio/albums/${encodeURIComponent(id)}/publish`, {
-        method: 'POST',
+        method: "POST",
         schema: studioAlbum,
       }),
     unpublish: (id) =>
       request(`/v1/studio/albums/${encodeURIComponent(id)}/unpublish`, {
-        method: 'POST',
+        method: "POST",
         schema: studioAlbum,
       }),
   };

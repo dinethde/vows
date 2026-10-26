@@ -1,20 +1,20 @@
-import { isoFromParts } from './calendar';
+import { fullDate } from "@/lib/format/dates";
 
-import { fullDate } from '@/lib/format/dates';
+import { isoFromParts } from "./calendar";
 
 const MONTHS = [
-  'january',
-  'february',
-  'march',
-  'april',
-  'may',
-  'june',
-  'july',
-  'august',
-  'september',
-  'october',
-  'november',
-  'december',
+  "january",
+  "february",
+  "march",
+  "april",
+  "may",
+  "june",
+  "july",
+  "august",
+  "september",
+  "october",
+  "november",
+  "december",
 ];
 
 function monthNumber(word: string): number | null {
@@ -38,7 +38,7 @@ export function parseDateText(text: string): string | null {
   const value = text.trim();
   const written = WRITTEN.exec(value);
   if (written) {
-    const month = monthNumber(written[2] ?? '');
+    const month = monthNumber(written[2] ?? "");
     return month === null ? null : isoFromParts(Number(written[3]), month, Number(written[1]));
   }
   const iso = ISO.exec(value);
@@ -50,5 +50,5 @@ export function parseDateText(text: string): string | null {
 
 /** Always in full, "17 January 2025". Never in numbers, which read two ways. */
 export function formatDateText(iso: string | null): string {
-  return iso ? fullDate(iso) : '';
+  return iso ? fullDate(iso) : "";
 }

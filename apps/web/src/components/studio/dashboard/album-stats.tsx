@@ -1,21 +1,22 @@
-import type { StudioAlbumList } from '@vows/contracts';
-import type { ReactElement } from 'react';
+import type { StudioAlbumList } from "@vows/contracts";
+
+import type { ReactElement } from "react";
 
 export interface AlbumStatsProps {
   /** From the API, worked out by the same query as the cards. Never counted here. */
-  counts: StudioAlbumList['counts'];
+  counts: StudioAlbumList["counts"];
 }
 
-const STATS: { key: keyof StudioAlbumList['counts']; label: string; caption: string }[] = [
-  { key: 'all', label: 'All', caption: 'Stories in your collection' },
-  { key: 'published', label: 'Published', caption: 'Visible on your website' },
-  { key: 'draft', label: 'Draft', caption: 'Waiting to be completed' },
-  { key: 'untouched', label: 'Untouched', caption: 'Waiting to be added' },
+const STATS: { key: keyof StudioAlbumList["counts"]; label: string; caption: string }[] = [
+  { key: "all", label: "All", caption: "Stories in your collection" },
+  { key: "published", label: "Published", caption: "Visible on your website" },
+  { key: "draft", label: "Draft", caption: "Waiting to be completed" },
+  { key: "untouched", label: "Untouched", caption: "Waiting to be added" },
 ];
 
 /** Figma writes every count with two digits: 01, 03, 18. */
 function twoDigits(count: number): string {
-  return String(count).padStart(2, '0');
+  return String(count).padStart(2, "0");
 }
 
 /**

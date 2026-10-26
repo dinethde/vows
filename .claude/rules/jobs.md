@@ -1,5 +1,5 @@
 ---
-paths: ['apps/worker/**']
+paths: ["apps/worker/**"]
 ---
 
 A job handler must be safe to run twice, must read current state from the

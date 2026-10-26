@@ -1,11 +1,12 @@
-'use client';
+"use client";
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createContext, useContext, useState } from 'react';
-import type { ReactElement, ReactNode } from 'react';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { ApiProvider } from './api-context';
-import { UploadProvider } from './upload-context';
+import { createContext, useContext, useState } from "react";
+import type { ReactElement, ReactNode } from "react";
+
+import { ApiProvider } from "./api-context";
+import { UploadProvider } from "./upload-context";
 
 const PortalContext = createContext<HTMLElement | null>(null);
 

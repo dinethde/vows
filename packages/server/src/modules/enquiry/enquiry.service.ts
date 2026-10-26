@@ -1,29 +1,27 @@
-import { createHash } from 'node:crypto';
-
-import { Inject, Injectable } from '@nestjs/common';
-import { MIN_FORM_OPEN_MS } from '@vows/contracts';
+import { Inject, Injectable } from "@nestjs/common";
+import { MIN_FORM_OPEN_MS } from "@vows/contracts";
 import type {
   CreateEnquiry,
   Enquiry,
   EnquiryList,
   EnquiryListQuery,
   EnquiryStatus,
-} from '@vows/contracts';
-import type { Db } from '@vows/db';
+} from "@vows/contracts";
+import type { Db } from "@vows/db";
+import { createHash } from "node:crypto";
 
-import { decodeCursor, encodeCursor } from '../../common/cursor';
-import { NotFoundError, RateLimitedError, ValidationError } from '../../common/errors/domain-error';
-import type { Actor } from '../../common/request';
-import { ENV } from '../../config/env';
-import type { Env } from '../../config/env';
-import { DB } from '../../database/database.module';
-import { QueueService } from '../../queue/queue.service';
-import { AuditService } from '../audit/audit.service';
-
-import { EnquiryRepository } from './enquiry.repository';
-import type { EnquiryRow } from './enquiry.repository';
-import { visitorAddress } from './visitor';
-import type { VisitorClaim } from './visitor';
+import { decodeCursor, encodeCursor } from "../../common/cursor";
+import { NotFoundError, RateLimitedError, ValidationError } from "../../common/errors/domain-error";
+import type { Actor } from "../../common/request";
+import { ENV } from "../../config/env";
+import type { Env } from "../../config/env";
+import { DB } from "../../database/database.module";
+import { QueueService } from "../../queue/queue.service";
+import { AuditService } from "../audit/audit.service";
+import { EnquiryRepository } from "./enquiry.repository";
+import type { EnquiryRow } from "./enquiry.repository";
+import { visitorAddress } from "./visitor";
+import type { VisitorClaim } from "./visitor";
 
 export const ENQUIRIES_PER_HOUR = 5;
 const HOUR_MS = 60 * 60 * 1000;
@@ -70,13 +68,13 @@ export class EnquiryService {
     // the future; that is a clock, not a bot, so only a short real gap counts.
     const elapsed = now.getTime() - input.openedAt;
     if (elapsed >= 0 && elapsed < MIN_FORM_OPEN_MS) {
-      throw new ValidationError({ form: 'That was sent too quickly. Please try again.' });
+      throw new ValidationError({ form: "That was sent too quickly. Please try again." });
     }
-    const ipHash = createHash('sha256')
+    const ipHash = createHash("sha256")
       .update(
         `${this.env.IP_HASH_SALT}:${visitorAddress(sender.visitor, this.env.REVALIDATE_SECRET)}`,
       )
-      .digest('hex');
+      .digest("hex");
     const notes = input.notes ?? null;
 
     return this.db.transaction(async (tx) => {
@@ -96,7 +94,7 @@ export class EnquiryService {
       );
       if (recent >= ENQUIRIES_PER_HOUR) {
         throw new RateLimitedError(
-          'We have had several messages from this connection in the last hour. Please email info.vowslk@gmail.com instead.',
+          "We have had several messages from this connection in the last hour. Please email info.vowslk@gmail.com instead.",
           HOUR_MS / 1000,
         );
       }
@@ -111,7 +109,7 @@ export class EnquiryService {
         ipHash,
         userAgent: sender.userAgent?.slice(0, USER_AGENT_MAX) ?? null,
       });
-      await this.queue.send(tx, 'enquiry.notify', {
+      await this.queue.send(tx, "enquiry.notify", {
         enquiryId: row.id,
         requestId: sender.requestId,
       });
@@ -133,10 +131,10 @@ export class EnquiryService {
   async setStatus(id: string, status: EnquiryStatus, actor: Actor): Promise<Enquiry> {
     return this.db.transaction(async (tx) => {
       const row = await this.repo.setStatus(tx, id, status);
-      if (!row) throw new NotFoundError('enquiry_not_found', 'We could not find that enquiry.');
+      if (!row) throw new NotFoundError("enquiry_not_found", "We could not find that enquiry.");
       await this.audit.record(tx, actor, {
-        action: 'enquiry.status',
-        entity: 'enquiry',
+        action: "enquiry.status",
+        entity: "enquiry",
         entityId: id,
         diff: { status },
       });

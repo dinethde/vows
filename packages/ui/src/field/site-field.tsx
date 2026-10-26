@@ -1,9 +1,9 @@
-import { clsx } from 'clsx';
-import { useId, type ReactElement } from 'react';
+import { clsx } from "clsx";
 
-import { cn } from '../lib/cn';
+import { type ReactElement, useId } from "react";
 
-import type { SiteFieldProps } from './field.types';
+import { cn } from "../lib/cn";
+import type { SiteFieldProps } from "./field.types";
 
 /* Figma binds the mark to the primitive color/red/700. There is no semantic
  * token for it yet, so this points at the primitive rather than a near miss. */
@@ -32,16 +32,16 @@ export function SiteField({
   className,
   id,
   required,
-  'aria-describedby': describedBy,
+  "aria-describedby": describedBy,
   ...rest
 }: SiteFieldProps): ReactElement {
   const generatedId = useId();
   const inputId = id ?? generatedId;
   const messageId = `${inputId}-message`;
-  const invalid = error !== undefined && error !== '';
+  const invalid = error !== undefined && error !== "";
 
   return (
-    <div className={cn('group flex w-full flex-col gap-[10px]', className)}>
+    <div className={cn("group flex w-full flex-col gap-[10px]", className)}>
       <div className="gap-space-2 flex items-center">
         <input
           {...rest}
@@ -58,10 +58,10 @@ export function SiteField({
       <div
         aria-hidden="true"
         className={cn(
-          'text-primary h-[1.5px] border-t',
+          "text-primary h-[1.5px] border-t",
           invalid
-            ? 'border-status-error border-t-[1.5px]'
-            : 'border-hairline group-focus-within:border-t-[1.5px] group-focus-within:border-current',
+            ? "border-status-error border-t-[1.5px]"
+            : "border-hairline group-focus-within:border-t-[1.5px] group-focus-within:border-current",
         )}
       />
       {invalid ? (

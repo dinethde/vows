@@ -1,10 +1,10 @@
 /* The order matters: Tailwind and the token map first, then the tokens. */
-@import '@vows/config/tailwind/vows.css';
-@import '@vows/tokens/css/primitives.css';
-@import '@vows/tokens/css/semantic.css';
+@import "@vows/config/tailwind/vows.css";
+@import "@vows/tokens/css/primitives.css";
+@import "@vows/tokens/css/semantic.css";
 
 /* Registers @vows/ui's source with Tailwind and brings its one animation. */
-@import '@vows/ui/styles.css';
+@import "@vows/ui/styles.css";
 
 @layer base {
   html {
@@ -46,7 +46,7 @@
       translate 600ms ease-out;
   }
 
-  .js [data-reveal][data-revealed='true'] {
+  .js [data-reveal][data-revealed="true"] {
     opacity: 1;
     translate: 0 0;
   }

@@ -1,6 +1,6 @@
-import type { Request } from 'express';
+import type { Request } from "express";
 
-export type Role = 'owner' | 'editor';
+export type Role = "owner" | "editor";
 
 export interface Actor {
   clerkId: string;

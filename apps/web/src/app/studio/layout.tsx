@@ -1,19 +1,20 @@
-import { ClerkProvider } from '@clerk/nextjs';
-import type { Metadata } from 'next';
-import { headers } from 'next/headers';
-import type { ReactElement, ReactNode } from 'react';
+import { ClerkProvider } from "@clerk/nextjs";
+import type { Metadata } from "next";
+import { headers } from "next/headers";
 
-import { StudioProviders } from '@/components/studio/shell/studio-providers';
-import { TopBar } from '@/components/studio/shell/top-bar';
-import { GATE_HEADER, SIGN_IN_PATH, STUDIO_HOME } from '@/lib/auth/constants';
+import type { ReactElement, ReactNode } from "react";
+
+import { StudioProviders } from "@/components/studio/shell/studio-providers";
+import { TopBar } from "@/components/studio/shell/top-bar";
+import { GATE_HEADER, SIGN_IN_PATH, STUDIO_HOME } from "@/lib/auth/constants";
 
 export const metadata: Metadata = {
-  title: { default: 'Studio', template: '%s · Vows Studio' },
+  title: { default: "Studio", template: "%s · Vows Studio" },
   robots: { index: false, follow: false },
 };
 
 /** Never built ahead of time, never cached: every Studio page belongs to one person. */
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export interface StudioLayoutProps {
   children: ReactNode;
@@ -26,7 +27,7 @@ export interface StudioLayoutProps {
  * child is the sign-in screen or the 403 screen, which stand on their own.
  */
 export default async function StudioLayout({ children }: StudioLayoutProps): Promise<ReactElement> {
-  const open = (await headers()).get(GATE_HEADER) === 'open';
+  const open = (await headers()).get(GATE_HEADER) === "open";
 
   return (
     <ClerkProvider

@@ -34,6 +34,6 @@ export interface AlbumBottomBarProps {
   labels: AlbumBottomBarLabels;
   /** The element for the couple's names. On the album page they are the
    * page's `h1`, which is the default. */
-  headingLevel?: 'h1' | 'h2' | 'p';
+  headingLevel?: "h1" | "h2" | "p";
   className?: string;
 }

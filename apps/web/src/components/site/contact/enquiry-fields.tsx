@@ -1,11 +1,12 @@
-'use client';
+"use client";
 
-import { Field } from '@vows/ui';
-import type { ReactElement } from 'react';
-import type { UseFormReturn } from 'react-hook-form';
+import { Field } from "@vows/ui";
+import type { UseFormReturn } from "react-hook-form";
 
-import type { EnquiryFields } from './enquiry-form.schema';
-import { WeddingDateField } from './wedding-date-field';
+import type { ReactElement } from "react";
+
+import type { EnquiryFields } from "./enquiry-form.schema";
+import { WeddingDateField } from "./wedding-date-field";
 
 export interface EnquiryFieldsProps {
   form: UseFormReturn<EnquiryFields>;
@@ -30,8 +31,8 @@ export function EnquiryFieldList({ form }: EnquiryFieldsProps): ReactElement {
         // Safe here: this field only ever exists inside an open dialog.
         autoFocus
         autoComplete="name"
-        {...register('name')}
-        {...error('name')}
+        {...register("name")}
+        {...error("name")}
       />
       <Field
         surface="site"
@@ -40,8 +41,8 @@ export function EnquiryFieldList({ form }: EnquiryFieldsProps): ReactElement {
         type="email"
         inputMode="email"
         autoComplete="email"
-        {...register('email')}
-        {...error('email')}
+        {...register("email")}
+        {...error("email")}
       />
       <Field
         surface="site"
@@ -50,22 +51,22 @@ export function EnquiryFieldList({ form }: EnquiryFieldsProps): ReactElement {
         type="tel"
         inputMode="tel"
         autoComplete="tel"
-        {...register('phone')}
-        {...error('phone')}
+        {...register("phone")}
+        {...error("phone")}
       />
       <WeddingDateField control={form.control} />
       <Field
         surface="site"
         label="Wedding place"
-        {...register('weddingPlace')}
-        {...error('weddingPlace')}
+        {...register("weddingPlace")}
+        {...error("weddingPlace")}
       />
       <Field
         surface="site"
         label="Additional notes"
         maxLength={2000}
-        {...register('notes')}
-        {...error('notes')}
+        {...register("notes")}
+        {...error("notes")}
       />
     </div>
   );

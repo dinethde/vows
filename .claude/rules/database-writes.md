@@ -1,5 +1,5 @@
 ---
-paths: ['apps/**', 'packages/db/**']
+paths: ["apps/**", "packages/db/**"]
 ---
 
 Only `apps/api` writes to the database. `apps/web` has no database driver and no

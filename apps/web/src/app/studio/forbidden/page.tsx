@@ -1,13 +1,14 @@
-import type { Metadata } from 'next';
-import type { ReactElement } from 'react';
+import type { Metadata } from "next";
 
-import { PrivateScreen } from '@/components/site/error-pages';
-import { MusicProvider } from '@/components/site/music/music-provider';
-import { SiteNavbar } from '@/components/site/site-navbar';
-import { RETURN_TO_PARAM } from '@/lib/auth/constants';
-import { signInHref } from '@/lib/auth/gate';
+import type { ReactElement } from "react";
 
-export const metadata: Metadata = { title: '403' };
+import { PrivateScreen } from "@/components/site/error-pages";
+import { MusicProvider } from "@/components/site/music/music-provider";
+import { SiteNavbar } from "@/components/site/site-navbar";
+import { RETURN_TO_PARAM } from "@/lib/auth/constants";
+import { signInHref } from "@/lib/auth/gate";
+
+export const metadata: Metadata = { title: "403" };
 
 export interface ForbiddenPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -29,7 +30,7 @@ export default async function ForbiddenPage({
         <SiteNavbar />
       </header>
       <main id="main" className="flex min-h-svh flex-col justify-center pt-[56px]">
-        <PrivateScreen signInHref={signInHref(typeof from === 'string' ? from : undefined)} />
+        <PrivateScreen signInHref={signInHref(typeof from === "string" ? from : undefined)} />
       </main>
     </MusicProvider>
   );

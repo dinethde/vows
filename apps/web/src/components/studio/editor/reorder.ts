@@ -1,5 +1,5 @@
-import { COVER_POSITION, GALLERY_SIZE } from '@vows/contracts';
-import type { Photo } from '@vows/contracts';
+import { COVER_POSITION, GALLERY_SIZE } from "@vows/contracts";
+import type { Photo } from "@vows/contracts";
 
 export interface Reordered {
   /** The album's photographs with the two positions exchanged. */

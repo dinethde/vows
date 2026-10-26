@@ -1,16 +1,15 @@
-import type { ReactElement } from 'react';
+import type { ReactElement } from "react";
 
-import { cn } from '../lib/cn';
-import { focusRing } from '../lib/focus';
-
-import type { PlayerProps } from './player.types';
+import { cn } from "../lib/cn";
+import { focusRing } from "../lib/focus";
+import type { PlayerProps } from "./player.types";
 
 /* The 28 circle is the control. `before` gives a finger 44 to land on. Hover
  * fills the circle; nothing moves. */
 const control = cn(
-  'relative flex size-[28px] shrink-0 cursor-pointer items-center justify-center rounded-pill',
-  'border border-hairline text-primary transition-colors motion-reduce:transition-none',
-  'before:absolute before:-inset-space-2 hover:bg-surface',
+  "relative flex size-[28px] shrink-0 cursor-pointer items-center justify-center rounded-pill",
+  "border border-hairline text-primary transition-colors motion-reduce:transition-none",
+  "before:absolute before:-inset-space-2 hover:bg-surface",
   focusRing,
 );
 
@@ -18,10 +17,10 @@ const control = cn(
  * from its own height, out of step with its neighbours. Reduced motion holds
  * them still at those heights, because they are the only sign the song is on. */
 const bars = [
-  { id: 'a', playing: 'h-space-2 [animation-delay:-150ms]' },
-  { id: 'b', playing: 'h-[14px] [animation-delay:-600ms]' },
-  { id: 'c', playing: 'h-[6px] [animation-delay:-300ms]' },
-  { id: 'd', playing: 'h-[11px] [animation-delay:-750ms]' },
+  { id: "a", playing: "h-space-2 [animation-delay:-150ms]" },
+  { id: "b", playing: "h-[14px] [animation-delay:-600ms]" },
+  { id: "c", playing: "h-[6px] [animation-delay:-300ms]" },
+  { id: "d", playing: "h-[11px] [animation-delay:-750ms]" },
 ] as const;
 
 function Glyph({ playing }: { playing: boolean }): ReactElement {
@@ -42,11 +41,11 @@ function Glyph({ playing }: { playing: boolean }): ReactElement {
  * stopping the music has to be possible everywhere. */
 export function Player({ playing, onToggle, track, className }: PlayerProps): ReactElement {
   return (
-    <div className={cn('flex items-center gap-[10px]', className)}>
+    <div className={cn("flex items-center gap-[10px]", className)}>
       <button
         type="button"
         className={control}
-        aria-label={playing ? 'Pause the music' : 'Play the music'}
+        aria-label={playing ? "Pause the music" : "Play the music"}
         onClick={onToggle}
       >
         <Glyph playing={playing} />
@@ -54,16 +53,16 @@ export function Player({ playing, onToggle, track, className }: PlayerProps): Re
       <span
         aria-hidden="true"
         className={cn(
-          'h-space-4 tablet:flex hidden w-[23px] items-center gap-[3px]',
-          playing ? 'text-primary' : 'text-muted',
+          "h-space-4 tablet:flex hidden w-[23px] items-center gap-[3px]",
+          playing ? "text-primary" : "text-muted",
         )}
       >
         {bars.map((bar) => (
           <span
             key={bar.id}
             className={cn(
-              'w-[2px] rounded-[1px] bg-current',
-              playing ? cn(bar.playing, 'animate-meter motion-reduce:animate-none') : 'h-space-1',
+              "w-[2px] rounded-[1px] bg-current",
+              playing ? cn(bar.playing, "animate-meter motion-reduce:animate-none") : "h-space-1",
             )}
           />
         ))}

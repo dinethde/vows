@@ -2,15 +2,15 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   HttpCode,
   Ip,
   Param,
   Patch,
   Post,
   Query,
-  Headers,
-} from '@nestjs/common';
-import { createEnquiry, enquiryId, enquiryListQuery, updateEnquiry } from '@vows/contracts';
+} from "@nestjs/common";
+import { createEnquiry, enquiryId, enquiryListQuery, updateEnquiry } from "@vows/contracts";
 import type {
   CreateEnquiry,
   Enquiry,
@@ -18,21 +18,20 @@ import type {
   EnquiryList,
   EnquiryListQuery,
   UpdateEnquiry,
-} from '@vows/contracts';
+} from "@vows/contracts";
 
-import { CurrentActor, RequestId, Roles } from '../../common/decorators/auth';
-import { ZodPipe } from '../../common/pipes/zod.pipe';
-import type { Actor } from '../../common/request';
+import { CurrentActor, RequestId, Roles } from "../../common/decorators/auth";
+import { ZodPipe } from "../../common/pipes/zod.pipe";
+import type { Actor } from "../../common/request";
+import { EnquiryService } from "./enquiry.service";
+import { VISITOR_IP_HEADER, VISITOR_SIGNATURE_HEADER } from "./visitor";
 
-import { EnquiryService } from './enquiry.service';
-import { VISITOR_IP_HEADER, VISITOR_SIGNATURE_HEADER } from './visitor';
-
-@Controller('v1')
+@Controller("v1")
 export class EnquiryController {
   constructor(private readonly enquiries: EnquiryService) {}
 
   /** 202: the enquiry is stored and the email is on its way, not sent. */
-  @Post('enquiries')
+  @Post("enquiries")
   @HttpCode(202)
   create(
     @Body(new ZodPipe(createEnquiry)) body: CreateEnquiry,
@@ -47,21 +46,21 @@ export class EnquiryController {
     };
     return this.enquiries.create(body, {
       visitor,
-      userAgent: headers['user-agent'],
+      userAgent: headers["user-agent"],
       requestId,
     });
   }
 
-  @Get('studio/enquiries')
-  @Roles('owner', 'editor')
+  @Get("studio/enquiries")
+  @Roles("owner", "editor")
   list(@Query(new ZodPipe(enquiryListQuery)) query: EnquiryListQuery): Promise<EnquiryList> {
     return this.enquiries.list(query);
   }
 
-  @Patch('studio/enquiries/:id')
-  @Roles('owner', 'editor')
+  @Patch("studio/enquiries/:id")
+  @Roles("owner", "editor")
   setStatus(
-    @Param('id', new ZodPipe(enquiryId)) id: string,
+    @Param("id", new ZodPipe(enquiryId)) id: string,
     @Body(new ZodPipe(updateEnquiry)) body: UpdateEnquiry,
     @CurrentActor() actor: Actor,
   ): Promise<Enquiry> {

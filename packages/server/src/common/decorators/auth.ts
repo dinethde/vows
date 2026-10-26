@@ -1,9 +1,9 @@
-import { createParamDecorator, SetMetadata } from '@nestjs/common';
-import type { CustomDecorator, ExecutionContext } from '@nestjs/common';
+import { SetMetadata, createParamDecorator } from "@nestjs/common";
+import type { CustomDecorator, ExecutionContext } from "@nestjs/common";
 
-import type { Actor, Role, VowsRequest } from '../request';
+import type { Actor, Role, VowsRequest } from "../request";
 
-export const ROLES_KEY = 'vows:roles';
+export const ROLES_KEY = "vows:roles";
 
 /** The roles that may call a route. A route with none is public. */
 export const Roles = (...roles: Role[]): CustomDecorator => SetMetadata(ROLES_KEY, roles);
@@ -12,7 +12,7 @@ export const Roles = (...roles: Role[]): CustomDecorator => SetMetadata(ROLES_KE
 export const CurrentActor = createParamDecorator(
   (_data: unknown, context: ExecutionContext): Actor => {
     const actor = context.switchToHttp().getRequest<VowsRequest>().actor;
-    if (!actor) throw new Error('CurrentActor used on a route with no @Roles.');
+    if (!actor) throw new Error("CurrentActor used on a route with no @Roles.");
     return actor;
   },
 );
