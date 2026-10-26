@@ -1,18 +1,16 @@
 "use client";
 
-import { Button, cn, StatusPill } from '@vows/ui';
-import Link from 'next/link';
-import type { ReactElement } from 'react';
-import { useWatch } from 'react-hook-form';
+import Link from "next/link";
+import { useWatch } from "react-hook-form";
 
-import { useEditor } from './editor-context';
-import type { BackToAlbumsProps } from './editor-head.types';
+import type { ReactElement } from "react";
 
 import { Button, StatusPill, cn } from "@vows/ui";
 import { focusRing } from "@/components/shared/focus";
 import { env } from "@/config/env";
 
 import { useEditor } from "./editor-context";
+import type { BackToAlbumsProps } from "./editor-head.types";
 
 /**
  * The way back to the dashboard, with the search and filter it was left with.
@@ -26,7 +24,7 @@ export function BackToAlbums({ className }: BackToAlbumsProps): ReactElement {
     <Link
       href={backHref}
       className={cn(
-        'type-studio-body-s text-placeholder relative before:absolute before:-inset-x-2 before:-inset-y-[14px]',
+        "type-studio-body-s text-placeholder relative before:absolute before:-inset-x-2 before:-inset-y-[14px]",
         focusRing,
         className,
       )}
@@ -49,8 +47,8 @@ export function BackToAlbums({ className }: BackToAlbumsProps): ReactElement {
  */
 export function EditorHead(): ReactElement {
   const { album, form, pill } = useEditor();
-  const names = useWatch({ control: form.control, name: 'coupleNames' });
-  const live = album.stage === 'published';
+  const names = useWatch({ control: form.control, name: "coupleNames" });
+  const live = album.stage === "published";
 
   return (
     <div className="flex flex-col items-start gap-[6px]">

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 export interface Debounce {
   /** Runs `work` once `delay` has passed with nothing newer scheduled. */

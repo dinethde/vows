@@ -1,15 +1,11 @@
 import type { Metadata } from "next";
 
-import { AlbumGrid } from '@/components/studio/dashboard/album-grid';
-import { AlbumStats } from '@/components/studio/dashboard/album-stats';
-import { CollectionToolbar } from '@/components/studio/dashboard/collection-toolbar';
-import { DashboardNavigationProvider } from '@/components/studio/dashboard/dashboard-navigation';
-import { parseView, visibleAlbums } from '@/components/studio/dashboard/view';
-import { serverApi } from '@/lib/auth/server';
+import type { ReactElement } from "react";
 
 import { AlbumGrid } from "@/components/studio/dashboard/album-grid";
 import { AlbumStats } from "@/components/studio/dashboard/album-stats";
 import { CollectionToolbar } from "@/components/studio/dashboard/collection-toolbar";
+import { DashboardNavigationProvider } from "@/components/studio/dashboard/dashboard-navigation";
 import { parseView, visibleAlbums } from "@/components/studio/dashboard/view";
 import { serverApi } from "@/lib/auth/server";
 

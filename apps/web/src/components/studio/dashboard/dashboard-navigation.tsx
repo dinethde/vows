@@ -1,16 +1,17 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { createContext, useContext, useTransition } from 'react';
-import type { ReactElement } from 'react';
+import { useRouter } from "next/navigation";
 
-import type { DashboardNavigationProps } from './dashboard-navigation.types';
+import { createContext, useContext, useTransition } from "react";
+import type { ReactElement } from "react";
+
+import type { DashboardNavigationProps } from "./dashboard-navigation.types";
 
 export interface DashboardNavigation {
   /** A search, a filter or a refresh is on its way. Only the grid shows it. */
   pending: boolean;
   /** Shows another view of the dashboard. `replace` keeps typing out of the history. */
-  show: (href: string, history: 'push' | 'replace') => void;
+  show: (href: string, history: "push" | "replace") => void;
   /** Reads the dashboard again, after an album has changed. */
   refresh: () => void;
 }
@@ -49,6 +50,6 @@ export function DashboardNavigationProvider({ children }: DashboardNavigationPro
 
 export function useDashboardNavigation(): DashboardNavigation {
   const value = useContext(DashboardNavigationContext);
-  if (!value) throw new Error('useDashboardNavigation must be used inside the dashboard.');
+  if (!value) throw new Error("useDashboardNavigation must be used inside the dashboard.");
   return value;
 }

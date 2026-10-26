@@ -11,7 +11,7 @@ import type { EditorRequests, EditorRequestsInput } from "./use-editor-requests"
 export type EditorModal = Exclude<ConfirmationKind, "deletePhoto">;
 
 /** The two buttons that do their work without a confirmation in front of them. */
-export type EditorButton = 'publish' | 'draft';
+export type EditorButton = "publish" | "draft";
 
 export interface EditorActionsInput extends EditorRequestsInput {
   /** Everything the browser can already see is stopping the album going out. */
@@ -95,7 +95,7 @@ export function useEditorActions(input: EditorActionsInput): EditorActions {
       setModal(null);
     },
     pressPublish: () => {
-      run('publish', async () => {
+      run("publish", async () => {
         input.onReveal({});
         if (!(await fieldsValid(form))) return;
         const first = firstProblem(form, problems);
@@ -104,7 +104,7 @@ export function useEditorActions(input: EditorActionsInput): EditorActions {
       });
     },
     pressDraft: () => {
-      run('draft', async () => {
+      run("draft", async () => {
         if (!(await fieldsValid(form))) return;
         if (album.stage === "published") open("moveToDraft");
         else await requests.saveDraft();

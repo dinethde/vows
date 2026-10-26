@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import type { ReactElement } from 'react';
+import Link from "next/link";
 
-import { useDashboardNavigation } from './dashboard-navigation';
-import type { FilterLinkProps } from './filter-link.types';
+import type { ReactElement } from "react";
+
+import { useDashboardNavigation } from "./dashboard-navigation";
+import type { FilterLinkProps } from "./filter-link.types";
 
 /**
  * A real link to the filtered dashboard. A plain click goes through the
@@ -17,13 +18,13 @@ export function FilterLink({ href, current, className, children }: FilterLinkPro
   return (
     <Link
       href={href}
-      aria-current={current ? 'true' : undefined}
+      aria-current={current ? "true" : undefined}
       className={className}
       onClick={(event) => {
         if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
           return;
         event.preventDefault();
-        show(href, 'push');
+        show(href, "push");
       }}
     >
       {children}

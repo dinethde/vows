@@ -2,17 +2,19 @@
 
 import type { ReactElement } from "react";
 
-import { AlbumPreview } from './album-preview';
-import { DetailsForm } from './details-form';
-import { EditorActions } from './editor-actions';
-import { EditorProvider } from './editor-context';
-import { BackToAlbums, EditorHead } from './editor-head';
-import { EditorModals } from './editor-modals';
-import { FormBanner } from './form-banner';
-import { PhotoGrid } from './photo-grid';
-import { SlotsProvider } from './slots-context';
-import { useAlbumEditor } from './use-album-editor';
-import { useIsDesktop } from './use-is-desktop';
+import type { StudioAlbum } from "@vows/contracts";
+
+import { AlbumPreview } from "./album-preview";
+import { DetailsForm } from "./details-form";
+import { EditorActions } from "./editor-actions";
+import { EditorProvider } from "./editor-context";
+import { BackToAlbums, EditorHead } from "./editor-head";
+import { EditorModals } from "./editor-modals";
+import { FormBanner } from "./form-banner";
+import { PhotoGrid } from "./photo-grid";
+import { SlotsProvider } from "./slots-context";
+import { useAlbumEditor } from "./use-album-editor";
+import { useIsDesktop } from "./use-is-desktop";
 
 export interface AlbumEditorProps {
   /** The album as the server page read it. The editor keeps it up to date from there. */

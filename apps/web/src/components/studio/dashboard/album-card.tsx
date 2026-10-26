@@ -26,8 +26,8 @@ const CARD_WIDTH = 640;
  * "needs filling" looks the same everywhere. Here the slot is only a picture
  * of itself: the whole card is the link, and it is the link that is read out.
  */
-function CardImage({ album }: Pick<AlbumCardProps, 'album'>): ReactElement {
-  if (!album.cover || album.cover.status !== 'ready') {
+function CardImage({ album }: Pick<AlbumCardProps, "album">): ReactElement {
+  if (!album.cover || album.cover.status !== "ready") {
     return (
       <div inert className="pointer-events-none absolute inset-0">
         <PhotoSlot state="Empty" />
@@ -81,7 +81,7 @@ export function AlbumCard({ album, search }: AlbumCardProps): ReactElement {
           <h3 className="type-studio-title text-heading">
             <Link
               href={`${albumPath(album.id)}${search}`}
-              className={cn('after:absolute after:inset-0', focusRing)}
+              className={cn("after:absolute after:inset-0", focusRing)}
               aria-label={`${title}, ${pill}. Edit this album`}
             >
               {title}

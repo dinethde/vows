@@ -19,7 +19,7 @@
   /* The Studio's bar stays on screen: the account chip's 46, the bar's
    * padding and its hairline. Anything focused is scrolled clear of it, and
    * on the dashboard clear of the toolbar held under it as well. */
-  html:has([data-surface='studio']) {
+  html:has([data-surface="studio"]) {
     --studio-bar: calc(46px + 2 * var(--vows-space-3) + 1px);
     scroll-padding-top: var(--studio-bar);
   }

@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
-import { cn } from '@vows/ui';
-import type { ReactElement } from 'react';
+import type { ReactElement } from "react";
 
-import { useDashboardNavigation } from './dashboard-navigation';
-import type { GridBusyProps } from './grid-busy.types';
+import { cn } from "@vows/ui";
+
+import { useDashboardNavigation } from "./dashboard-navigation";
+import type { GridBusyProps } from "./grid-busy.types";
 
 /**
  * The cards, faded while a search, a filter or a refresh is on its way, with
@@ -31,7 +32,7 @@ export function GridBusy({ children }: GridBusyProps): ReactElement {
           </p>
         ) : null}
       </div>
-      <div className={cn('flex flex-col transition-opacity', pending && 'opacity-50')}>
+      <div className={cn("flex flex-col transition-opacity", pending && "opacity-50")}>
         {children}
       </div>
     </div>

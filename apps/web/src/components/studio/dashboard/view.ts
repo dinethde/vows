@@ -30,7 +30,7 @@ export function cleanQuery(text: string): string {
 
 export function parseView(params: Params): DashboardView {
   const stage = first(params.stage);
-  const filter = FILTERS.find((known) => known === stage) ?? 'all';
+  const filter = FILTERS.find((known) => known === stage) ?? "all";
   return { filter, query: cleanQuery(first(params.q)) };
 }
 
@@ -40,15 +40,15 @@ export const MIN_TYPED_QUERY = 3;
 /** The search that typing into the box applies, before anyone presses Enter. */
 export function typedQuery(text: string): string {
   const query = cleanQuery(text);
-  return query.length >= MIN_TYPED_QUERY ? query : '';
+  return query.length >= MIN_TYPED_QUERY ? query : "";
 }
 
 /** The view as a query string, `?q=…&stage=…`, or empty for the plain dashboard. */
 export function viewSearch({ filter, query }: DashboardView): string {
   const params = new URLSearchParams();
-  if (query) params.set('q', query);
-  if (filter !== 'all') params.set('stage', filter);
-  return params.size > 0 ? `?${params.toString()}` : '';
+  if (query) params.set("q", query);
+  if (filter !== "all") params.set("stage", filter);
+  return params.size > 0 ? `?${params.toString()}` : "";
 }
 
 /** `all` and an empty search are left out, so the plain dashboard has a plain address. */

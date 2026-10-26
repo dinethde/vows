@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useRef, useState } from 'react';
-import type { ReactElement } from 'react';
+import { useRef, useState } from "react";
+import type { ReactElement } from "react";
 
-import { useDashboardNavigation } from './dashboard-navigation';
-import type { SearchInputProps } from './search-input.types';
-import { useDebounce } from './use-debounce';
-import { cleanQuery, dashboardHref, typedQuery } from './view';
+import { useDashboardNavigation } from "./dashboard-navigation";
+import type { SearchInputProps } from "./search-input.types";
+import { useDebounce } from "./use-debounce";
+import { cleanQuery, dashboardHref, typedQuery } from "./view";
 
 /** How long typing has to pause before the grid is searched. */
 const TYPING_PAUSE_MS = 300;
@@ -36,7 +36,7 @@ export function SearchInput({ view }: SearchInputProps): ReactElement {
   const search = (query: string): void => {
     debounce.cancel();
     if (query === view.query) return;
-    show(dashboardHref({ ...view, query }), entered.current ? 'replace' : 'push');
+    show(dashboardHref({ ...view, query }), entered.current ? "replace" : "push");
     entered.current = true;
   };
 
@@ -63,7 +63,7 @@ export function SearchInput({ view }: SearchInputProps): ReactElement {
           });
       }}
       onKeyDown={(event) => {
-        if (event.key !== 'Enter' || event.nativeEvent.isComposing) return;
+        if (event.key !== "Enter" || event.nativeEvent.isComposing) return;
         event.preventDefault();
         search(cleanQuery(text));
         entered.current = false;

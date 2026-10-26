@@ -1,15 +1,15 @@
 "use client";
 
-import { cn, ConfirmationModal } from '@vows/ui';
-import { useState, useTransition } from 'react';
-import type { ReactElement } from 'react';
+import { useState, useTransition } from "react";
+import type { ReactElement } from "react";
 
-import { useDashboardNavigation } from './dashboard-navigation';
+import { ConfirmationModal, cn } from "@vows/ui";
+import { unpublishAlbum } from "@/app/studio/actions";
+import { focusRing } from "@/components/shared/focus";
+import { CONFIRMATIONS } from "@/components/studio/confirmations";
+import { usePortalContainer } from "@/components/studio/shell/studio-providers";
 
-import { unpublishAlbum } from '@/app/studio/actions';
-import { focusRing } from '@/components/shared/focus';
-import { CONFIRMATIONS } from '@/components/studio/confirmations';
-import { usePortalContainer } from '@/components/studio/shell/studio-providers';
+import { useDashboardNavigation } from "./dashboard-navigation";
 
 export interface MoveToDraftProps {
   albumId: string;

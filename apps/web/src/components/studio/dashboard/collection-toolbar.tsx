@@ -1,10 +1,11 @@
-import { cn } from '@vows/ui';
-import type { ReactElement } from 'react';
+import type { ReactElement } from "react";
 
-import { FilterLink } from './filter-link';
-import { SearchInput } from './search-input';
-import { dashboardHref, FILTER_LABELS, FILTERS } from './view';
-import type { DashboardView } from './view';
+import { cn } from "@vows/ui";
+
+import { FilterLink } from "./filter-link";
+import { SearchInput } from "./search-input";
+import { FILTERS, FILTER_LABELS, dashboardHref } from "./view";
+import type { DashboardView } from "./view";
 
 export interface CollectionToolbarProps {
   view: DashboardView;
@@ -60,7 +61,7 @@ function Search({ view }: ToolbarPartProps): ReactElement {
     >
       <SearchGlyph />
       <SearchInput view={view} />
-      {view.filter === 'all' ? null : <input type="hidden" name="stage" value={view.filter} />}
+      {view.filter === "all" ? null : <input type="hidden" name="stage" value={view.filter} />}
     </form>
   );
 }
@@ -85,7 +86,7 @@ function Filters({ view }: ToolbarPartProps): ReactElement {
             key={filter}
             href={dashboardHref({ ...view, filter })}
             current={current}
-            className={cn(chip, current ? 'bg-surface text-primary shadow-card' : 'text-muted')}
+            className={cn(chip, current ? "bg-surface text-primary shadow-card" : "text-muted")}
           >
             {FILTER_LABELS[filter]}
           </FilterLink>
