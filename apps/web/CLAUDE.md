@@ -14,7 +14,8 @@ Next.js 15, App Router. Server Components by default.
   built on top of them. Never rebuild a button.
 - Spacing is flex and `gap`. No margins between siblings.
 - 250 lines per component file.
-- Import order: third-party → react → aliases → relative.
+- Import order: third-party → react → aliases (`@vows/*` first, then `@/*`) →
+  relative. Prettier sorts them; run `pnpm format`.
 - Props use a named exported interface in a `.types.ts`, never inline.
 - No raw colour values. Tokens only.
 
