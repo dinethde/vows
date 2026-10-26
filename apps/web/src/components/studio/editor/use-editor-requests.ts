@@ -1,16 +1,16 @@
-import { useQueryClient } from '@tanstack/react-query';
-import type { StudioAlbum, UpdateAlbum } from '@vows/contracts';
-import { useRouter } from 'next/navigation';
+import { publishAlbum, saveAlbum, unpublishAlbum } from "@/app/studio/actions";
+import { useQueryClient } from "@tanstack/react-query";
+import type { StudioAlbum, UpdateAlbum } from "@vows/contracts";
+import { useRouter } from "next/navigation";
 
-import { toChanges, toFormValues } from './album-form.schema';
-import { applyFieldErrors, focusProblem } from './editor-problems';
-import type { AlbumForm } from './editor-problems';
-import type { Problems } from './publish-problems';
+import type { ActionFailure } from "@/components/studio/action-result";
+import { studioKeys } from "@/components/studio/query-keys";
+import { STUDIO_HOME } from "@/lib/auth/constants";
 
-import { publishAlbum, saveAlbum, unpublishAlbum } from '@/app/studio/actions';
-import type { ActionFailure } from '@/components/studio/action-result';
-import { studioKeys } from '@/components/studio/query-keys';
-import { STUDIO_HOME } from '@/lib/auth/constants';
+import { toChanges, toFormValues } from "./album-form.schema";
+import { applyFieldErrors, focusProblem } from "./editor-problems";
+import type { AlbumForm } from "./editor-problems";
+import type { Problems } from "./publish-problems";
 
 export interface EditorRequestsInput {
   album: StudioAlbum;
@@ -60,7 +60,7 @@ export function useEditorRequests(input: EditorRequestsInput): EditorRequests {
 
   /** A refusal goes beside its field or slot if it names one, and into the banner if not. */
   const refused = (failure: ActionFailure): false => {
-    if (failure.code === 'album_not_publishable') {
+    if (failure.code === "album_not_publishable") {
       input.onReveal(failure.fields);
       void queryClient.invalidateQueries({ queryKey: studioKeys.photos(album.id) });
       const first = Object.keys(failure.fields)[0];

@@ -1,5 +1,5 @@
-import { FRAMES } from './gallery-layout';
-import type { Frame } from './gallery-layout';
+import { FRAMES } from "./gallery-layout";
+import type { Frame } from "./gallery-layout";
 
 /** A frame length as a share of the window's width, so it scales with it. */
 function vw(px: number, frame: Frame): string {
@@ -24,7 +24,7 @@ function frameRules(frame: Frame): string {
       );
     }
   }
-  return rules.join('');
+  return rules.join("");
 }
 
 /**
@@ -36,7 +36,7 @@ export function galleryCss(): string {
     frameRules(FRAMES.mobile),
     `@media (min-width:40rem){${frameRules(FRAMES.tablet)}}`,
     `@media (min-width:64rem){${frameRules(FRAMES.desktop)}}`,
-  ].join('');
+  ].join("");
 }
 
 /** The width a photograph is drawn at, per breakpoint, for the browser's file choice. */

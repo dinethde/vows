@@ -1,11 +1,10 @@
-import type { ReactElement } from 'react';
+import type { ReactElement } from "react";
 
-import { CtaButton } from '../cta-button';
-import { cn } from '../lib/cn';
-import { focusRing } from '../lib/focus';
-
-import { ErrorCard } from './error-card';
-import type { ErrorScreenProps } from './error-screen.types';
+import { CtaButton } from "../cta-button";
+import { cn } from "../lib/cn";
+import { focusRing } from "../lib/focus";
+import { ErrorCard } from "./error-card";
+import type { ErrorScreenProps } from "./error-screen.types";
 
 /* The numeral and the card share one box so the card stays on the middle
  * digit. A phone uses the 200 numeral and the 72 card; the desktop the 460
@@ -15,18 +14,18 @@ import type { ErrorScreenProps } from './error-screen.types';
  * box: on a phone it is wider than the box, and text that overflows a centred
  * box starts at the left edge, not the middle. */
 const zone = cn(
-  'relative h-[179px] w-full max-w-[342px]',
-  'tablet:h-[381px] tablet:w-[860px] tablet:max-w-none tablet:[zoom:0.65] desktop:[zoom:1]',
+  "relative h-[179px] w-full max-w-[342px]",
+  "tablet:h-[381px] tablet:w-[860px] tablet:max-w-none tablet:[zoom:0.65] desktop:[zoom:1]",
 );
 
 const numeral = cn(
-  'absolute left-1/2 top-[18px] w-max -translate-x-1/2 pl-space-3 whitespace-nowrap text-ghost tablet:pl-[28px]',
-  'type-display-error-code-mobile tablet:top-[15px] tablet:type-display-error-code',
+  "absolute left-1/2 top-[18px] w-max -translate-x-1/2 pl-space-3 whitespace-nowrap text-ghost tablet:pl-[28px]",
+  "type-display-error-code-mobile tablet:top-[15px] tablet:type-display-error-code",
 );
 
 const homeLinkClasses = cn(
-  'relative type-body-xs text-secondary underline tablet:type-body-s',
-  'before:absolute before:-inset-x-space-2 before:-inset-y-[13px]',
+  "relative type-body-xs text-secondary underline tablet:type-body-s",
+  "before:absolute before:-inset-x-space-2 before:-inset-y-[13px]",
   focusRing,
 );
 
@@ -39,14 +38,14 @@ export function ErrorScreen({
   caption,
   primaryAction,
   homeLink,
-  linkComponent: Link = 'a',
+  linkComponent: Link = "a",
   className,
 }: ErrorScreenProps): ReactElement {
   return (
     <div
       className={cn(
-        'gap-space-6 px-space-6 flex w-full flex-1 flex-col items-center justify-center pb-[28px]',
-        'tablet:gap-space-8 tablet:pb-space-9 desktop:px-space-10',
+        "gap-space-6 px-space-6 flex w-full flex-1 flex-col items-center justify-center pb-[28px]",
+        "tablet:gap-space-8 tablet:pb-space-9 desktop:px-space-10",
         className,
       )}
     >
@@ -73,7 +72,7 @@ export function ErrorScreen({
         </div>
       </div>
       <div className="gap-space-5 tablet:flex-row tablet:gap-[28px] flex flex-col items-center">
-        {'href' in primaryAction ? (
+        {"href" in primaryAction ? (
           <CtaButton asChild>
             <Link href={primaryAction.href}>{primaryAction.label}</Link>
           </CtaButton>

@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-import { isoDate, isoDateTime } from '../shared/dates';
-import { enquiryId } from '../shared/ids';
-import { page } from '../shared/pagination';
+import { isoDate, isoDateTime } from "../shared/dates";
+import { enquiryId } from "../shared/ids";
+import { page } from "../shared/pagination";
 
-export const ENQUIRY_STATUSES = ['new', 'read', 'replied', 'archived'] as const;
+export const ENQUIRY_STATUSES = ["new", "read", "replied", "archived"] as const;
 export const enquiryStatus = z.enum(ENQUIRY_STATUSES);
 export type EnquiryStatus = z.infer<typeof enquiryStatus>;
 
@@ -17,13 +17,13 @@ export const NOTES_MAX = 2000;
  * the form shows under a field, so they say what to do.
  */
 export const createEnquiry = z.object({
-  name: z.string().trim().min(2, 'Tell us your name.').max(120),
+  name: z.string().trim().min(2, "Tell us your name.").max(120),
   email: z
     .string()
     .trim()
     .max(254)
-    .email('That does not look like a full email address. Try name@example.com'),
-  phone: z.string().trim().min(5, 'We need a number in case we cannot reach you by email.').max(32),
+    .email("That does not look like a full email address. Try name@example.com"),
+  phone: z.string().trim().min(5, "We need a number in case we cannot reach you by email.").max(32),
   weddingDate: isoDate,
   weddingPlace: z.string().trim().max(160).optional(),
   notes: z.string().trim().max(NOTES_MAX).optional(),

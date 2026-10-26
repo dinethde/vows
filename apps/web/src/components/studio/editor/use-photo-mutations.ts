@@ -1,12 +1,13 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { Photo } from '@vows/contracts';
-import { useState } from 'react';
+import { describePhoto, removePhoto, reorderAlbumPhotos } from "@/app/studio/actions";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { Photo } from "@vows/contracts";
 
-import { movePhoto } from './reorder';
-import type { Reordered } from './reorder';
+import { useState } from "react";
 
-import { describePhoto, removePhoto, reorderAlbumPhotos } from '@/app/studio/actions';
-import { studioKeys } from '@/components/studio/query-keys';
+import { studioKeys } from "@/components/studio/query-keys";
+
+import { movePhoto } from "./reorder";
+import type { Reordered } from "./reorder";
 
 export interface Removal {
   /** The photograph the modal is asking about, or null when it is closed. */
@@ -32,7 +33,7 @@ interface MoveContext {
   previous: Photo[] | undefined;
 }
 
-function useMove(albumId: string): Pick<PhotoMutations, 'move' | 'moveError'> {
+function useMove(albumId: string): Pick<PhotoMutations, "move" | "moveError"> {
   const queryClient = useQueryClient();
   const key = studioKeys.photos(albumId);
   const [moveError, setMoveError] = useState<string | null>(null);
@@ -110,7 +111,7 @@ export function usePhotoMutations(albumId: string): PhotoMutations {
   const key = studioKeys.photos(albumId);
 
   const describe = async (photo: Photo, alt: string): Promise<string | null> => {
-    const result = await describePhoto(photo.id, alt.trim() === '' ? null : alt.trim());
+    const result = await describePhoto(photo.id, alt.trim() === "" ? null : alt.trim());
     if (!result.ok) return result.fields.alt ?? result.message;
     queryClient.setQueryData<Photo[]>(key, (now) =>
       (now ?? []).map((entry) =>

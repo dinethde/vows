@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 /**
  * Asks before the tab is closed or reloaded while there are edits that have
@@ -11,9 +11,9 @@ export function useUnsavedWarning(unsaved: boolean): void {
     const warn = (event: BeforeUnloadEvent): void => {
       event.preventDefault();
     };
-    window.addEventListener('beforeunload', warn);
+    window.addEventListener("beforeunload", warn);
     return () => {
-      window.removeEventListener('beforeunload', warn);
+      window.removeEventListener("beforeunload", warn);
     };
   }, [unsaved]);
 }

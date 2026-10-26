@@ -36,7 +36,7 @@ jobs:
         env:
           # Migrations need the direct connection, as staging's do.
           DATABASE_URL: ${{ secrets.DATABASE_URL_UNPOOLED }}
-          ALLOW_PROD_MIGRATE: 'yes'
+          ALLOW_PROD_MIGRATE: "yes"
         run: pnpm db:migrate
 
   api:

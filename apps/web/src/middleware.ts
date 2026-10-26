@@ -1,11 +1,11 @@
-import { clerkMiddleware } from '@clerk/nextjs/server';
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { clerkMiddleware } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-import { FORBIDDEN_PATH, GATE_HEADER, RETURN_TO_PARAM } from '@/lib/auth/constants';
-import type { GateVerdict } from '@/lib/auth/constants';
-import { decide } from '@/lib/auth/gate';
-import { roleFromClaims } from '@/lib/auth/role';
+import { FORBIDDEN_PATH, GATE_HEADER, RETURN_TO_PARAM } from "@/lib/auth/constants";
+import type { GateVerdict } from "@/lib/auth/constants";
+import { decide } from "@/lib/auth/gate";
+import { roleFromClaims } from "@/lib/auth/role";
 
 function withGate(request: NextRequest, verdict: GateVerdict): Headers {
   const headers = new Headers(request.headers);
@@ -15,8 +15,8 @@ function withGate(request: NextRequest, verdict: GateVerdict): Headers {
 
 /** Nothing in the Studio is ever stored by a browser or a proxy. */
 function sealed(response: NextResponse): NextResponse {
-  response.headers.set('cache-control', 'private, no-store');
-  response.headers.set('x-robots-tag', 'noindex, nofollow');
+  response.headers.set("cache-control", "private, no-store");
+  response.headers.set("x-robots-tag", "noindex, nofollow");
   return response;
 }
 
@@ -25,11 +25,11 @@ function refuse(request: NextRequest): NextResponse {
   const target = request.nextUrl.clone();
   const asked = `${request.nextUrl.pathname}${request.nextUrl.search}`;
   target.pathname = FORBIDDEN_PATH;
-  target.search = '';
+  target.search = "";
   target.searchParams.set(RETURN_TO_PARAM, asked);
   return NextResponse.rewrite(target, {
     status: 403,
-    request: { headers: withGate(request, 'closed') },
+    request: { headers: withGate(request, "closed") },
   });
 }
 
@@ -47,12 +47,12 @@ export default clerkMiddleware(async (auth, request) => {
     role: signedIn ? roleFromClaims(session.sessionClaims) : null,
   });
 
-  if (decision === 'forbid') return sealed(refuse(request));
-  const verdict: GateVerdict = decision === 'allow' ? 'open' : 'closed';
+  if (decision === "forbid") return sealed(refuse(request));
+  const verdict: GateVerdict = decision === "allow" ? "open" : "closed";
   return sealed(NextResponse.next({ request: { headers: withGate(request, verdict) } }));
 });
 
 /** Only the Studio. The public site never passes through here, so it stays static. */
 export const config = {
-  matcher: ['/studio', '/studio/:path*'],
+  matcher: ["/studio", "/studio/:path*"],
 };

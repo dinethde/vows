@@ -1,8 +1,8 @@
-import type { ReactElement, ReactNode } from 'react';
+import type { ReactElement, ReactNode } from "react";
 
-import { Analytics } from '@/components/site/analytics';
-import { MusicProvider } from '@/components/site/music/music-provider';
-import { SiteHeader } from '@/components/site/site-header';
+import { Analytics } from "@/components/site/analytics";
+import { MusicProvider } from "@/components/site/music/music-provider";
+import { SiteHeader } from "@/components/site/site-header";
 
 export interface SiteLayoutProps {
   children: ReactNode;

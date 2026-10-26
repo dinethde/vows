@@ -1,12 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { enquiry, photoDerivative } from '@vows/db';
-import type { Db } from '@vows/db';
-import { lt } from 'drizzle-orm';
+import { Inject, Injectable } from "@nestjs/common";
+import { enquiry, photoDerivative } from "@vows/db";
+import type { Db } from "@vows/db";
+import { lt } from "drizzle-orm";
 
-import { LOGGER } from '../../common/logger';
-import type { Logger } from '../../common/logger';
-import { DB } from '../../database/database.module';
-import { StorageService } from '../../storage/storage.service';
+import { LOGGER } from "../../common/logger";
+import type { Logger } from "../../common/logger";
+import { DB } from "../../database/database.module";
+import { StorageService } from "../../storage/storage.service";
 
 /** The privacy page promises twenty-four months. This is where it is kept. */
 export const ENQUIRY_RETENTION_MONTHS = 24;
@@ -42,7 +42,7 @@ export class HousekeepingService {
    */
   async countOrphans(): Promise<OrphanReport> {
     const [keys, rows] = await Promise.all([
-      this.storage.listPublic('d/'),
+      this.storage.listPublic("d/"),
       this.db.select({ key: photoDerivative.key }).from(photoDerivative),
     ]);
     const stored = new Set(keys);
@@ -52,7 +52,7 @@ export class HousekeepingService {
       rowsWithNoFile: rows.filter((row) => !stored.has(row.key)).length,
     };
     const loud = report.filesWithNoRow > ORPHAN_ALERT_AT || report.rowsWithNoFile > ORPHAN_ALERT_AT;
-    this.log[loud ? 'error' : 'info'](report, 'orphan sweep');
+    this.log[loud ? "error" : "info"](report, "orphan sweep");
     return report;
   }
 }

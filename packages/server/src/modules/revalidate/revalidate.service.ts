@@ -1,24 +1,23 @@
-import { createHmac } from 'node:crypto';
+import { Inject, Injectable } from "@nestjs/common";
+import { album } from "@vows/db";
+import type { Db } from "@vows/db";
+import { eq } from "drizzle-orm";
+import { createHmac } from "node:crypto";
 
-import { Inject, Injectable } from '@nestjs/common';
-import { album } from '@vows/db';
-import type { Db } from '@vows/db';
-import { eq } from 'drizzle-orm';
-
-import { ENV } from '../../config/env';
-import type { Env } from '../../config/env';
-import { DB } from '../../database/database.module';
+import { ENV } from "../../config/env";
+import type { Env } from "../../config/env";
+import { DB } from "../../database/database.module";
 
 const TIMEOUT_MS = 20_000;
 
 /** The pages an album appears on: its own, the home page and the sitemap. */
 export function pathsFor(slug: string, oldSlug?: string): string[] {
-  const paths = [`/albums/${slug}`, '/', '/sitemap.xml'];
+  const paths = [`/albums/${slug}`, "/", "/sitemap.xml"];
   return oldSlug ? [...paths, `/albums/${oldSlug}`] : paths;
 }
 
 export function sign(body: string, secret: string): string {
-  return createHmac('sha256', secret).update(body).digest('hex');
+  return createHmac("sha256", secret).update(body).digest("hex");
 }
 
 /**
@@ -55,11 +54,11 @@ export class RevalidateService {
 
   async revalidate(paths: string[], now = Date.now()): Promise<void> {
     const body = JSON.stringify({ paths, issuedAt: now });
-    const response = await fetch(`${this.env.SITE_URL.replace(/\/$/, '')}/api/revalidate`, {
-      method: 'POST',
+    const response = await fetch(`${this.env.SITE_URL.replace(/\/$/, "")}/api/revalidate`, {
+      method: "POST",
       headers: {
-        'content-type': 'application/json',
-        'x-vows-signature': sign(body, this.env.REVALIDATE_SECRET),
+        "content-type": "application/json",
+        "x-vows-signature": sign(body, this.env.REVALIDATE_SECRET),
       },
       body,
       signal: AbortSignal.timeout(TIMEOUT_MS),

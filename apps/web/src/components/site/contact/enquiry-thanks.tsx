@@ -1,7 +1,8 @@
-import { CtaButton, DialogClose, DialogDescription, DialogTitle } from '@vows/ui';
-import type { ReactElement } from 'react';
+import { CtaButton, DialogClose, DialogDescription, DialogTitle } from "@vows/ui";
 
-import { site } from '@/config/site';
+import type { ReactElement } from "react";
+
+import { site } from "@/config/site";
 
 /** Replaces the form, so there is nothing left to send twice. Read out when it appears. */
 export function EnquiryThanks(): ReactElement {

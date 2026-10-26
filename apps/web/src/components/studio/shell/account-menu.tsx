@@ -1,13 +1,14 @@
-'use client';
+"use client";
 
-import { useClerk } from '@clerk/nextjs';
-import { cn } from '@vows/ui';
-import { useId, useRef } from 'react';
-import type { ReactElement } from 'react';
+import { useClerk } from "@clerk/nextjs";
+import { cn } from "@vows/ui";
 
-import { focusRing } from '@/components/shared/focus';
-import { useDismiss } from '@/components/shared/use-dismiss';
-import { SIGN_IN_PATH } from '@/lib/auth/constants';
+import { useId, useRef } from "react";
+import type { ReactElement } from "react";
+
+import { focusRing } from "@/components/shared/focus";
+import { useDismiss } from "@/components/shared/use-dismiss";
+import { SIGN_IN_PATH } from "@/lib/auth/constants";
 
 export interface AccountMenuProps {
   /** The signed-in person's own name. Empty while Clerk is still loading. */
@@ -21,7 +22,7 @@ export interface AccountPanelProps extends AccountMenuProps {
 }
 
 function initialOf(name: string, email: string): string {
-  return (name.trim()[0] ?? email.trim()[0] ?? '').toUpperCase();
+  return (name.trim()[0] ?? email.trim()[0] ?? "").toUpperCase();
 }
 
 /** What the chip opens: whose account this is, on a narrow screen, and the way out. */
@@ -46,7 +47,7 @@ function AccountPanel({ id, name, email }: AccountPanelProps): ReactElement {
         role="menuitem"
         autoFocus
         className={cn(
-          'px-space-2 type-ui-caption text-action-neutral hover:bg-field-muted flex min-h-[44px] cursor-pointer items-center rounded-sm text-left',
+          "px-space-2 type-ui-caption text-action-neutral hover:bg-field-muted flex min-h-[44px] cursor-pointer items-center rounded-sm text-left",
           focusRing,
         )}
         onClick={() => {
@@ -77,9 +78,9 @@ export function AccountMenu({ name, email }: AccountMenuProps): ReactElement {
         aria-haspopup="menu"
         aria-expanded={menu.open}
         aria-controls={menu.open ? menuId : undefined}
-        aria-label={`Account: ${name || email || 'loading'}`}
+        aria-label={`Account: ${name || email || "loading"}`}
         className={cn(
-          'gap-space-2 px-space-2 py-space-1 flex min-h-[46px] cursor-pointer items-center rounded-[12px] text-left',
+          "gap-space-2 px-space-2 py-space-1 flex min-h-[46px] cursor-pointer items-center rounded-[12px] text-left",
           focusRing,
         )}
         onClick={menu.toggle}
@@ -91,8 +92,8 @@ export function AccountMenu({ name, email }: AccountMenuProps): ReactElement {
           {initialOf(name, email)}
         </span>
         <span aria-hidden="true" className="gap-space-1 hidden flex-col min-[768px]:flex">
-          <span className="type-ui-caption text-action-neutral">{name || ' '}</span>
-          <span className="type-ui-caption-s text-muted">{email || ' '}</span>
+          <span className="type-ui-caption text-action-neutral">{name || " "}</span>
+          <span className="type-ui-caption-s text-muted">{email || " "}</span>
         </span>
       </button>
       {menu.open ? <AccountPanel id={menuId} name={name} email={email} /> : null}

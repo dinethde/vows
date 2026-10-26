@@ -1,21 +1,22 @@
-import type { Metadata } from 'next';
-import type { ReactElement } from 'react';
+import type { Metadata } from "next";
 
-import { CLOSING, INTRO, LAST_UPDATED, SECTIONS } from './content';
+import type { ReactElement } from "react";
 
-import { EmailLink } from '@/components/site/email-link';
-import { SiteFooter } from '@/components/site/footer/site-footer';
-import { site } from '@/config/site';
+import { EmailLink } from "@/components/site/email-link";
+import { SiteFooter } from "@/components/site/footer/site-footer";
+import { site } from "@/config/site";
+
+import { CLOSING, INTRO, LAST_UPDATED, SECTIONS } from "./content";
 
 export const metadata: Metadata = {
-  title: 'Privacy',
-  description: 'What Vows Weddings collects through the contact form, why, and for how long.',
-  alternates: { canonical: '/privacy' },
+  title: "Privacy",
+  description: "What Vows Weddings collects through the contact form, why, and for how long.",
+  alternates: { canonical: "/privacy" },
 };
 
-const heading = 'type-heading-6 tablet:type-heading-5 text-heading';
-const text = 'type-body-s tablet:type-body-m text-secondary';
-const [user = '', domain = ''] = site.email.split('@');
+const heading = "type-heading-6 tablet:type-heading-5 text-heading";
+const text = "type-body-s tablet:type-body-m text-secondary";
+const [user = "", domain = ""] = site.email.split("@");
 
 /** One column, seven short sections, no legal language. The copy lives in the repository. */
 export default function PrivacyPage(): ReactElement {

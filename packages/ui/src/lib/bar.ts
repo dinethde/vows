@@ -5,7 +5,7 @@
  *
  * It sits at -z-10 inside a bar that isolates, because a flex or grid item
  * with an `order` would otherwise be painted underneath it. */
-const wash = 'pointer-events-none absolute inset-x-0 -z-10 bg-surface-light/10 backdrop-blur-nav';
+const wash = "pointer-events-none absolute inset-x-0 -z-10 bg-surface-light/10 backdrop-blur-nav";
 
 /** Under the navbar: from above the bar to 48 below it, fading downwards. */
 export const navBackdrop = `${wash} -top-space-8 -bottom-space-9 [mask-image:linear-gradient(to_top,transparent,black_80px)]`;
@@ -20,8 +20,8 @@ export const bottomBackdrop = `${wash} -top-space-8 bottom-0 [mask-image:linear-
  * tall, its edge blurred by 50. The edge is a mask, as above, over 100px.
  */
 export const albumBackdrop = [
-  'pointer-events-none absolute left-1/2 top-0 -z-10 h-[max(100%,218px)] -translate-x-1/2',
-  'w-[638px] tablet:-top-[27px] tablet:w-[1082px] desktop:top-0 desktop:w-[1684px]',
-  'rounded-t-[1000px] bg-surface-light/10 backdrop-blur-nav',
-  '[mask-image:linear-gradient(to_bottom,transparent,black_100px)]',
-].join(' ');
+  "pointer-events-none absolute left-1/2 top-0 -z-10 h-[max(100%,218px)] -translate-x-1/2",
+  "w-[638px] tablet:-top-[27px] tablet:w-[1082px] desktop:top-0 desktop:w-[1684px]",
+  "rounded-t-[1000px] bg-surface-light/10 backdrop-blur-nav",
+  "[mask-image:linear-gradient(to_bottom,transparent,black_100px)]",
+].join(" ");

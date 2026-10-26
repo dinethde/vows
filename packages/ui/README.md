@@ -17,10 +17,10 @@ The package is consumed as source. The app's stylesheet imports four files, in
 this order:
 
 ```css
-@import '@vows/config/tailwind/vows.css';
-@import '@vows/tokens/css/primitives.css';
-@import '@vows/tokens/css/semantic.css';
-@import '@vows/ui/styles.css';
+@import "@vows/config/tailwind/vows.css";
+@import "@vows/tokens/css/primitives.css";
+@import "@vows/tokens/css/semantic.css";
+@import "@vows/ui/styles.css";
 ```
 
 The last one tells Tailwind to read this package for class names and carries the

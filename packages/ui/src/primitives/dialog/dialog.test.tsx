@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, it } from "vitest";
 
 import {
   Dialog,
@@ -9,7 +9,7 @@ import {
   DialogDescription,
   DialogTitle,
   DialogTrigger,
-} from './dialog';
+} from "./dialog";
 
 function Example() {
   return (
@@ -24,34 +24,34 @@ function Example() {
   );
 }
 
-describe('Dialog', () => {
-  it('opens from its trigger, named and described by its title and text', async () => {
+describe("Dialog", () => {
+  it("opens from its trigger, named and described by its title and text", async () => {
     render(<Example />);
 
-    await userEvent.click(screen.getByRole('button', { name: 'Open' }));
-    const dialog = screen.getByRole('dialog', { name: 'Publish this album?' });
+    await userEvent.click(screen.getByRole("button", { name: "Open" }));
+    const dialog = screen.getByRole("dialog", { name: "Publish this album?" });
 
-    expect(dialog).toHaveAccessibleDescription('It goes live on vows.lk.');
+    expect(dialog).toHaveAccessibleDescription("It goes live on vows.lk.");
   });
 
-  it('closes on Escape and gives the focus back to the trigger', async () => {
+  it("closes on Escape and gives the focus back to the trigger", async () => {
     render(<Example />);
-    const trigger = screen.getByRole('button', { name: 'Open' });
+    const trigger = screen.getByRole("button", { name: "Open" });
 
     await userEvent.click(trigger);
-    await userEvent.keyboard('{Escape}');
+    await userEvent.keyboard("{Escape}");
 
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(trigger).toHaveFocus();
   });
 
-  it('keeps the Tab key inside while it is open', async () => {
+  it("keeps the Tab key inside while it is open", async () => {
     render(<Example />);
 
-    await userEvent.click(screen.getByRole('button', { name: 'Open' }));
+    await userEvent.click(screen.getByRole("button", { name: "Open" }));
     await userEvent.tab();
     await userEvent.tab();
 
-    expect(screen.getByRole('dialog')).toContainElement(document.activeElement as HTMLElement);
+    expect(screen.getByRole("dialog")).toContainElement(document.activeElement as HTMLElement);
   });
 });

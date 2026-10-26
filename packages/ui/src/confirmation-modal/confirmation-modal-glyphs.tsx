@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { ReactElement } from "react";
 
 /* The i and the triangle are decoration. The sentence carries the meaning. */
 

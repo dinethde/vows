@@ -1,4 +1,4 @@
-import type { ComponentProps } from 'react';
+import type { ComponentProps } from "react";
 
 interface FieldCommonProps {
   /** Site: the placeholder, which is also the accessible name.
@@ -11,17 +11,17 @@ interface FieldCommonProps {
   className?: string;
 }
 
-type InputProps = Omit<ComponentProps<'input'>, 'className' | 'aria-label' | 'prefix'>;
-type TextareaProps = Omit<ComponentProps<'textarea'>, 'className' | 'aria-label' | 'prefix'>;
+type InputProps = Omit<ComponentProps<"input">, "className" | "aria-label" | "prefix">;
+type TextareaProps = Omit<ComponentProps<"textarea">, "className" | "aria-label" | "prefix">;
 
 /** `field — site`: no box, and the placeholder is the label. */
-export interface SiteFieldProps extends FieldCommonProps, Omit<InputProps, 'placeholder'> {
-  surface: 'site';
+export interface SiteFieldProps extends FieldCommonProps, Omit<InputProps, "placeholder"> {
+  surface: "site";
 }
 
 /** `field — studio`: label above, boxed input, message below. */
 export interface StudioInputFieldProps extends FieldCommonProps, InputProps {
-  surface: 'studio';
+  surface: "studio";
   multiline?: false;
   /** Read-only text joined to the left of the box, as on the page-address
    * field. It is read out with the field. */
@@ -30,7 +30,7 @@ export interface StudioInputFieldProps extends FieldCommonProps, InputProps {
 
 /** `field — studio` as the tall box used for the album story. */
 export interface StudioTextareaFieldProps extends FieldCommonProps, TextareaProps {
-  surface: 'studio';
+  surface: "studio";
   multiline: true;
 }
 

@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
-import type { LinkComponent } from '../lib/link.types';
+import type { LinkComponent } from "../lib/link.types";
 
 export interface NavbarLink {
   label: string;

@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import type { ReactElement, ReactNode } from 'react';
+import type { ReactElement, ReactNode } from "react";
 
-import { useMusic } from '@/components/site/music/music-provider';
+import { useMusic } from "@/components/site/music/music-provider";
 
 export interface MusicGateProps {
   children: ReactNode;
 }
 
-const BARS = ['h-[6px]', 'h-[12px]', 'h-[16px]', 'h-[10px]', 'h-[5px]'];
+const BARS = ["h-[6px]", "h-[12px]", "h-[16px]", "h-[10px]", "h-[5px]"];
 
 /**
  * The first-load choice. A browser will not play sound until the page has been
@@ -23,7 +23,7 @@ export function MusicGate({ children }: MusicGateProps): ReactElement {
   return (
     <>
       <div
-        className={`absolute inset-0 transition-[filter] duration-[400ms] motion-reduce:transition-none ${asking ? 'blur-[6px]' : ''}`}
+        className={`absolute inset-0 transition-[filter] duration-[400ms] motion-reduce:transition-none ${asking ? "blur-[6px]" : ""}`}
         {...(asking ? { inert: true } : {})}
       >
         {children}
@@ -32,10 +32,10 @@ export function MusicGate({ children }: MusicGateProps): ReactElement {
         <div
           className="bg-page/30 absolute inset-0 z-20 flex flex-col items-center justify-center"
           onClick={() => {
-            choose('on');
+            choose("on");
           }}
           onKeyDown={(event) => {
-            if (event.key === 'Escape') choose('off');
+            if (event.key === "Escape") choose("off");
           }}
         >
           {/* The whole screen is the target, but a keyboard and a screen reader need a real button.
@@ -62,7 +62,7 @@ export function MusicGate({ children }: MusicGateProps): ReactElement {
             type="button"
             onClick={(event) => {
               event.stopPropagation();
-              choose('off');
+              choose("off");
             }}
             className="type-body-xs text-secondary tablet:bottom-[72px] absolute bottom-[46px] flex min-h-[46px] items-center uppercase tracking-[1.2px] underline"
           >

@@ -1,15 +1,16 @@
-'use client';
+"use client";
 
-import { CtaButton, DialogClose, DialogDescription, DialogTitle } from '@vows/ui';
-import Image from 'next/image';
-import Link from 'next/link';
-import type { ReactElement } from 'react';
+import { CtaButton, DialogClose, DialogDescription, DialogTitle } from "@vows/ui";
+import Image from "next/image";
+import Link from "next/link";
 
-import { EnquiryFieldList } from './enquiry-fields';
-import { EnquiryThanks } from './enquiry-thanks';
-import { useEnquiryForm } from './use-enquiry-form';
+import type { ReactElement } from "react";
 
-import { routes } from '@/config/site';
+import { routes } from "@/config/site";
+
+import { EnquiryFieldList } from "./enquiry-fields";
+import { EnquiryThanks } from "./enquiry-thanks";
+import { useEnquiryForm } from "./use-enquiry-form";
 
 /**
  * The form itself. It is a file of its own so the page does not carry the form
@@ -53,7 +54,7 @@ export function EnquiryFormBody(): ReactElement {
       {/* Stacked on a phone, with Send the full width; side by side from a tablet up. */}
       <div className="gap-space-5 tablet:flex-row tablet:items-end tablet:justify-between tablet:gap-space-6 flex flex-col">
         <p className="type-body-xs text-secondary tablet:max-w-[290px]">
-          By sending this, you agree that we may keep your details to reply to you. See our{' '}
+          By sending this, you agree that we may keep your details to reply to you. See our{" "}
           <Link href={routes.privacy.href} className="underline">
             Privacy Policy
           </Link>
@@ -65,7 +66,7 @@ export function EnquiryFormBody(): ReactElement {
           pending={sending}
           className="tablet:w-auto w-full justify-center"
         >
-          {sending ? 'Sending…' : 'Send'}
+          {sending ? "Sending…" : "Send"}
         </CtaButton>
       </div>
     </form>

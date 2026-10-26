@@ -6,12 +6,12 @@ import {
   ListObjectsV2Command,
   PutObjectCommand,
   S3Client,
-} from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { Inject, Injectable } from '@nestjs/common';
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { Inject, Injectable } from "@nestjs/common";
 
-import { ENV } from '../config/env';
-import type { Env } from '../config/env';
+import { ENV } from "../config/env";
+import type { Env } from "../config/env";
 
 export const PRESIGN_SECONDS = 300;
 const TIMEOUT_MS = 5000;
@@ -27,7 +27,7 @@ export class StorageService {
 
   constructor(@Inject(ENV) private readonly env: Env) {
     this.client = new S3Client({
-      region: 'auto',
+      region: "auto",
       endpoint: `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
       credentials: { accessKeyId: env.R2_ACCESS_KEY_ID, secretAccessKey: env.R2_SECRET_ACCESS_KEY },
     });
@@ -52,7 +52,7 @@ export class StorageService {
       );
       return head.ContentLength ?? 0;
     } catch (error) {
-      if ((error as { name?: string }).name === 'NotFound') return null;
+      if ((error as { name?: string }).name === "NotFound") return null;
       throw error;
     }
   }
@@ -73,7 +73,7 @@ export class StorageService {
         Key: key,
         Body: body,
         ContentType: contentType,
-        CacheControl: 'public, max-age=31536000, immutable',
+        CacheControl: "public, max-age=31536000, immutable",
       }),
     );
   }
@@ -121,14 +121,14 @@ export class StorageService {
         Bucket: bucket,
         Key: key,
         Body: body,
-        ContentType: 'application/octet-stream',
+        ContentType: "application/octet-stream",
       }),
     );
   }
 
   async listBackups(bucket: string): Promise<string[]> {
     const page = await this.client.send(
-      new ListObjectsV2Command({ Bucket: bucket, Prefix: 'backups/' }),
+      new ListObjectsV2Command({ Bucket: bucket, Prefix: "backups/" }),
     );
     return (page.Contents ?? []).flatMap((object) => (object.Key ? [object.Key] : [])).sort();
   }
@@ -138,7 +138,7 @@ export class StorageService {
   }
 
   publicUrl(key: string): string {
-    return `${this.env.MEDIA_URL.replace(/\/$/, '')}/${key}`;
+    return `${this.env.MEDIA_URL.replace(/\/$/, "")}/${key}`;
   }
 
   async ping(): Promise<void> {

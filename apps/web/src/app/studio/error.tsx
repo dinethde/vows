@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import { Banner, Button } from '@vows/ui';
-import Link from 'next/link';
-import type { ReactElement } from 'react';
+import { Banner, Button } from "@vows/ui";
+import Link from "next/link";
+
+import type { ReactElement } from "react";
 
 export interface StudioErrorProps {
   error: Error & { digest?: string };

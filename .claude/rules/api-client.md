@@ -1,5 +1,5 @@
 ---
-paths: ['apps/web/**']
+paths: ["apps/web/**"]
 ---
 
 Every call to the Vows API goes through `apps/web/src/lib/api`. Nothing else

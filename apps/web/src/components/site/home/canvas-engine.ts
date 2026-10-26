@@ -1,6 +1,3 @@
-import { breakpointFor, HOME_FRAMES, spread, SPREAD } from './home-layout';
-import type { HomeFrame } from './home-layout';
-
 import {
   approach,
   depth,
@@ -10,8 +7,11 @@ import {
   prefersReducedMotion,
   settle,
   wrap,
-} from '@/lib/motion/float';
-import type { Point } from '@/lib/motion/float';
+} from "@/lib/motion/float";
+import type { Point } from "@/lib/motion/float";
+
+import { HOME_FRAMES, SPREAD, breakpointFor, spread } from "./home-layout";
+import type { HomeFrame } from "./home-layout";
 
 const FRICTION = 0.94;
 const KEY_STEP = 80;
@@ -73,15 +73,15 @@ export class CanvasEngine {
   ) {
     this.pushes = tiles.map(() => ({ x: 0, y: 0 }));
     const { signal } = this.stop;
-    window.addEventListener('resize', this.onResize, { signal });
-    stage.addEventListener('wheel', this.onWheel, { signal, passive: false });
-    stage.addEventListener('pointerdown', this.onPointerDown, { signal });
-    window.addEventListener('pointermove', this.onPointerMove, { signal });
-    window.addEventListener('pointerup', this.onPointerUp, { signal });
-    document.addEventListener('pointerleave', this.onPointerLeave, { signal });
-    stage.addEventListener('keydown', this.onKeyDown, { signal });
-    stage.addEventListener('click', this.onClick, { signal, capture: true });
-    document.addEventListener('visibilitychange', this.onVisibility, { signal });
+    window.addEventListener("resize", this.onResize, { signal });
+    stage.addEventListener("wheel", this.onWheel, { signal, passive: false });
+    stage.addEventListener("pointerdown", this.onPointerDown, { signal });
+    window.addEventListener("pointermove", this.onPointerMove, { signal });
+    window.addEventListener("pointerup", this.onPointerUp, { signal });
+    document.addEventListener("pointerleave", this.onPointerLeave, { signal });
+    stage.addEventListener("keydown", this.onKeyDown, { signal });
+    stage.addEventListener("click", this.onClick, { signal, capture: true });
+    document.addEventListener("visibilitychange", this.onVisibility, { signal });
     this.frameId = requestAnimationFrame(this.tick);
   }
 
@@ -117,10 +117,10 @@ export class CanvasEngine {
       this.drag = { last: now, travelled: this.drag.travelled + Math.abs(dx) + Math.abs(dy) };
       this.velocity = { x: -dx, y: -dy };
       this.move(-dx, -dy);
-    } else if (this.pointer && event.pointerType === 'mouse' && !this.still) {
+    } else if (this.pointer && event.pointerType === "mouse" && !this.still) {
       this.lean({ x: now.x - this.pointer.x, y: now.y - this.pointer.y }, now);
     }
-    if (event.pointerType === 'mouse' && !this.still) {
+    if (event.pointerType === "mouse" && !this.still) {
       this.followTo = followTarget(now, { x: window.innerWidth, y: window.innerHeight });
     }
     this.pointer = now;

@@ -1,9 +1,10 @@
-import type { Album } from '@vows/contracts';
-import { AlbumBottomBar } from '@vows/ui';
-import type { ReactElement } from 'react';
+import type { Album } from "@vows/contracts";
+import { AlbumBottomBar } from "@vows/ui";
 
-import { Photo } from '@/components/site/photo/photo';
-import { fullDate } from '@/lib/format/dates';
+import type { ReactElement } from "react";
+
+import { Photo } from "@/components/site/photo/photo";
+import { fullDate } from "@/lib/format/dates";
 
 export interface AlbumHeroProps {
   album: Album;
@@ -33,13 +34,13 @@ export function AlbumHero({ album }: AlbumHeroProps): ReactElement {
       <AlbumBottomBar
         className="relative max-h-[40svh]"
         coupleNames={album.coupleNames ?? album.title}
-        intro={album.story ?? ''}
-        type={album.weddingType ?? ''}
-        place={album.location ?? ''}
-        timeOfDay={(album.timeOfDay ?? '').toLowerCase()}
-        date={album.shotOn ? fullDate(album.shotOn) : ''}
+        intro={album.story ?? ""}
+        type={album.weddingType ?? ""}
+        place={album.location ?? ""}
+        timeOfDay={(album.timeOfDay ?? "").toLowerCase()}
+        date={album.shotOn ? fullDate(album.shotOn) : ""}
         {...(album.shotOn ? { dateTime: album.shotOn } : {})}
-        labels={{ type: 'type', place: 'location' }}
+        labels={{ type: "type", place: "location" }}
       />
     </section>
   );

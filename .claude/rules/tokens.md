@@ -1,5 +1,5 @@
 ---
-paths: ['apps/**', 'packages/ui/**']
+paths: ["apps/**", "packages/ui/**"]
 ---
 
 No hex, `rgb()` or `hsl()` value appears anywhere outside `packages/tokens`.

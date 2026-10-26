@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 
-import { HousekeepingService } from './housekeeping.service';
+import { HousekeepingService } from "./housekeeping.service";
 
 @Module({ providers: [HousekeepingService], exports: [HousekeepingService] })
 export class HousekeepingModule {}

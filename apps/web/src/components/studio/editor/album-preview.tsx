@@ -1,16 +1,17 @@
-'use client';
+"use client";
 
-import { COVER_POSITION } from '@vows/contracts';
-import { AlbumBottomBar } from '@vows/ui';
-import type { ReactElement } from 'react';
-import { useWatch } from 'react-hook-form';
+import { COVER_POSITION } from "@vows/contracts";
+import { AlbumBottomBar } from "@vows/ui";
+import { useWatch } from "react-hook-form";
 
-import { useEditor } from './editor-context';
-import { PhotoNotices } from './photo-notices';
-import { galleryStyle, previewBands } from './preview-layout';
-import { SlotCard } from './slot-card';
+import type { ReactElement } from "react";
 
-import { formatDateText, parseDateText } from '@/components/shared/date/date-text';
+import { formatDateText, parseDateText } from "@/components/shared/date/date-text";
+
+import { useEditor } from "./editor-context";
+import { PhotoNotices } from "./photo-notices";
+import { galleryStyle, previewBands } from "./preview-layout";
+import { SlotCard } from "./slot-card";
 
 const BANDS = previewBands();
 
@@ -21,7 +22,7 @@ const DENSITY = 2;
 function PreviewBar(): ReactElement {
   const { form, album } = useEditor();
   const values = useWatch({ control: form.control });
-  const day = parseDateText(values.shotOn ?? '');
+  const day = parseDateText(values.shotOn ?? "");
   const names = values.coupleNames?.trim();
 
   return (
@@ -29,13 +30,13 @@ function PreviewBar(): ReactElement {
       <AlbumBottomBar
         headingLevel="p"
         coupleNames={names ? names : album.title}
-        intro={values.story ?? ''}
-        type={values.weddingType ?? ''}
-        place={values.location ?? ''}
-        timeOfDay={(values.timeOfDay ?? '').toLowerCase()}
+        intro={values.story ?? ""}
+        type={values.weddingType ?? ""}
+        place={values.location ?? ""}
+        timeOfDay={(values.timeOfDay ?? "").toLowerCase()}
         date={formatDateText(day)}
         {...(day ? { dateTime: day } : {})}
-        labels={{ type: 'type', place: 'location' }}
+        labels={{ type: "type", place: "location" }}
       />
     </div>
   );
@@ -48,7 +49,7 @@ function PreviewBar(): ReactElement {
  */
 function PreviewCover(): ReactElement {
   const { photos } = useEditor();
-  const empty = photos.views.get(COVER_POSITION)?.state === 'Empty';
+  const empty = photos.views.get(COVER_POSITION)?.state === "Empty";
 
   return (
     <SlotCard
@@ -56,10 +57,10 @@ function PreviewCover(): ReactElement {
       thumbWidth={1600}
       boxClassName={
         empty
-          ? 'border-strong bg-slot aspect-[1077/850] items-center justify-center overflow-clip border-[1.5px] border-dashed'
-          : 'aspect-[1077/850] overflow-clip'
+          ? "border-strong bg-slot aspect-[1077/850] items-center justify-center overflow-clip border-[1.5px] border-dashed"
+          : "aspect-[1077/850] overflow-clip"
       }
-      slotClassName={empty ? 'h-[256px] w-[289px] max-w-full' : undefined}
+      slotClassName={empty ? "h-[256px] w-[289px] max-w-full" : undefined}
       captionClassName="max-w-[320px]"
       overlay={<PreviewBar />}
     />

@@ -1,7 +1,8 @@
-import { Heading, Hr, Link, Text } from '@react-email/components';
-import type { ReactElement } from 'react';
+import { Heading, Hr, Link, Text } from "@react-email/components";
 
-import { Layout, styles } from './layout';
+import type { ReactElement } from "react";
+
+import { Layout, styles } from "./layout";
 
 export interface EnquiryNotifyProps {
   name: string;
@@ -24,15 +25,15 @@ function Row({ label, value }: RowProps): ReactElement {
   return (
     <>
       <Text style={styles.label}>{label}</Text>
-      <Text style={styles.value}>{value ?? 'Not given'}</Text>
+      <Text style={styles.value}>{value ?? "Not given"}</Text>
     </>
   );
 }
 
 export function enquiryNotifySubject(
-  props: Pick<EnquiryNotifyProps, 'name' | 'weddingDate'>,
+  props: Pick<EnquiryNotifyProps, "name" | "weddingDate">,
 ): string {
-  return `New enquiry — ${props.name}, ${props.weddingDate ?? 'date TBC'}`;
+  return `New enquiry — ${props.name}, ${props.weddingDate ?? "date TBC"}`;
 }
 
 /** To the studio: every field as it was sent. The notes are text, never markup. */

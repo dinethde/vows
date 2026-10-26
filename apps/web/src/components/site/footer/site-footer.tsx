@@ -1,5 +1,15 @@
-import Link from 'next/link';
-import type { ReactElement, ReactNode } from 'react';
+import Link from "next/link";
+
+import type { ReactElement, ReactNode } from "react";
+
+import { Photo } from "@/components/site/photo/photo";
+import { routes, site } from "@/config/site";
+import { publicApi } from "@/lib/api";
+
+import { FooterColumns } from "./footer-columns";
+import { FooterPhotos } from "./footer-photos";
+import { MAX_FOOTER_PHOTOS } from "./footer-photos-layout";
+import { FooterStage } from "./footer-stage";
 
 /** Covers of published albums, going round again if there are fewer than eight. */
 async function footerPictures(): Promise<ReactNode[]> {
@@ -19,15 +29,6 @@ async function footerPictures(): Promise<ReactNode[]> {
     ) : null;
   });
 }
-
-import { FooterColumns } from './footer-columns';
-import { FooterPhotos } from './footer-photos';
-import { MAX_FOOTER_PHOTOS } from './footer-photos-layout';
-import { FooterStage } from './footer-stage';
-
-import { Photo } from '@/components/site/photo/photo';
-import { routes, site } from '@/config/site';
-import { publicApi } from '@/lib/api';
 
 /**
  * A full panel, as tall as the screen, sitting behind the page. Three bands:

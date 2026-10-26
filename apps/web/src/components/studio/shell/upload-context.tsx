@@ -1,16 +1,17 @@
-'use client';
+"use client";
 
-import { useQueryClient } from '@tanstack/react-query';
-import { createContext, useContext, useState, useSyncExternalStore } from 'react';
-import type { ReactElement, ReactNode } from 'react';
+import { useQueryClient } from "@tanstack/react-query";
 
-import { useApi } from './api-context';
+import { createContext, useContext, useState, useSyncExternalStore } from "react";
+import type { ReactElement, ReactNode } from "react";
 
-import { studioKeys } from '@/components/studio/query-keys';
-import type { ApiClient } from '@/lib/api';
-import { putFile } from '@/lib/upload/put-file';
-import { UploadQueue } from '@/lib/upload/queue';
-import type { Rejection, UploadItem, UploadState } from '@/lib/upload/queue';
+import { studioKeys } from "@/components/studio/query-keys";
+import type { ApiClient } from "@/lib/api";
+import { putFile } from "@/lib/upload/put-file";
+import { UploadQueue } from "@/lib/upload/queue";
+import type { Rejection, UploadItem, UploadState } from "@/lib/upload/queue";
+
+import { useApi } from "./api-context";
 
 const UploadContext = createContext<UploadQueue | null>(null);
 
@@ -52,7 +53,7 @@ export function UploadProvider({ children }: UploadProviderProps): ReactElement 
 
 export function useUploadQueue(): UploadQueue {
   const queue = useContext(UploadContext);
-  if (!queue) throw new Error('useUploadQueue must be used inside the Studio layout.');
+  if (!queue) throw new Error("useUploadQueue must be used inside the Studio layout.");
   return queue;
 }
 

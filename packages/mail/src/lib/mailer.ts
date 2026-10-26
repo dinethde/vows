@@ -1,6 +1,6 @@
-import type { RenderedMail } from './render';
+import type { RenderedMail } from "./render";
 
-const ENDPOINT = 'https://api.resend.com/emails';
+const ENDPOINT = "https://api.resend.com/emails";
 const TIMEOUT_MS = 20_000;
 
 export interface Mailer {
@@ -18,11 +18,11 @@ export function createMailer({ apiKey, from }: MailerOptions): Mailer {
   return {
     async send(to, mail, idempotencyKey) {
       const response = await fetch(ENDPOINT, {
-        method: 'POST',
+        method: "POST",
         headers: {
           authorization: `Bearer ${apiKey}`,
-          'content-type': 'application/json',
-          'idempotency-key': idempotencyKey,
+          "content-type": "application/json",
+          "idempotency-key": idempotencyKey,
         },
         body: JSON.stringify({
           from,
@@ -43,7 +43,7 @@ export function createMailer({ apiKey, from }: MailerOptions): Mailer {
           .then((body: unknown) => (body as { message?: unknown } | null)?.message)
           .catch(() => undefined);
         const detail =
-          typeof reason === 'string' ? ` ${reason.replaceAll(/\S+@\S+/g, '<address>')}` : '';
+          typeof reason === "string" ? ` ${reason.replaceAll(/\S+@\S+/g, "<address>")}` : "";
         throw new Error(`Resend answered ${String(response.status)}.${detail}`);
       }
     },

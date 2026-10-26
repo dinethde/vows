@@ -1,12 +1,13 @@
-'use client';
+"use client";
 
-import { ConfirmationModal } from '@vows/ui';
-import type { ReactElement } from 'react';
+import { ConfirmationModal } from "@vows/ui";
 
-import { useEditor } from './editor-context';
+import type { ReactElement } from "react";
 
-import { CONFIRMATIONS } from '@/components/studio/confirmations';
-import { usePortalContainer } from '@/components/studio/shell/studio-providers';
+import { CONFIRMATIONS } from "@/components/studio/confirmations";
+import { usePortalContainer } from "@/components/studio/shell/studio-providers";
+
+import { useEditor } from "./editor-context";
 
 /**
  * The editor's confirmations: publishing, moving back to draft, discarding
@@ -18,7 +19,7 @@ export function EditorModals(): ReactElement {
   const { actions, mutations } = useEditor();
   const container = usePortalContainer();
   const { removal } = mutations;
-  const copy = CONFIRMATIONS[actions.modal ?? 'publish'];
+  const copy = CONFIRMATIONS[actions.modal ?? "publish"];
 
   return (
     <>

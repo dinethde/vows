@@ -1,31 +1,32 @@
-'use client';
+"use client";
 
-import { COVER_POSITION, GALLERY_SIZE } from '@vows/contracts';
-import { cn, PhotoSlot } from '@vows/ui';
-import type { PhotoSlotProps } from '@vows/ui';
-import { useId, useRef } from 'react';
-import type { ReactElement } from 'react';
+import { COVER_POSITION, GALLERY_SIZE } from "@vows/contracts";
+import { PhotoSlot, cn } from "@vows/ui";
+import type { PhotoSlotProps } from "@vows/ui";
 
-import { slotProblems } from './publish-problems';
-import { SlotCaption } from './slot-caption';
-import type { SlotBoxProps, SlotCardProps } from './slot-card.types';
-import { slotView } from './slot-view';
-import { useSlots } from './slots-context';
+import { useId, useRef } from "react";
+import type { ReactElement } from "react";
 
-import { thumbFor } from '@/components/studio/photo-thumb';
-import { UPLOAD_ACCEPT } from '@/lib/upload/validate';
+import { thumbFor } from "@/components/studio/photo-thumb";
+import { UPLOAD_ACCEPT } from "@/lib/upload/validate";
+
+import { slotProblems } from "./publish-problems";
+import { SlotCaption } from "./slot-caption";
+import type { SlotBoxProps, SlotCardProps } from "./slot-card.types";
+import { slotView } from "./slot-view";
+import { useSlots } from "./slots-context";
 
 /** What the slot is called and what it shows, as `photo_slot` wants them. */
 function slotLook(props: SlotBoxProps): Partial<PhotoSlotProps> {
   const { position, view, thumbWidth, slotClassName } = props;
   const picture =
-    view.state === 'Uploaded' && view.photo ? thumbFor(view.photo, thumbWidth) : undefined;
+    view.state === "Uploaded" && view.photo ? thumbFor(view.photo, thumbWidth) : undefined;
   return {
     // Pinned to its box by default, so the box's size is the slot's size
     // however the box came by it: a fixed height, a ratio or a measurement.
-    className: slotClassName ?? 'absolute inset-0',
-    ...(position === COVER_POSITION ? { subject: 'the cover' } : { badge: true, number: position }),
-    ...(picture?.src ? { src: picture.src, alt: view.photo?.alt ?? '' } : {}),
+    className: slotClassName ?? "absolute inset-0",
+    ...(position === COVER_POSITION ? { subject: "the cover" } : { badge: true, number: position }),
+    ...(picture?.src ? { src: picture.src, alt: view.photo?.alt ?? "" } : {}),
     ...(picture?.placeholderSrc ? { placeholderSrc: picture.placeholderSrc } : {}),
   };
 }
@@ -42,11 +43,11 @@ function SlotBox(props: SlotBoxProps): ReactElement {
   const { photo } = view;
 
   const retry = (): void => {
-    if (view.retry === 'upload' && view.uploadKey) photos.retryUpload(view.uploadKey);
+    if (view.retry === "upload" && view.uploadKey) photos.retryUpload(view.uploadKey);
     else picker.current?.click();
   };
   const remove =
-    photo && view.state === 'Uploaded'
+    photo && view.state === "Uploaded"
       ? (): void => {
           mutations.removal.ask(photo);
         }
@@ -75,7 +76,7 @@ function SlotBox(props: SlotBoxProps): ReactElement {
         aria-hidden="true"
         onChange={(event) => {
           photos.addFiles(position, Array.from(event.target.files ?? []));
-          event.target.value = '';
+          event.target.value = "";
         }}
       />
     </>
@@ -98,13 +99,13 @@ export function SlotCard(props: SlotCardProps): ReactElement {
   return (
     <div
       role="group"
-      aria-label={position === COVER_POSITION ? 'Cover photograph' : `Slot ${String(position)}`}
+      aria-label={position === COVER_POSITION ? "Cover photograph" : `Slot ${String(position)}`}
       aria-describedby={note ? noteId : undefined}
       data-problem={`photos.${String(position)}`}
-      className={cn('flex flex-col gap-[7px]', className)}
+      className={cn("flex flex-col gap-[7px]", className)}
       style={style}
     >
-      <div className={cn('relative flex', boxClassName)} style={boxStyle}>
+      <div className={cn("relative flex", boxClassName)} style={boxStyle}>
         <SlotBox
           position={position}
           view={view}
@@ -120,7 +121,7 @@ export function SlotCard(props: SlotCardProps): ReactElement {
         {overlay}
       </div>
       {note || view.photo ? (
-        <div className={cn('flex flex-col gap-[7px]', captionClassName)}>
+        <div className={cn("flex flex-col gap-[7px]", captionClassName)}>
           {note ? (
             <p id={noteId} className="type-studio-caption text-status-error">
               {note}

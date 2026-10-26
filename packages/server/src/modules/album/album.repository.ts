@@ -1,9 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { album, newId, photo, photoDerivative, slugRedirect } from '@vows/db';
-import type { Db, DbOrTx } from '@vows/db';
-import { and, asc, desc, eq, inArray, isNull, ne } from 'drizzle-orm';
+import { Inject, Injectable } from "@nestjs/common";
+import { album, newId, photo, photoDerivative, slugRedirect } from "@vows/db";
+import type { Db, DbOrTx } from "@vows/db";
+import { and, asc, desc, eq, inArray, isNull, ne } from "drizzle-orm";
 
-import { DB } from '../../database/database.module';
+import { DB } from "../../database/database.module";
 
 export type AlbumRow = typeof album.$inferSelect;
 export type PhotoRow = typeof photo.$inferSelect;
@@ -28,7 +28,7 @@ export class AlbumRepository {
    * neither decides on a state the other is about to change.
    */
   async lock(tx: DbOrTx, id: string): Promise<AlbumRow | undefined> {
-    const [row] = await tx.select().from(album).where(eq(album.id, id)).for('update');
+    const [row] = await tx.select().from(album).where(eq(album.id, id)).for("update");
     return row;
   }
 
@@ -49,7 +49,7 @@ export class AlbumRepository {
     return this.db
       .select()
       .from(album)
-      .where(eq(album.status, 'published'))
+      .where(eq(album.status, "published"))
       .orderBy(desc(album.sortIndex), desc(album.shotOn));
   }
 
@@ -102,7 +102,7 @@ export class AlbumRepository {
     await tx.delete(slugRedirect).where(eq(slugRedirect.fromSlug, toSlug));
     await tx
       .insert(slugRedirect)
-      .values({ id: newId('redirect'), fromSlug, toAlbumId: albumId })
+      .values({ id: newId("redirect"), fromSlug, toAlbumId: albumId })
       .onConflictDoUpdate({ target: slugRedirect.fromSlug, set: { toAlbumId: albumId } });
   }
 }

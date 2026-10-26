@@ -1,7 +1,7 @@
-import type { ErrorCode } from '@vows/contracts';
+import type { ErrorCode } from "@vows/contracts";
 
 /** Postgres's code for "this would break a unique index". */
-const UNIQUE_VIOLATION = '23505';
+const UNIQUE_VIOLATION = "23505";
 
 interface Clash {
   code: ErrorCode;
@@ -15,23 +15,23 @@ interface Clash {
  */
 const CLASHES: Record<string, Clash> = {
   photo_album_position_idx: {
-    code: 'photo_slot_taken',
-    message: 'That slot was filled a moment ago. Refresh and try again.',
+    code: "photo_slot_taken",
+    message: "That slot was filled a moment ago. Refresh and try again.",
   },
   photo_idempotency_key_unique: {
-    code: 'photo_slot_taken',
-    message: 'That upload is already under way. Refresh and try again.',
+    code: "photo_slot_taken",
+    message: "That upload is already under way. Refresh and try again.",
   },
   album_slug_unique: {
-    code: 'slug_taken',
-    message: 'That page address was taken a moment ago. Choose another.',
+    code: "slug_taken",
+    message: "That page address was taken a moment ago. Choose another.",
   },
 };
 
 function violation(error: unknown): string | undefined {
-  if (typeof error !== 'object' || error === null) return undefined;
+  if (typeof error !== "object" || error === null) return undefined;
   const { code, constraint } = error as { code?: unknown; constraint?: unknown };
-  return code === UNIQUE_VIOLATION && typeof constraint === 'string' ? constraint : undefined;
+  return code === UNIQUE_VIOLATION && typeof constraint === "string" ? constraint : undefined;
 }
 
 /** The driver's error, or the one the query builder wrapped around it. */

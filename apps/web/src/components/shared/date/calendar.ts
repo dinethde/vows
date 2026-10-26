@@ -7,19 +7,19 @@ const DAY_MS = 86_400_000;
 const WEEK = 7;
 
 export const WEEKDAYS = [
-  { short: 'Su', long: 'Sunday' },
-  { short: 'Mo', long: 'Monday' },
-  { short: 'Tu', long: 'Tuesday' },
-  { short: 'We', long: 'Wednesday' },
-  { short: 'Th', long: 'Thursday' },
-  { short: 'Fr', long: 'Friday' },
-  { short: 'Sa', long: 'Saturday' },
+  { short: "Su", long: "Sunday" },
+  { short: "Mo", long: "Monday" },
+  { short: "Tu", long: "Tuesday" },
+  { short: "We", long: "Wednesday" },
+  { short: "Th", long: "Thursday" },
+  { short: "Fr", long: "Friday" },
+  { short: "Sa", long: "Saturday" },
 ] as const;
 
-const MONTH_TITLE = new Intl.DateTimeFormat('en-GB', {
-  month: 'long',
-  year: 'numeric',
-  timeZone: 'UTC',
+const MONTH_TITLE = new Intl.DateTimeFormat("en-GB", {
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
 });
 
 function toDate(iso: string): Date {

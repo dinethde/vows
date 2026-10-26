@@ -1,11 +1,11 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
+import { drizzle } from "drizzle-orm/node-postgres";
+import type { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 
-import * as schema from './schema';
+import * as schema from "./schema";
 
 export type Db = NodePgDatabase<typeof schema>;
-export type Tx = Parameters<Parameters<Db['transaction']>[0]>[0];
+export type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 /** A repository method takes either, so it can join a transaction or run alone. */
 export type DbOrTx = Db | Tx;
 

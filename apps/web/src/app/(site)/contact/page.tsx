@@ -1,23 +1,24 @@
-import { Chip } from '@vows/ui';
-import type { Metadata } from 'next';
-import Image from 'next/image';
-import type { ReactElement, ReactNode } from 'react';
+import { Chip } from "@vows/ui";
+import type { Metadata } from "next";
+import Image from "next/image";
 
-import { EnquiryDialog } from '@/components/site/contact/enquiry-dialog';
-import { EmailLink } from '@/components/site/email-link';
-import { SiteFooter } from '@/components/site/footer/site-footer';
-import { LocationPin } from '@/components/site/location-pin';
-import { site } from '@/config/site';
+import type { ReactElement, ReactNode } from "react";
+
+import { EnquiryDialog } from "@/components/site/contact/enquiry-dialog";
+import { EmailLink } from "@/components/site/email-link";
+import { SiteFooter } from "@/components/site/footer/site-footer";
+import { LocationPin } from "@/components/site/location-pin";
+import { site } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: 'Contact',
+  title: "Contact",
   description:
-    'We photograph a small number of weddings each year, so dates go early. Tell us when and where, and we will write back within two days.',
-  alternates: { canonical: '/contact' },
+    "We photograph a small number of weddings each year, so dates go early. Tell us when and where, and we will write back within two days.",
+  alternates: { canonical: "/contact" },
 };
 
-const [user = '', domain = ''] = site.email.split('@');
-const value = 'type-body-m text-secondary';
+const [user = "", domain = ""] = site.email.split("@");
+const value = "type-body-m text-secondary";
 
 interface GroupProps {
   title: string;
@@ -64,7 +65,7 @@ function ContactDetails(): ReactElement {
             <EmailLink user={user} domain={domain} className={value} />
           </li>
           <li>
-            <a href={`tel:${site.phone.replaceAll(' ', '')}`} className={value}>
+            <a href={`tel:${site.phone.replaceAll(" ", "")}`} className={value}>
               {site.phone}
             </a>
           </li>

@@ -1,6 +1,6 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync } from "node:fs";
 
-export const MODES = ['site', 'studio'] as const;
+export const MODES = ["site", "studio"] as const;
 export type Mode = (typeof MODES)[number];
 
 export interface TextStyle {
@@ -9,12 +9,12 @@ export interface TextStyle {
   size: number;
   lineHeight: number;
   letterSpacing?: number;
-  case?: 'upper' | 'lower';
+  case?: "upper" | "lower";
 }
 
 export type Effect =
-  | { type: 'shadow'; x: number; y: number; blur: number; spread: number; opacity: number }
-  | { type: 'blur'; radius: number };
+  | { type: "shadow"; x: number; y: number; blur: number; spread: number; opacity: number }
+  | { type: "blur"; radius: number };
 
 export interface TokenSource {
   primitives: { variables: Record<string, string | number> };
@@ -41,7 +41,7 @@ export function assertAliasesResolve(source: TokenSource): void {
 
 export function readSource(path: string): TokenSource {
   // tokens.json is our own export, checked by the assertion below.
-  const source = JSON.parse(readFileSync(path, 'utf8')) as TokenSource;
+  const source = JSON.parse(readFileSync(path, "utf8")) as TokenSource;
   assertAliasesResolve(source);
   return source;
 }

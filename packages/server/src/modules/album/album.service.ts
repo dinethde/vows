@@ -1,24 +1,23 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from "@nestjs/common";
 import type {
   Album,
   AlbumSummary,
   StudioAlbum,
   StudioAlbumList,
   UpdateAlbum,
-} from '@vows/contracts';
-import type { Db, Tx } from '@vows/db';
+} from "@vows/contracts";
+import type { Db, Tx } from "@vows/db";
 
-import { DomainError, NotFoundError } from '../../common/errors/domain-error';
-import type { Actor } from '../../common/request';
-import { DB } from '../../database/database.module';
-import { QueueService } from '../../queue/queue.service';
-import { StorageService } from '../../storage/storage.service';
-import { AuditService } from '../audit/audit.service';
-
-import { toAlbum, toStudioSummary, toSummary } from './album.mapper';
-import { AlbumRepository } from './album.repository';
-import type { AlbumChanges, AlbumRow } from './album.repository';
-import { problemFields, publishProblems } from './publish-checks';
+import { DomainError, NotFoundError } from "../../common/errors/domain-error";
+import type { Actor } from "../../common/request";
+import { DB } from "../../database/database.module";
+import { QueueService } from "../../queue/queue.service";
+import { StorageService } from "../../storage/storage.service";
+import { AuditService } from "../audit/audit.service";
+import { toAlbum, toStudioSummary, toSummary } from "./album.mapper";
+import { AlbumRepository } from "./album.repository";
+import type { AlbumChanges, AlbumRow } from "./album.repository";
+import { problemFields, publishProblems } from "./publish-checks";
 
 export interface Caller {
   actor: Actor;
@@ -67,8 +66,8 @@ export class AlbumService {
   /** An old slug answers with the album at its new one; the page redirects. */
   async getPublished(slug: string): Promise<Album> {
     const row = (await this.repo.findBySlug(slug)) ?? (await this.repo.findByOldSlug(slug));
-    if (row?.status !== 'published')
-      throw new NotFoundError('album_not_found', 'This album is not here.');
+    if (row?.status !== "published")
+      throw new NotFoundError("album_not_found", "This album is not here.");
     return toAlbum(row, await this.repo.photosOf([row.id]), this.urlFor);
   }
 
@@ -82,9 +81,9 @@ export class AlbumService {
       nextCursor: null,
       counts: {
         all: data.length,
-        published: count('published'),
-        draft: count('draft'),
-        untouched: count('untouched'),
+        published: count("published"),
+        draft: count("draft"),
+        untouched: count("untouched"),
       },
     };
   }
@@ -101,14 +100,14 @@ export class AlbumService {
 
       const row = await this.repo.update(tx, id, toChanges(body));
       // A live album stays complete: an edit that would break it is refused.
-      if (row.status === 'published') await this.assertPublishable(tx, row);
+      if (row.status === "published") await this.assertPublishable(tx, row);
       await this.audit.record(tx, caller.actor, {
-        action: 'album.update',
-        entity: 'album',
+        action: "album.update",
+        entity: "album",
         entityId: id,
         diff: body,
       });
-      if (row.status === 'published') {
+      if (row.status === "published") {
         await this.revalidate(tx, row, caller, slugChanged ? before.slug : undefined);
       }
       return row;
@@ -120,19 +119,19 @@ export class AlbumService {
     await this.load(id);
     const row = await this.db.transaction(async (tx) => {
       const album = await this.repo.lock(tx, id);
-      if (!album) throw new NotFoundError('album_not_found', 'We could not find that album.');
+      if (!album) throw new NotFoundError("album_not_found", "We could not find that album.");
       await this.assertPublishable(tx, album);
       const next = await this.repo.update(tx, id, {
-        status: 'published',
+        status: "published",
         publishedAt: album.publishedAt ?? new Date(),
       });
       await this.audit.record(tx, caller.actor, {
-        action: 'album.publish',
-        entity: 'album',
+        action: "album.publish",
+        entity: "album",
         entityId: id,
       });
       await this.revalidate(tx, next, caller);
-      await this.queue.send(tx, 'photo.cleanup', { albumId: id, requestId: caller.requestId });
+      await this.queue.send(tx, "photo.cleanup", { albumId: id, requestId: caller.requestId });
       return next;
     });
     return this.present(row);
@@ -141,17 +140,17 @@ export class AlbumService {
   /** Off the site, with every row and file left where it is. */
   async unpublish(id: string, caller: Caller): Promise<StudioAlbum> {
     const album = await this.load(id);
-    if (album.status !== 'published') {
+    if (album.status !== "published") {
       throw new DomainError(
-        'album_not_published',
-        'This album is not on the website, so there is nothing to take down.',
+        "album_not_published",
+        "This album is not on the website, so there is nothing to take down.",
       );
     }
     const row = await this.db.transaction(async (tx) => {
-      const next = await this.repo.update(tx, id, { status: 'draft' });
+      const next = await this.repo.update(tx, id, { status: "draft" });
       await this.audit.record(tx, caller.actor, {
-        action: 'album.unpublish',
-        entity: 'album',
+        action: "album.unpublish",
+        entity: "album",
         entityId: id,
       });
       await this.revalidate(tx, next, caller);
@@ -162,7 +161,7 @@ export class AlbumService {
 
   private async load(id: string): Promise<AlbumRow> {
     const row = await this.repo.findById(id);
-    if (!row) throw new NotFoundError('album_not_found', 'We could not find that album.');
+    if (!row) throw new NotFoundError("album_not_found", "We could not find that album.");
     return row;
   }
 
@@ -176,10 +175,10 @@ export class AlbumService {
     const problems = publishProblems(album, await this.repo.photosOf([album.id], tx));
     if (problems.length === 0) return;
     const fields = problemFields(problems);
-    const first = Object.values(fields)[0] ?? '';
-    const more = problems.length > 1 ? ` And ${String(problems.length - 1)} more.` : '';
+    const first = Object.values(fields)[0] ?? "";
+    const more = problems.length > 1 ? ` And ${String(problems.length - 1)} more.` : "";
     throw new DomainError(
-      'album_not_publishable',
+      "album_not_publishable",
       `This album cannot go out yet. ${first}${more}`,
       fields,
     );
@@ -190,7 +189,7 @@ export class AlbumService {
       const sentence = `That address is taken. Try ${await this.freeSlug(tx, album.id, slug)}.`;
       // The field map carries the whole sentence, so a form shows it beside
       // the field like any other refusal.
-      throw new DomainError('slug_taken', sentence, { slug: sentence });
+      throw new DomainError("slug_taken", sentence, { slug: sentence });
     }
     await this.repo.redirect(tx, album.slug, slug, album.id);
   }
@@ -204,7 +203,7 @@ export class AlbumService {
   }
 
   private revalidate(tx: Tx, album: AlbumRow, caller: Caller, oldSlug?: string): Promise<void> {
-    return this.queue.send(tx, 'album.revalidate', {
+    return this.queue.send(tx, "album.revalidate", {
       albumId: album.id,
       slug: album.slug,
       ...(oldSlug ? { oldSlug } : {}),

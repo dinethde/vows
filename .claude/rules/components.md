@@ -1,5 +1,5 @@
 ---
-paths: ['apps/web/**', 'packages/ui/**']
+paths: ["apps/web/**", "packages/ui/**"]
 ---
 
 Spacing is flexbox and `gap`, never margins between siblings. A component file

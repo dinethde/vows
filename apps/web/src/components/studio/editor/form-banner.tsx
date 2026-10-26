@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import { Banner } from '@vows/ui';
-import type { ReactElement } from 'react';
+import { Banner } from "@vows/ui";
 
-import { useEditor } from './editor-context';
+import type { ReactElement } from "react";
+
+import { useEditor } from "./editor-context";
 
 /**
  * The one strip above the form. The wrapper is always in the page, so when a

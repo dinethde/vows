@@ -1,6 +1,6 @@
-import type { ReactElement } from 'react';
+import type { ReactElement } from "react";
 
-import { env } from '@/config/env';
+import { env } from "@/config/env";
 
 /**
  * Cloudflare Web Analytics: the one third-party script the public site is

@@ -13,9 +13,9 @@ const FULL = 100;
 export function putFile(url: string, file: File, onProgress: ProgressListener): Promise<void> {
   return new Promise((resolve, reject) => {
     const request = new XMLHttpRequest();
-    request.open('PUT', url);
+    request.open("PUT", url);
     // The address was signed for this type; a different one is refused.
-    request.setRequestHeader('content-type', file.type);
+    request.setRequestHeader("content-type", file.type);
     request.upload.onprogress = (event) => {
       if (event.lengthComputable) onProgress(Math.round((event.loaded / event.total) * FULL));
     };
@@ -28,10 +28,10 @@ export function putFile(url: string, file: File, onProgress: ProgressListener): 
       }
     };
     request.onerror = () => {
-      reject(new Error('The connection dropped during the upload.'));
+      reject(new Error("The connection dropped during the upload."));
     };
     request.onabort = () => {
-      reject(new Error('The upload was stopped.'));
+      reject(new Error("The upload was stopped."));
     };
     request.send(file);
   });

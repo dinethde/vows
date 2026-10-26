@@ -1,17 +1,17 @@
-import { COVER_POSITION } from '@vows/contracts';
+import { COVER_POSITION } from "@vows/contracts";
 import type {
   Album,
   AlbumSummary,
   Photo,
   StudioAlbumStage,
   StudioAlbumSummary,
-} from '@vows/contracts';
+} from "@vows/contracts";
 
-import type { AlbumRow, PhotoWithFiles } from './album.repository';
+import type { AlbumRow, PhotoWithFiles } from "./album.repository";
 
 export type UrlFor = (key: string) => string;
 
-const PHOTO_ERRORS: readonly string[] = ['wrong_file_type', 'file_too_large', 'processing_failed'];
+const PHOTO_ERRORS: readonly string[] = ["wrong_file_type", "file_too_large", "processing_failed"];
 
 export function toPhoto(row: PhotoWithFiles, urlFor: UrlFor): Photo {
   return {
@@ -19,8 +19,8 @@ export function toPhoto(row: PhotoWithFiles, urlFor: UrlFor): Photo {
     albumId: row.albumId,
     position: row.position,
     status: row.status,
-    errorCode: PHOTO_ERRORS.includes(row.errorCode ?? '')
-      ? (row.errorCode as Photo['errorCode'])
+    errorCode: PHOTO_ERRORS.includes(row.errorCode ?? "")
+      ? (row.errorCode as Photo["errorCode"])
       : null,
     width: row.width,
     height: row.height,
@@ -28,10 +28,10 @@ export function toPhoto(row: PhotoWithFiles, urlFor: UrlFor): Photo {
     alt: row.alt,
     // The share card is a file for chat apps, not for the page.
     derivatives: row.derivatives
-      .filter((file) => file.format !== 'jpeg')
+      .filter((file) => file.format !== "jpeg")
       .map((file) => ({
         id: file.id,
-        format: file.format as 'avif' | 'webp',
+        format: file.format as "avif" | "webp",
         width: file.width,
         height: file.height,
         url: urlFor(file.key),
@@ -67,7 +67,7 @@ export function toSummary(row: AlbumRow, photos: PhotoWithFiles[], urlFor: UrlFo
 
 export function toAlbum(row: AlbumRow, photos: PhotoWithFiles[], urlFor: UrlFor): Album {
   const mine = photos.filter((photo) => photo.albumId === row.id);
-  const card = coverOf(row, mine)?.derivatives.find((file) => file.format === 'jpeg');
+  const card = coverOf(row, mine)?.derivatives.find((file) => file.format === "jpeg");
   return {
     ...toSummary(row, mine, urlFor),
     photos: mine
@@ -79,7 +79,7 @@ export function toAlbum(row: AlbumRow, photos: PhotoWithFiles[], urlFor: UrlFor)
 
 /** Worked out here and nowhere else, so the counts and the cards cannot disagree. */
 export function stageOf(row: AlbumRow, photoCount: number): StudioAlbumStage {
-  if (row.status !== 'draft') return row.status;
+  if (row.status !== "draft") return row.status;
   const words = [
     row.coupleNames,
     row.shotOn,
@@ -88,7 +88,7 @@ export function stageOf(row: AlbumRow, photoCount: number): StudioAlbumStage {
     row.location,
     row.story,
   ];
-  return photoCount === 0 && words.every((word) => word === null) ? 'untouched' : 'draft';
+  return photoCount === 0 && words.every((word) => word === null) ? "untouched" : "draft";
 }
 
 export function toStudioSummary(

@@ -106,8 +106,8 @@ export type HomeBreakpoint = keyof typeof HOME_FRAMES;
 export const MAX_TILES = HOME_FRAMES.desktop.tiles.length;
 
 export function breakpointFor(width: number): HomeBreakpoint {
-  if (width >= 1024) return 'desktop';
-  return width >= 640 ? 'tablet' : 'mobile';
+  if (width >= 1024) return "desktop";
+  return width >= 640 ? "tablet" : "mobile";
 }
 
 function rules(frame: HomeFrame): string {
@@ -118,7 +118,7 @@ function rules(frame: HomeFrame): string {
   const hidden = Array.from({ length: MAX_TILES - frame.tiles.length }, (_unused, extra) => {
     return `.tile-${String(frame.tiles.length + extra)}{display:none}`;
   });
-  return [...placed, ...hidden].join('');
+  return [...placed, ...hidden].join("");
 }
 
 /** The starting places, as a stylesheet, so the page is right before any script runs. */
@@ -127,5 +127,5 @@ export function homeCss(): string {
     rules(HOME_FRAMES.mobile),
     `@media (min-width:40rem){${rules(HOME_FRAMES.tablet)}}`,
     `@media (min-width:64rem){${rules(HOME_FRAMES.desktop)}}`,
-  ].join('');
+  ].join("");
 }

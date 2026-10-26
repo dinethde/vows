@@ -1,5 +1,5 @@
-import type { Photo } from '@vows/contracts';
-import { thumbHashToDataURL } from 'thumbhash';
+import type { Photo } from "@vows/contracts";
+import { thumbHashToDataURL } from "thumbhash";
 
 export interface Thumb {
   /** A small derivative, never the original. Undefined until the worker has made one. */
@@ -24,7 +24,7 @@ function placeholder(thumbhash: string | null): string | undefined {
  */
 export function thumbFor(photo: Photo, boxWidth: number): Thumb {
   const webp = photo.derivatives
-    .filter((file) => file.format === 'webp')
+    .filter((file) => file.format === "webp")
     .sort((a, b) => a.width - b.width);
   const fit = webp.find((file) => file.width >= boxWidth) ?? webp.at(-1);
   return { src: fit?.url, placeholderSrc: placeholder(photo.thumbhash) };

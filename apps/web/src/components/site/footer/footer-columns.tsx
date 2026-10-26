@@ -1,13 +1,14 @@
-import Link from 'next/link';
-import type { ReactElement, ReactNode } from 'react';
+import Link from "next/link";
 
-import { EmailLink } from '@/components/site/email-link';
-import { LocationPin } from '@/components/site/location-pin';
-import { routes, site } from '@/config/site';
+import type { ReactElement, ReactNode } from "react";
+
+import { EmailLink } from "@/components/site/email-link";
+import { LocationPin } from "@/components/site/location-pin";
+import { routes, site } from "@/config/site";
 
 const label =
-  'type-ui-label text-accent transition-colors duration-500 ease-out group-data-[revealed=true]/footer:text-on-accent';
-const link = 'type-nav-link';
+  "type-ui-label text-accent transition-colors duration-500 ease-out group-data-[revealed=true]/footer:text-on-accent";
+const link = "type-nav-link";
 
 interface ColumnProps {
   /** A fixed width where Figma gives the column one; otherwise it hugs. */
@@ -16,7 +17,7 @@ interface ColumnProps {
   children: ReactNode;
 }
 
-function Column({ title, children, className = '' }: ColumnProps): ReactElement {
+function Column({ title, children, className = "" }: ColumnProps): ReactElement {
   return (
     <div className={`gap-space-5 flex flex-col items-start ${className}`}>
       <h3 className={label}>{title}</h3>
@@ -25,7 +26,7 @@ function Column({ title, children, className = '' }: ColumnProps): ReactElement 
   );
 }
 
-const [user = '', domain = ''] = site.email.split('@');
+const [user = "", domain = ""] = site.email.split("@");
 
 /** Menu, Socials, Contacts, Studio. One row from the tablet up, two rows of two on a phone. */
 export function FooterColumns(): ReactElement {
@@ -66,7 +67,7 @@ export function FooterColumns(): ReactElement {
             <EmailLink user={user} domain={domain} className={link} />
           </li>
           <li>
-            <a href={`tel:${site.phone.replaceAll(' ', '')}`} className={link}>
+            <a href={`tel:${site.phone.replaceAll(" ", "")}`} className={link}>
               {site.phone}
             </a>
           </li>

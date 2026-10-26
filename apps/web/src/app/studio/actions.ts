@@ -1,11 +1,11 @@
-'use server';
+"use server";
 
-import { albumId, photoId, reorderPhotos, updateAlbum, updatePhoto } from '@vows/contracts';
-import type { Photo, StudioAlbum, UpdateAlbum } from '@vows/contracts';
+import { albumId, photoId, reorderPhotos, updateAlbum, updatePhoto } from "@vows/contracts";
+import type { Photo, StudioAlbum, UpdateAlbum } from "@vows/contracts";
 
-import { invalid, toResult } from '@/components/studio/action-result';
-import type { ActionResult } from '@/components/studio/action-result';
-import { serverApi } from '@/lib/auth/server';
+import { invalid, toResult } from "@/components/studio/action-result";
+import type { ActionResult } from "@/components/studio/action-result";
+import { serverApi } from "@/lib/auth/server";
 
 /*
  * Every change the Studio makes goes through one of these. Each one checks
@@ -14,8 +14,8 @@ import { serverApi } from '@/lib/auth/server';
  * here: on publish and unpublish the API queues the rebuild itself.
  */
 
-const BAD_ID = 'That album or photograph could not be found.';
-const BAD_BODY = 'Some of what was sent could not be read. Reload the page and try again.';
+const BAD_ID = "That album or photograph could not be found.";
+const BAD_BODY = "Some of what was sent could not be read. Reload the page and try again.";
 
 export async function saveAlbum(
   id: string,
@@ -52,7 +52,7 @@ export async function describePhoto(id: string, alt: string | null): Promise<Act
   const target = photoId.safeParse(id);
   const body = updatePhoto.safeParse({ alt });
   if (!target.success) return invalid(BAD_ID);
-  if (!body.success) return invalid('A description can be up to 300 characters long.');
+  if (!body.success) return invalid("A description can be up to 300 characters long.");
   return toResult(serverApi().photos.update(target.data, body.data));
 }
 

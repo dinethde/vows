@@ -1,14 +1,14 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { album, newId, photo } from '@vows/db';
-import type { Db, DbOrTx } from '@vows/db';
-import { and, eq, gte, isNull, sql } from 'drizzle-orm';
+import { Inject, Injectable } from "@nestjs/common";
+import { album, newId, photo } from "@vows/db";
+import type { Db, DbOrTx } from "@vows/db";
+import { and, eq, gte, isNull, sql } from "drizzle-orm";
 
-import { DB } from '../../database/database.module';
+import { DB } from "../../database/database.module";
 
 export type PhotoRow = typeof photo.$inferSelect;
 export type NewPhoto = Pick<
   PhotoRow,
-  'albumId' | 'position' | 'mime' | 'idempotencyKey' | 'alt' | 'replacesPhotoId'
+  "albumId" | "position" | "mime" | "idempotencyKey" | "alt" | "replacesPhotoId"
 > & {
   extension: string;
 };
@@ -49,13 +49,13 @@ export class PhotoRepository {
 
   /** The id decides the key, so the row and its object name are made together. */
   async insert(tx: DbOrTx, values: NewPhoto): Promise<PhotoRow> {
-    const id = newId('photo');
+    const id = newId("photo");
     const { extension, ...columns } = values;
     const [row] = await tx
       .insert(photo)
       .values({ ...columns, id, originalKey: `originals/${values.albumId}/${id}.${extension}` })
       .returning();
-    if (!row) throw new Error('The photo insert returned no row.');
+    if (!row) throw new Error("The photo insert returned no row.");
     return row;
   }
 

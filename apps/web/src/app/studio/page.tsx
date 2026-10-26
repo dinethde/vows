@@ -1,13 +1,14 @@
-import type { Metadata } from 'next';
-import type { ReactElement } from 'react';
+import type { Metadata } from "next";
 
-import { AlbumGrid } from '@/components/studio/dashboard/album-grid';
-import { AlbumStats } from '@/components/studio/dashboard/album-stats';
-import { CollectionToolbar } from '@/components/studio/dashboard/collection-toolbar';
-import { parseView, visibleAlbums } from '@/components/studio/dashboard/view';
-import { serverApi } from '@/lib/auth/server';
+import type { ReactElement } from "react";
 
-export const metadata: Metadata = { title: 'Albums' };
+import { AlbumGrid } from "@/components/studio/dashboard/album-grid";
+import { AlbumStats } from "@/components/studio/dashboard/album-stats";
+import { CollectionToolbar } from "@/components/studio/dashboard/collection-toolbar";
+import { parseView, visibleAlbums } from "@/components/studio/dashboard/view";
+import { serverApi } from "@/lib/auth/server";
+
+export const metadata: Metadata = { title: "Albums" };
 
 export interface DashboardPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;

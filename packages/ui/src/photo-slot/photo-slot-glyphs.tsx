@@ -1,6 +1,6 @@
-import type { ReactElement } from 'react';
+import type { ReactElement } from "react";
 
-import { cn } from '../lib/cn';
+import { cn } from "../lib/cn";
 
 /* Every glyph is decoration: the slot's button carries the name. */
 
@@ -8,7 +8,7 @@ export function PictureGlyph({ className }: { className?: string }): ReactElemen
   return (
     <svg
       aria-hidden="true"
-      className={cn('stroke-(--vows-border-strong) shrink-0', className)}
+      className={cn("stroke-(--vows-border-strong) shrink-0", className)}
       width="34"
       height="26"
       viewBox="0 0 34 26"

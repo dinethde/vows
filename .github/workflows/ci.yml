@@ -90,7 +90,7 @@ jobs:
         env:
           DATABASE_URL: ${{ steps.branch.outputs.db_url_pooled }}
           APP_ENV: local
-          PORT: '3001'
+          PORT: "3001"
           LOG_LEVEL: warn
           CLERK_ISSUER: https://clerk.ci.invalid
           CLERK_JWKS_URL: https://clerk.ci.invalid/.well-known/jwks.json

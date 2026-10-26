@@ -1,11 +1,12 @@
-import type { Photo as PhotoData } from '@vows/contracts';
-import type { ReactElement } from 'react';
+import type { Photo as PhotoData } from "@vows/contracts";
 
-import { galleryCss, sizesFor } from './gallery-css';
-import { BAND_SIZES } from './gallery-layout';
+import type { ReactElement } from "react";
 
-import { FloatGroup } from '@/components/site/motion/float-group';
-import { Photo } from '@/components/site/photo/photo';
+import { FloatGroup } from "@/components/site/motion/float-group";
+import { Photo } from "@/components/site/photo/photo";
+
+import { galleryCss, sizesFor } from "./gallery-css";
+import { BAND_SIZES } from "./gallery-layout";
 
 export interface AlbumGalleryProps {
   /** The eighteen photographs, in slot order. */

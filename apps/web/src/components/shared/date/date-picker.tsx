@@ -1,12 +1,13 @@
-'use client';
+"use client";
 
-import { cn, Field } from '@vows/ui';
-import { useId } from 'react';
-import type { ReactElement } from 'react';
+import { Field, cn } from "@vows/ui";
 
-import { CalendarGrid } from './calendar-grid';
-import type { DatePickerProps } from './date-picker.types';
-import { useDatePicker } from './use-date-picker';
+import { useId } from "react";
+import type { ReactElement } from "react";
+
+import { CalendarGrid } from "./calendar-grid";
+import type { DatePickerProps } from "./date-picker.types";
+import { useDatePicker } from "./use-date-picker";
 
 /**
  * A date that can be typed or picked. The box is an ordinary text field; a
@@ -17,12 +18,12 @@ import { useDatePicker } from './use-date-picker';
 /* Where the month sits under each field, and how wide it is, as Figma draws
  * it: under the Studio's boxed field, and a row's gap below the site's line. */
 const PLACE = {
-  studio: 'top-[66px] w-[283px]',
-  site: 'top-full mt-space-8 w-[278px]',
+  studio: "top-[66px] w-[283px]",
+  site: "top-full mt-space-8 w-[278px]",
 } as const;
 
 export function DatePicker(props: DatePickerProps): ReactElement {
-  const { label, inputRef, error, surface = 'studio' } = props;
+  const { label, inputRef, error, surface = "studio" } = props;
   const picker = useDatePicker(props);
   const popoverId = useId();
   const { popover } = picker;
@@ -30,7 +31,7 @@ export function DatePicker(props: DatePickerProps): ReactElement {
   return (
     <div className="relative flex flex-col" data-month-open={popover.open} {...popover.rootProps}>
       <Field
-        {...(surface === 'site'
+        {...(surface === "site"
           ? { surface }
           : { surface, multiline: false as const, placeholder: props.placeholder })}
         label={label}
@@ -45,7 +46,7 @@ export function DatePicker(props: DatePickerProps): ReactElement {
         {...(error === undefined ? {} : { error })}
         ref={(node: HTMLInputElement | null) => {
           picker.input.current = node;
-          if (typeof inputRef === 'function') inputRef(node);
+          if (typeof inputRef === "function") inputRef(node);
           else if (inputRef) inputRef.current = node;
         }}
         onChange={picker.onType}
@@ -63,7 +64,7 @@ export function DatePicker(props: DatePickerProps): ReactElement {
           role="dialog"
           aria-label={`Choose the ${label.toLowerCase()}`}
           className={cn(
-            'border-hairline bg-surface p-space-3 shadow-card absolute left-0 z-30 flex max-w-full flex-col rounded-md border',
+            "border-hairline bg-surface p-space-3 shadow-card absolute left-0 z-30 flex max-w-full flex-col rounded-md border",
             PLACE[surface],
           )}
           onMouseDown={(event) => {

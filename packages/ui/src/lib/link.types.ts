@@ -1,4 +1,4 @@
-import type { ElementType, ReactNode } from 'react';
+import type { ElementType, ReactNode } from "react";
 
 /** What a link has to accept. `next/link` fits, and so does a plain `a`. */
 export interface LinkComponentProps {

@@ -1,13 +1,13 @@
-import { Global, Inject, Injectable, Module } from '@nestjs/common';
-import type { OnApplicationShutdown } from '@nestjs/common';
-import { createDatabase } from '@vows/db';
-import type { Database, Db } from '@vows/db';
+import { Global, Inject, Injectable, Module } from "@nestjs/common";
+import type { OnApplicationShutdown } from "@nestjs/common";
+import { createDatabase } from "@vows/db";
+import type { Database, Db } from "@vows/db";
 
-import { ENV } from '../config/env';
-import type { Env } from '../config/env';
+import { ENV } from "../config/env";
+import type { Env } from "../config/env";
 
-export const DB = Symbol('DB');
-const DATABASE = Symbol('DATABASE');
+export const DB = Symbol("DB");
+const DATABASE = Symbol("DATABASE");
 
 @Injectable()
 class DatabaseLifecycle implements OnApplicationShutdown {

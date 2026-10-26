@@ -1,3 +1,3 @@
-import react from '@vows/config/eslint/react';
+import react from "@vows/config/eslint/react";
 
 export default react;

@@ -89,5 +89,5 @@ export function wrap(value: number, start: number, size: number): number {
 }
 
 export function prefersReducedMotion(): boolean {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }

@@ -9,7 +9,7 @@ export {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
-} from './dialog';
+} from "./dialog";
 export type {
   DialogCloseProps,
   DialogContentProps,
@@ -21,4 +21,4 @@ export type {
   DialogProps,
   DialogTitleProps,
   DialogTriggerProps,
-} from './dialog.types';
+} from "./dialog.types";

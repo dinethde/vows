@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
-import type { TextFieldSpec } from './details-copy';
+import type { TextFieldSpec } from "./details-copy";
 
 export interface HelpedProps {
   /** The helper line, or null when the field is not the active one or has an error. */

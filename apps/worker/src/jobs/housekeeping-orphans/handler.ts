@@ -1,5 +1,5 @@
-import type { INestApplicationContext } from '@nestjs/common';
-import { HousekeepingService } from '@vows/server';
+import type { INestApplicationContext } from "@nestjs/common";
+import { HousekeepingService } from "@vows/server";
 
 /** Counts and reports. It never deletes: see the restore runbook in chapter 30. */
 export function housekeepingOrphans(app: INestApplicationContext): () => Promise<void> {

@@ -1,6 +1,6 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties } from "react";
 
-import { FRAMES } from '@/components/site/album/gallery-layout';
+import { FRAMES } from "@/components/site/album/gallery-layout";
 
 /*
  * The preview draws the album page's desktop frame inside a narrower column.

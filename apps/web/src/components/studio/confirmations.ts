@@ -1,4 +1,4 @@
-import type { ConfirmationModalTone } from '@vows/ui';
+import type { ConfirmationModalTone } from "@vows/ui";
 
 export interface ConfirmationCopy {
   tone: ConfirmationModalTone;
@@ -14,32 +14,32 @@ export interface ConfirmationCopy {
  */
 export const CONFIRMATIONS = {
   publish: {
-    tone: 'primary',
-    title: 'Publish this album?',
+    tone: "primary",
+    title: "Publish this album?",
     message:
-      'It goes live on vows.lk and the album page is rebuilt, usually within a minute. You can move it back to draft at any time.',
-    confirmLabel: 'Publish album',
+      "It goes live on vows.lk and the album page is rebuilt, usually within a minute. You can move it back to draft at any time.",
+    confirmLabel: "Publish album",
   },
   moveToDraft: {
-    tone: 'primary',
-    title: 'Move this album back to draft?',
+    tone: "primary",
+    title: "Move this album back to draft?",
     message:
-      'It comes off vows.lk within a minute, and anyone holding the link will see the not-found page. Nothing is deleted — you can publish it again whenever you like.',
-    confirmLabel: 'Move to draft',
+      "It comes off vows.lk within a minute, and anyone holding the link will see the not-found page. Nothing is deleted — you can publish it again whenever you like.",
+    confirmLabel: "Move to draft",
   },
   deletePhoto: {
-    tone: 'danger',
-    title: 'Delete this photograph?',
+    tone: "danger",
+    title: "Delete this photograph?",
     message:
-      'It is removed from this album and from vows.lk. The original file stays in private storage, so nothing you shot is lost — but putting it back means uploading it again.',
-    confirmLabel: 'Delete photograph',
+      "It is removed from this album and from vows.lk. The original file stays in private storage, so nothing you shot is lost — but putting it back means uploading it again.",
+    confirmLabel: "Delete photograph",
   },
   discard: {
-    tone: 'danger',
-    title: 'Discard your changes?',
+    tone: "danger",
+    title: "Discard your changes?",
     message:
-      'Everything you have edited since the last save will be lost. The published version of the album is not affected.',
-    confirmLabel: 'Discard changes',
+      "Everything you have edited since the last save will be lost. The published version of the album is not affected.",
+    confirmLabel: "Discard changes",
   },
 } as const satisfies Record<string, ConfirmationCopy>;
 

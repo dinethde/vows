@@ -1,16 +1,16 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-import { photo } from '../photographs/photo';
-import { isoDate, isoDateTime } from '../shared/dates';
-import { albumId, slug } from '../shared/ids';
+import { photo } from "../photographs/photo";
+import { isoDate, isoDateTime } from "../shared/dates";
+import { albumId, slug } from "../shared/ids";
 
 /** What the database stores. */
-export const ALBUM_STATUSES = ['draft', 'published', 'archived'] as const;
+export const ALBUM_STATUSES = ["draft", "published", "archived"] as const;
 export const albumStatus = z.enum(ALBUM_STATUSES);
 export type AlbumStatus = z.infer<typeof albumStatus>;
 
 /** What the Studio shows. `untouched` is a draft with nothing in it yet. */
-export const STUDIO_ALBUM_STAGES = ['untouched', 'draft', 'published', 'archived'] as const;
+export const STUDIO_ALBUM_STAGES = ["untouched", "draft", "published", "archived"] as const;
 export const studioAlbumStage = z.enum(STUDIO_ALBUM_STAGES);
 export type StudioAlbumStage = z.infer<typeof studioAlbumStage>;
 
@@ -92,17 +92,17 @@ export const updateAlbum = z
     seoDescription: text(160),
   })
   .partial()
-  .refine((body) => Object.keys(body).length > 0, 'Send at least one field.');
+  .refine((body) => Object.keys(body).length > 0, "Send at least one field.");
 export type UpdateAlbum = z.infer<typeof updateAlbum>;
 
 /** Why an album cannot go out yet. One entry per problem, named by field. */
 export const PUBLISH_PROBLEMS = [
-  'missing_couple_names',
-  'missing_shot_on',
-  'missing_cover',
-  'missing_photo',
-  'photo_not_ready',
-  'missing_alt',
+  "missing_couple_names",
+  "missing_shot_on",
+  "missing_cover",
+  "missing_photo",
+  "photo_not_ready",
+  "missing_alt",
 ] as const;
 export const publishProblem = z.object({
   problem: z.enum(PUBLISH_PROBLEMS),

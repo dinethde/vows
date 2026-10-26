@@ -1,5 +1,5 @@
-import { approach, depth, drift, followTarget, nudge, prefersReducedMotion, settle } from './float';
-import type { Point } from './float';
+import { approach, depth, drift, followTarget, nudge, prefersReducedMotion, settle } from "./float";
+import type { Point } from "./float";
 
 interface Item {
   element: HTMLElement;
@@ -34,9 +34,9 @@ export class FloatEngine {
       this.schedule();
     });
     if (prefersReducedMotion()) return;
-    window.addEventListener('pointermove', this.onPointerMove, { signal: this.stop.signal });
-    document.addEventListener('pointerleave', this.onPointerLeave, { signal: this.stop.signal });
-    document.addEventListener('visibilitychange', this.schedule, { signal: this.stop.signal });
+    window.addEventListener("pointermove", this.onPointerMove, { signal: this.stop.signal });
+    document.addEventListener("pointerleave", this.onPointerLeave, { signal: this.stop.signal });
+    document.addEventListener("visibilitychange", this.schedule, { signal: this.stop.signal });
   }
 
   add(element: HTMLElement): void {
@@ -50,17 +50,17 @@ export class FloatEngine {
     this.stop.abort();
     this.watcher.disconnect();
     cancelAnimationFrame(this.frameId);
-    for (const { element } of this.items.values()) element.style.transform = '';
+    for (const { element } of this.items.values()) element.style.transform = "";
     this.items.clear();
   }
 
   private readonly onPointerMove = (event: PointerEvent): void => {
     const now = { x: event.clientX, y: event.clientY };
     // Touch has no pointer to follow, so those devices keep the drift alone.
-    if (event.pointerType === 'mouse') {
+    if (event.pointerType === "mouse") {
       this.followTo = followTarget(now, { x: window.innerWidth, y: window.innerHeight });
     }
-    if (this.pointer && event.pointerType === 'mouse') {
+    if (this.pointer && event.pointerType === "mouse") {
       const travel = { x: now.x - this.pointer.x, y: now.y - this.pointer.y };
       for (const item of this.items.values()) {
         if (!item.visible) continue;

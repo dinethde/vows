@@ -1,14 +1,15 @@
-'use client';
+"use client";
 
-import { cn, ConfirmationModal } from '@vows/ui';
-import { useRouter } from 'next/navigation';
-import { useState, useTransition } from 'react';
-import type { ReactElement } from 'react';
+import { unpublishAlbum } from "@/app/studio/actions";
+import { ConfirmationModal, cn } from "@vows/ui";
+import { useRouter } from "next/navigation";
 
-import { unpublishAlbum } from '@/app/studio/actions';
-import { focusRing } from '@/components/shared/focus';
-import { CONFIRMATIONS } from '@/components/studio/confirmations';
-import { usePortalContainer } from '@/components/studio/shell/studio-providers';
+import { useState, useTransition } from "react";
+import type { ReactElement } from "react";
+
+import { focusRing } from "@/components/shared/focus";
+import { CONFIRMATIONS } from "@/components/studio/confirmations";
+import { usePortalContainer } from "@/components/studio/shell/studio-providers";
 
 export interface MoveToDraftProps {
   albumId: string;
@@ -18,8 +19,8 @@ export interface MoveToDraftProps {
 
 /* Drawn the size of a status pill. `before` takes the hit area to 44. */
 const trigger = cn(
-  'top-space-2 right-space-2 h-space-6 px-space-2 type-studio-badge absolute z-10 flex cursor-pointer items-center',
-  'bg-surface text-secondary before:absolute before:-inset-[10px]',
+  "top-space-2 right-space-2 h-space-6 px-space-2 type-studio-badge absolute z-10 flex cursor-pointer items-center",
+  "bg-surface text-secondary before:absolute before:-inset-[10px]",
   focusRing,
 );
 

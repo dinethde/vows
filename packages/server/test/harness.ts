@@ -1,12 +1,12 @@
-import type { INestApplication } from '@nestjs/common';
-import { Test } from '@nestjs/testing';
-import type { Db } from '@vows/db';
-import { createLocalJWKSet, exportJWK, generateKeyPair, SignJWT } from 'jose';
+import type { INestApplication } from "@nestjs/common";
+import { Test } from "@nestjs/testing";
+import type { Db } from "@vows/db";
+import { SignJWT, createLocalJWKSet, exportJWK, generateKeyPair } from "jose";
 
-import { AppModule } from '../src/app.module';
-import { configure } from '../src/bootstrap';
-import { JWKS } from '../src/common/guards/clerk.guard';
-import { DB } from '../src/database/database.module';
+import { AppModule } from "../src/app.module";
+import { configure } from "../src/bootstrap";
+import { JWKS } from "../src/common/guards/clerk.guard";
+import { DB } from "../src/database/database.module";
 
 export interface Harness {
   app: INestApplication;
@@ -17,8 +17,8 @@ export interface Harness {
 
 /** The real application with one swap: the signing keys are made here, not fetched from Clerk. */
 export async function startApp(): Promise<Harness> {
-  const { publicKey, privateKey } = await generateKeyPair('RS256');
-  const jwk = { ...(await exportJWK(publicKey)), kid: 'test-key', alg: 'RS256' };
+  const { publicKey, privateKey } = await generateKeyPair("RS256");
+  const jwk = { ...(await exportJWK(publicKey)), kid: "test-key", alg: "RS256" };
 
   const module = await Test.createTestingModule({ imports: [AppModule] })
     .overrideProvider(JWKS)
@@ -28,17 +28,17 @@ export async function startApp(): Promise<Harness> {
   await configure(app);
   await app.init();
 
-  const token: Harness['token'] = (role, claims = {}) =>
+  const token: Harness["token"] = (role, claims = {}) =>
     new SignJWT({
-      azp: 'http://localhost:3000',
+      azp: "http://localhost:3000",
       ...(role ? { public_metadata: { role } } : {}),
       ...claims,
     })
-      .setProtectedHeader({ alg: 'RS256', kid: 'test-key' })
-      .setSubject('user_test')
-      .setIssuer(process.env.CLERK_ISSUER ?? '')
+      .setProtectedHeader({ alg: "RS256", kid: "test-key" })
+      .setSubject("user_test")
+      .setIssuer(process.env.CLERK_ISSUER ?? "")
       .setIssuedAt()
-      .setExpirationTime('2m')
+      .setExpirationTime("2m")
       .sign(privateKey);
 
   return { app, db: app.get<Db>(DB), token };

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import type { ReactElement, ReactNode } from 'react';
+import { useEffect, useRef } from "react";
+import type { ReactElement, ReactNode } from "react";
 
-import { FloatEngine } from '@/lib/motion/float-engine';
+import { FloatEngine } from "@/lib/motion/float-engine";
 
 export interface FloatGroupProps {
   children: ReactNode;
@@ -27,19 +27,19 @@ export function FloatGroup({ children, className }: FloatGroupProps): ReactEleme
     const element = group.current;
     if (!element) return;
     const engine = new FloatEngine();
-    for (const item of element.querySelectorAll<HTMLElement>('[data-float]')) engine.add(item);
+    for (const item of element.querySelectorAll<HTMLElement>("[data-float]")) engine.add(item);
 
     const arrivals = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (!entry.isIntersecting) continue;
-          (entry.target as HTMLElement).dataset.revealed = 'true';
+          (entry.target as HTMLElement).dataset.revealed = "true";
           arrivals.unobserve(entry.target);
         }
       },
       { threshold: ARRIVED },
     );
-    for (const item of element.querySelectorAll('[data-reveal]')) arrivals.observe(item);
+    for (const item of element.querySelectorAll("[data-reveal]")) arrivals.observe(item);
 
     return () => {
       arrivals.disconnect();

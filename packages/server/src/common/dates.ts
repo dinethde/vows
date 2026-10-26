@@ -1,17 +1,17 @@
-const DAY = new Intl.DateTimeFormat('en-GB', {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-  timeZone: 'UTC',
+const DAY = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
 });
-const COLOMBO = new Intl.DateTimeFormat('en-GB', {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit',
+const COLOMBO = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
   hour12: false,
-  timeZone: 'Asia/Colombo',
+  timeZone: "Asia/Colombo",
 });
 
 /** `2027-02-14` → `14 February 2027`. Never 14/02/2027, which is two different days. */
@@ -21,5 +21,5 @@ export function fullDate(isoDate: string): string {
 
 /** An instant, written the way the studio reads a clock. */
 export function colomboTime(instant: Date): string {
-  return COLOMBO.format(instant).replace(',', ' at');
+  return COLOMBO.format(instant).replace(",", " at");
 }

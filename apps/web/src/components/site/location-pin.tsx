@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { ReactElement } from "react";
 
 /**
  * The map pin beside the studio's place. Drawn inline in `currentColor` so its

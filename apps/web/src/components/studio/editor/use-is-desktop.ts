@@ -1,13 +1,13 @@
-import { useSyncExternalStore } from 'react';
+import { useSyncExternalStore } from "react";
 
 /* The same line the `desktop:` variant draws: 64rem, 1024 px. */
-const QUERY = '(min-width: 64rem)';
+const QUERY = "(min-width: 64rem)";
 
 function subscribe(listener: () => void): () => void {
   const media = window.matchMedia(QUERY);
-  media.addEventListener('change', listener);
+  media.addEventListener("change", listener);
   return () => {
-    media.removeEventListener('change', listener);
+    media.removeEventListener("change", listener);
   };
 }
 

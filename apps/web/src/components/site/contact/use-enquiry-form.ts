@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import type { UseFormReturn } from 'react-hook-form';
+import { sendEnquiry } from "@/app/(site)/contact/actions";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import type { UseFormReturn } from "react-hook-form";
 
-import { EMPTY, enquiryFields } from './enquiry-form.schema';
-import type { EnquiryFields } from './enquiry-form.schema';
+import { useState } from "react";
 
-import { sendEnquiry } from '@/app/(site)/contact/actions';
+import { EMPTY, enquiryFields } from "./enquiry-form.schema";
+import type { EnquiryFields } from "./enquiry-form.schema";
 
 export interface EnquiryFormState {
   form: UseFormReturn<EnquiryFields>;
@@ -29,11 +29,11 @@ export function useEnquiryForm(): EnquiryFormState {
   const form = useForm<EnquiryFields>({
     resolver: zodResolver(enquiryFields),
     defaultValues: EMPTY,
-    mode: 'onBlur',
-    reValidateMode: 'onChange',
+    mode: "onBlur",
+    reValidateMode: "onChange",
   });
   const [openedAt] = useState(() => Date.now());
-  const [website, setWebsite] = useState('');
+  const [website, setWebsite] = useState("");
   const [failure, setFailure] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
 

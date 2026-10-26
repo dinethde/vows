@@ -1,12 +1,13 @@
-'use client';
+"use client";
 
-import { BottomBar } from '@vows/ui';
-import { useSyncExternalStore } from 'react';
-import type { ReactElement } from 'react';
+import { BottomBar } from "@vows/ui";
 
-import { barsShown, barsShownOnServer, subscribeToBars } from './bars-store';
+import { useSyncExternalStore } from "react";
+import type { ReactElement } from "react";
 
-import { site } from '@/config/site';
+import { site } from "@/config/site";
+
+import { barsShown, barsShownOnServer, subscribeToBars } from "./bars-store";
 
 export function useBarsShown(): boolean {
   return useSyncExternalStore(subscribeToBars, barsShown, barsShownOnServer);
@@ -15,8 +16,8 @@ export function useBarsShown(): boolean {
 /** Opacity only. No height, no transform: not one photograph may move when a bar arrives. */
 export function barFade(shown: boolean): string {
   return shown
-    ? 'opacity-100 transition-opacity duration-500'
-    : 'pointer-events-none opacity-0 transition-opacity duration-500';
+    ? "opacity-100 transition-opacity duration-500"
+    : "pointer-events-none opacity-0 transition-opacity duration-500";
 }
 
 /** The quiet bar along the bottom of the home page. In the markup from the first paint, only faded out. */

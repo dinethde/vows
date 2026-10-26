@@ -1,11 +1,11 @@
-import { createHmac, timingSafeEqual } from 'node:crypto';
+import { createHmac, timingSafeEqual } from "node:crypto";
 
-export const VISITOR_IP_HEADER = 'x-vows-visitor-ip';
-export const VISITOR_SIGNATURE_HEADER = 'x-vows-visitor-signature';
+export const VISITOR_IP_HEADER = "x-vows-visitor-ip";
+export const VISITOR_SIGNATURE_HEADER = "x-vows-visitor-signature";
 
 /** What the web app signs: the address, marked so it can never pass as a rebuild body. */
 export function signVisitor(ip: string, secret: string): string {
-  return createHmac('sha256', secret).update(`visitor:${ip}`).digest('hex');
+  return createHmac("sha256", secret).update(`visitor:${ip}`).digest("hex");
 }
 
 export interface VisitorClaim {

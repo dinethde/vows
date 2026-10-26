@@ -1,16 +1,16 @@
-import { Inject, Injectable } from '@nestjs/common';
-import type { EnquiryStatus } from '@vows/contracts';
-import { enquiry, newId } from '@vows/db';
-import type { Db, DbOrTx } from '@vows/db';
-import { and, desc, eq, gte, lt, or, sql } from 'drizzle-orm';
+import { Inject, Injectable } from "@nestjs/common";
+import type { EnquiryStatus } from "@vows/contracts";
+import { enquiry, newId } from "@vows/db";
+import type { Db, DbOrTx } from "@vows/db";
+import { and, desc, eq, gte, lt, or, sql } from "drizzle-orm";
 
-import type { Cursor } from '../../common/cursor';
-import { DB } from '../../database/database.module';
+import type { Cursor } from "../../common/cursor";
+import { DB } from "../../database/database.module";
 
 export type EnquiryRow = typeof enquiry.$inferSelect;
 export type NewEnquiry = Omit<
   typeof enquiry.$inferInsert,
-  'id' | 'status' | 'createdAt' | 'updatedAt'
+  "id" | "status" | "createdAt" | "updatedAt"
 >;
 
 @Injectable()
@@ -44,7 +44,7 @@ export class EnquiryRepository {
         and(
           eq(enquiry.email, email),
           gte(enquiry.createdAt, since),
-          sql`coalesce(${enquiry.notes}, '') = ${notes ?? ''}`,
+          sql`coalesce(${enquiry.notes}, '') = ${notes ?? ""}`,
         ),
       )
       .orderBy(desc(enquiry.createdAt))
@@ -55,9 +55,9 @@ export class EnquiryRepository {
   async insert(tx: DbOrTx, values: NewEnquiry): Promise<EnquiryRow> {
     const [row] = await tx
       .insert(enquiry)
-      .values({ ...values, id: newId('enquiry') })
+      .values({ ...values, id: newId("enquiry") })
       .returning();
-    if (!row) throw new Error('The enquiry insert returned no row.');
+    if (!row) throw new Error("The enquiry insert returned no row.");
     return row;
   }
 
