@@ -16,6 +16,26 @@
     min-height: 100svh;
   }
 
+  /* The Studio's bar stays on screen: the account chip's 46, the bar's
+   * padding and its hairline. Anything focused is scrolled clear of it, and
+   * on the dashboard clear of the toolbar held under it as well. */
+  html:has([data-surface='studio']) {
+    --studio-bar: calc(46px + 2 * var(--vows-space-3) + 1px);
+    scroll-padding-top: var(--studio-bar);
+  }
+
+  /* The dashboard's toolbar, held under the bar: stacked on a phone, one row
+   * from the tablet up. Each step is the next on the scale above its height. */
+  html:has([data-held-toolbar]) {
+    scroll-padding-top: calc(var(--studio-bar) + var(--vows-space-13));
+  }
+
+  @media (width >= 40rem) {
+    html:has([data-held-toolbar]) {
+      scroll-padding-top: calc(var(--studio-bar) + var(--vows-space-9));
+    }
+  }
+
   /* Every interactive element gets the same ring, from focus/ring. */
   :focus-visible {
     outline: 2px solid var(--vows-focus-ring);

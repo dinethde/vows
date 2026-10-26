@@ -9,7 +9,8 @@ import { AccountMenu } from "./account-menu";
 /**
  * The bar across the top of every Studio screen. The name and the email are
  * the signed-in person's own, read from Clerk; until Clerk has answered the
- * greeting has no name rather than a wrong one.
+ * greeting has no name rather than a wrong one. It stays at the top while the
+ * page scrolls; `--studio-bar` in globals.css is its height.
  */
 export function TopBar(): ReactElement {
   const { user } = useUser();
@@ -18,7 +19,7 @@ export function TopBar(): ReactElement {
   const email = user?.primaryEmailAddress?.emailAddress ?? "";
 
   return (
-    <header className="border-hairline bg-surface gap-space-4 px-space-4 py-space-3 tablet:px-space-5 flex items-center justify-between border-b">
+    <header className="border-hairline bg-surface gap-space-4 px-space-4 py-space-3 tablet:px-space-5 sticky top-0 z-30 flex items-center justify-between border-b">
       <p className="type-ui-field-m text-action-neutral font-medium">
         {first ? `Welcome back, ${first}` : "Welcome back"}
       </p>

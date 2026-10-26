@@ -1,15 +1,15 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { cn, ConfirmationModal } from '@vows/ui';
+import { useState, useTransition } from 'react';
+import type { ReactElement } from 'react';
 
-import { useState, useTransition } from "react";
-import type { ReactElement } from "react";
+import { useDashboardNavigation } from './dashboard-navigation';
 
-import { ConfirmationModal, cn } from "@vows/ui";
-import { unpublishAlbum } from "@/app/studio/actions";
-import { focusRing } from "@/components/shared/focus";
-import { CONFIRMATIONS } from "@/components/studio/confirmations";
-import { usePortalContainer } from "@/components/studio/shell/studio-providers";
+import { unpublishAlbum } from '@/app/studio/actions';
+import { focusRing } from '@/components/shared/focus';
+import { CONFIRMATIONS } from '@/components/studio/confirmations';
+import { usePortalContainer } from '@/components/studio/shell/studio-providers';
 
 export interface MoveToDraftProps {
   albumId: string;
@@ -29,7 +29,7 @@ const trigger = cn(
  * first: the album's link stops working for anyone who has it.
  */
 export function MoveToDraft({ albumId, title }: MoveToDraftProps): ReactElement {
-  const router = useRouter();
+  const { refresh } = useDashboardNavigation();
   const container = usePortalContainer();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string>();
@@ -43,7 +43,7 @@ export function MoveToDraft({ albumId, title }: MoveToDraftProps): ReactElement 
         return;
       }
       setOpen(false);
-      router.refresh();
+      refresh();
     });
   };
 

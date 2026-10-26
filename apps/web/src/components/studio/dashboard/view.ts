@@ -23,18 +23,37 @@ function first(value: string | string[] | undefined): string {
   return (Array.isArray(value) ? value[0] : value) ?? "";
 }
 
+/** A search as the address keeps it: trimmed, and never longer than 80 characters. */
+export function cleanQuery(text: string): string {
+  return text.trim().slice(0, 80);
+}
+
 export function parseView(params: Params): DashboardView {
   const stage = first(params.stage);
-  const filter = FILTERS.find((known) => known === stage) ?? "all";
-  return { filter, query: first(params.q).trim().slice(0, 80) };
+  const filter = FILTERS.find((known) => known === stage) ?? 'all';
+  return { filter, query: cleanQuery(first(params.q)) };
+}
+
+/** Typing searches from the third character. Fewer than that shows every album. */
+export const MIN_TYPED_QUERY = 3;
+
+/** The search that typing into the box applies, before anyone presses Enter. */
+export function typedQuery(text: string): string {
+  const query = cleanQuery(text);
+  return query.length >= MIN_TYPED_QUERY ? query : '';
+}
+
+/** The view as a query string, `?q=…&stage=…`, or empty for the plain dashboard. */
+export function viewSearch({ filter, query }: DashboardView): string {
+  const params = new URLSearchParams();
+  if (query) params.set('q', query);
+  if (filter !== 'all') params.set('stage', filter);
+  return params.size > 0 ? `?${params.toString()}` : '';
 }
 
 /** `all` and an empty search are left out, so the plain dashboard has a plain address. */
-export function dashboardHref({ filter, query }: DashboardView): string {
-  const params = new URLSearchParams();
-  if (query) params.set("q", query);
-  if (filter !== "all") params.set("stage", filter);
-  return params.size > 0 ? `/studio?${params.toString()}` : "/studio";
+export function dashboardHref(view: DashboardView): string {
+  return `/studio${viewSearch(view)}`;
 }
 
 /** An archived album is off the website, so it is listed with the drafts. */
