@@ -27,12 +27,12 @@
   /* The dashboard's toolbar, held under the bar: stacked on a phone, one row
    * from the tablet up. Each step is the next on the scale above its height. */
   html:has([data-held-toolbar]) {
-    scroll-padding-top: calc(var(--studio-bar) + var(--vows-space-13));
+    scroll-padding-top: calc(var(--studio-bar) + var(--vows-space-14));
   }
 
   @media (width >= 40rem) {
     html:has([data-held-toolbar]) {
-      scroll-padding-top: calc(var(--studio-bar) + var(--vows-space-9));
+      scroll-padding-top: calc(var(--studio-bar) + var(--vows-space-12));
     }
   }
 

@@ -32,7 +32,7 @@ export default async function DashboardPage({
   const list = await serverApi().albums.listForStudio();
 
   return (
-    <div className="gap-space-8 px-space-5 py-space-8 tablet:px-space-7 desktop:px-[clamp(32px,14vw,200px)] flex flex-col">
+    <div className="gap-space-6 px-space-5 py-space-8 tablet:px-space-7 desktop:px-[clamp(32px,14vw,200px)] flex flex-col">
       <section className="gap-space-6 flex flex-col">
         <div className="gap-space-1 flex flex-col">
           <p className="type-studio-overline text-muted">VOWS</p>
@@ -44,7 +44,7 @@ export default async function DashboardPage({
         <AlbumStats counts={list.counts} />
       </section>
       <DashboardNavigationProvider>
-        <section className="gap-space-6 flex flex-col">
+        <section className="flex flex-col">
           <CollectionToolbar view={view} total={list.counts.all} />
           <AlbumGrid albums={visibleAlbums(list.data, view)} view={view} />
         </section>

@@ -67,8 +67,8 @@ export function AlbumEditor({ album, backHref }: AlbumEditorProps): ReactElement
             <EditorHead />
             <EditorActions publishFirst={false} className="tablet:w-[374px]" />
           </div>
-          <div className="desktop:flex desktop:max-h-full desktop:w-[307px] desktop:shrink-0 desktop:flex-col desktop:gap-space-3 contents">
-            <BackToAlbums className="desktop:block hidden self-start" />
+          <div className="desktop:relative desktop:flex desktop:max-h-full desktop:w-[307px] desktop:shrink-0 desktop:flex-col contents">
+            <BackToAlbums className="desktop:absolute desktop:bottom-full desktop:left-0 desktop:-translate-y-space-2 desktop:block hidden" />
             <form
               noValidate
               aria-label="Album details"

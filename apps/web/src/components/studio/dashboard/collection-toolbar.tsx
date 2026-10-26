@@ -104,7 +104,7 @@ export function CollectionToolbar({ view, total }: CollectionToolbarProps): Reac
   return (
     <div
       data-held-toolbar
-      className="gap-space-3 tablet:flex-row tablet:items-end tablet:justify-between bg-page sticky top-[var(--studio-bar)] z-20 flex flex-col"
+      className="gap-space-3 pt-space-4 pb-space-6 tablet:flex-row tablet:items-end tablet:justify-between bg-page sticky top-[var(--studio-bar)] z-20 flex flex-col"
     >
       <div className="flex items-end gap-[11px]">
         <h2 className="type-studio-heading text-heading">Your collection</h2>
