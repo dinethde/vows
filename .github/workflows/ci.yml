@@ -164,10 +164,11 @@ jobs:
         with:
           fetch-depth: 0
       - uses: pnpm/action-setup@v4
+      # No cache: this job installs nothing, and saving a cache of a store that
+      # was never created fails the job.
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: pnpm
       - run: pnpm audit --prod --audit-level high
       - uses: gitleaks/gitleaks-action@v2
         env:
