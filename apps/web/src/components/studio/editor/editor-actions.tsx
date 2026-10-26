@@ -70,7 +70,7 @@ export function EditorActions({ publishFirst, className }: EditorActionsProps): 
     <Button
       className={cn("w-full", blocked && "opacity-65")}
       aria-describedby={blocked ? noteId : undefined}
-      pending={actions.pending && actions.modal === null}
+      pending={actions.busy === 'publish'}
       onClick={actions.pressPublish}
     >
       Publish
@@ -81,8 +81,13 @@ export function EditorActions({ publishFirst, className }: EditorActionsProps): 
       <Button variant="outline" onClick={actions.pressLeave}>
         Cancel
       </Button>
-      <Button variant="neutral" className="flex-1" onClick={actions.pressDraft}>
-        {album.stage === "published" ? "Move to draft" : "Draft"}
+      <Button
+        variant="neutral"
+        className="flex-1"
+        pending={actions.busy === 'draft'}
+        onClick={actions.pressDraft}
+      >
+        {album.stage === 'published' ? 'Move to draft' : 'Draft'}
       </Button>
     </div>
   );
