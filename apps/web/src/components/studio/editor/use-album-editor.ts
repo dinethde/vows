@@ -1,10 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { StudioAlbum } from "@vows/contracts";
-import type { BannerState, StatusPillState } from "@vows/ui";
 import { useForm, useWatch } from "react-hook-form";
 
 import { useState } from "react";
 
+import type { StudioAlbum } from "@vows/contracts";
+import type { BannerState, StatusPillState } from "@vows/ui";
 import { pillFor } from "@/components/studio/stage";
 
 import { albumFormSchema, toFormValues } from "./album-form.schema";

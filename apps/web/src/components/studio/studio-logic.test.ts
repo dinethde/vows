@@ -1,6 +1,6 @@
-import type { StudioAlbumSummary } from "@vows/contracts";
 import { describe, expect, it } from "vitest";
 
+import type { StudioAlbumSummary } from "@vows/contracts";
 import type { UploadItem } from "@/lib/upload/queue";
 
 import { dashboardHref, parseView, visibleAlbums } from "./dashboard/view";

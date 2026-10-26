@@ -1,6 +1,5 @@
 import type { Photo } from "@vows/contracts";
 import type { PhotoSlotState } from "@vows/ui";
-
 import type { UploadItem } from "@/lib/upload/queue";
 
 export interface SlotView {

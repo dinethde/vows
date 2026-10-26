@@ -1,9 +1,9 @@
-import type { Album } from "@vows/contracts";
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 
 import type { ReactElement } from "react";
 
+import type { Album } from "@vows/contracts";
 import { AlbumGallery } from "@/components/site/album/album-gallery";
 import { AlbumHero } from "@/components/site/album/album-hero";
 import { SiteFooter } from "@/components/site/footer/site-footer";

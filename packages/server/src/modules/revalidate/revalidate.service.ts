@@ -1,8 +1,9 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { album } from "@vows/db";
-import type { Db } from "@vows/db";
 import { eq } from "drizzle-orm";
 import { createHmac } from "node:crypto";
+
+import { album } from "@vows/db";
+import type { Db } from "@vows/db";
 
 import { ENV } from "../../config/env";
 import type { Env } from "../../config/env";

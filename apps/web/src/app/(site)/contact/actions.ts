@@ -2,7 +2,6 @@
 
 import { createEnquiry } from "@vows/contracts";
 import type { CreateEnquiry } from "@vows/contracts";
-
 import { ApiError, publicApi } from "@/lib/api";
 
 import { visitorHeaders } from "./visitor";

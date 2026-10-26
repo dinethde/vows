@@ -1,14 +1,14 @@
-import { publishAlbum, saveAlbum } from "@/app/studio/actions";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { StudioAlbum } from "@vows/contracts";
-import type * as Ui from "@vows/ui";
-import type { ConfirmationModalProps } from "@vows/ui";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { ReactElement } from "react";
 
+import type { StudioAlbum } from "@vows/contracts";
+import type * as Ui from "@vows/ui";
+import type { ConfirmationModalProps } from "@vows/ui";
+import { publishAlbum, saveAlbum } from "@/app/studio/actions";
 import { albumWith, fullGallery } from "@/components/studio/fixtures";
 import { UploadProvider } from "@/components/studio/shell/upload-context";
 

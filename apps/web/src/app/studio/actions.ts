@@ -2,7 +2,6 @@
 
 import { albumId, photoId, reorderPhotos, updateAlbum, updatePhoto } from "@vows/contracts";
 import type { Photo, StudioAlbum, UpdateAlbum } from "@vows/contracts";
-
 import { invalid, toResult } from "@/components/studio/action-result";
 import type { ActionResult } from "@/components/studio/action-result";
 import { serverApi } from "@/lib/auth/server";

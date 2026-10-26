@@ -1,8 +1,9 @@
-import type { StudioAlbumSummary } from "@vows/contracts";
-import { Button } from "@vows/ui";
 import Link from "next/link";
 
 import type { ReactElement } from "react";
+
+import type { StudioAlbumSummary } from "@vows/contracts";
+import { Button } from "@vows/ui";
 
 import { AlbumCard } from "./album-card";
 import { FILTER_LABELS } from "./view";

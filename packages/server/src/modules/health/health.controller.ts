@@ -1,7 +1,8 @@
 import { Controller, Get, Inject, Res } from "@nestjs/common";
-import type { Db } from "@vows/db";
 import { sql } from "drizzle-orm";
 import type { Response } from "express";
+
+import type { Db } from "@vows/db";
 
 import { DB } from "../../database/database.module";
 import { QueueService } from "../../queue/queue.service";

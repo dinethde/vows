@@ -1,5 +1,4 @@
 import type { Album, Photo as PhotoData } from "@vows/contracts";
-
 import { Photo } from "@/components/site/photo/photo";
 import { publicApi } from "@/lib/api";
 

@@ -1,9 +1,8 @@
 "use client";
 
-import { ConfirmationModal } from "@vows/ui";
-
 import type { ReactElement } from "react";
 
+import { ConfirmationModal } from "@vows/ui";
 import { CONFIRMATIONS } from "@/components/studio/confirmations";
 import { usePortalContainer } from "@/components/studio/shell/studio-providers";
 

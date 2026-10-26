@@ -1,7 +1,8 @@
 import { Catch, HttpException, Inject } from "@nestjs/common";
 import type { ArgumentsHost, ExceptionFilter } from "@nestjs/common";
-import type { ErrorCode, ErrorEnvelope } from "@vows/contracts";
 import type { Response } from "express";
+
+import type { ErrorCode, ErrorEnvelope } from "@vows/contracts";
 
 import { reportFailure } from "../../observability/error-reporting";
 import { DomainError, RateLimitedError } from "../errors/domain-error";

@@ -1,11 +1,12 @@
 import { Inject, Injectable } from "@nestjs/common";
 import type { OnApplicationShutdown } from "@nestjs/common";
-import { JOBS } from "@vows/contracts";
-import type { JobName, JobPayload } from "@vows/contracts";
-import type { Db, Tx } from "@vows/db";
 import { sql } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import PgBoss from "pg-boss";
+
+import { JOBS } from "@vows/contracts";
+import type { JobName, JobPayload } from "@vows/contracts";
+import type { Db, Tx } from "@vows/db";
 
 import { PermanentJobError } from "../common/errors/domain-error";
 import { LOGGER } from "../common/logger";

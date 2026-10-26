@@ -1,10 +1,11 @@
 import type { INestApplicationContext } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
+import { eq } from "drizzle-orm";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+
 import { enquiry, newId } from "@vows/db";
 import type { Db } from "@vows/db";
 import type { RenderedMail } from "@vows/mail";
-import { eq } from "drizzle-orm";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { AppModule } from "../src/app.module";
 import { DB } from "../src/database/database.module";

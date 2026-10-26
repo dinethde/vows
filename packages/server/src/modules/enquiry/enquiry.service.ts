@@ -1,4 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
+import { createHash } from "node:crypto";
+
 import { MIN_FORM_OPEN_MS } from "@vows/contracts";
 import type {
   CreateEnquiry,
@@ -8,7 +10,6 @@ import type {
   EnquiryStatus,
 } from "@vows/contracts";
 import type { Db } from "@vows/db";
-import { createHash } from "node:crypto";
 
 import { decodeCursor, encodeCursor } from "../../common/cursor";
 import { NotFoundError, RateLimitedError, ValidationError } from "../../common/errors/domain-error";

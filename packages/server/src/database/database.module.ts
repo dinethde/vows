@@ -1,5 +1,6 @@
 import { Global, Inject, Injectable, Module } from "@nestjs/common";
 import type { OnApplicationShutdown } from "@nestjs/common";
+
 import { createDatabase } from "@vows/db";
 import type { Database, Db } from "@vows/db";
 

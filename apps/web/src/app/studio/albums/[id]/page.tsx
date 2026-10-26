@@ -1,10 +1,10 @@
-import { albumId } from "@vows/contracts";
-import type { StudioAlbum } from "@vows/contracts";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import type { ReactElement } from "react";
 
+import { albumId } from "@vows/contracts";
+import type { StudioAlbum } from "@vows/contracts";
 import { AlbumEditor } from "@/components/studio/editor/album-editor";
 import { ApiError } from "@/lib/api";
 import { serverApi } from "@/lib/auth/server";

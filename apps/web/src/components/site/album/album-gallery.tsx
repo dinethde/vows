@@ -1,7 +1,6 @@
-import type { Photo as PhotoData } from "@vows/contracts";
-
 import type { ReactElement } from "react";
 
+import type { Photo as PhotoData } from "@vows/contracts";
 import { FloatGroup } from "@/components/site/motion/float-group";
 import { Photo } from "@/components/site/photo/photo";
 

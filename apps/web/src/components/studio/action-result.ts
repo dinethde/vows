@@ -1,5 +1,4 @@
 import type { ErrorCode } from "@vows/contracts";
-
 import { ApiError } from "@/lib/api";
 
 export interface ActionFailure {

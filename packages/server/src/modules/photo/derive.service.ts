@@ -1,7 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
+import { eq, sql } from "drizzle-orm";
+
 import { album, newId, photo, photoDerivative } from "@vows/db";
 import type { Db } from "@vows/db";
-import { eq, sql } from "drizzle-orm";
 
 import { DB } from "../../database/database.module";
 import { QueueService } from "../../queue/queue.service";

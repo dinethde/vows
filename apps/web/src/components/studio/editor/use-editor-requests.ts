@@ -1,8 +1,8 @@
-import { publishAlbum, saveAlbum, unpublishAlbum } from "@/app/studio/actions";
 import { useQueryClient } from "@tanstack/react-query";
-import type { StudioAlbum, UpdateAlbum } from "@vows/contracts";
 import { useRouter } from "next/navigation";
 
+import type { StudioAlbum, UpdateAlbum } from "@vows/contracts";
+import { publishAlbum, saveAlbum, unpublishAlbum } from "@/app/studio/actions";
 import type { ActionFailure } from "@/components/studio/action-result";
 import { studioKeys } from "@/components/studio/query-keys";
 import { STUDIO_HOME } from "@/lib/auth/constants";

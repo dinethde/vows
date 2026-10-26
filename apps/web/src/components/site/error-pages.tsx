@@ -1,8 +1,9 @@
-import { ErrorScreen } from "@vows/ui";
-import type { ErrorScreenAction } from "@vows/ui";
 import Link from "next/link";
 
 import type { ReactElement } from "react";
+
+import { ErrorScreen } from "@vows/ui";
+import type { ErrorScreenAction } from "@vows/ui";
 
 import { ErrorPicture } from "./error-picture";
 

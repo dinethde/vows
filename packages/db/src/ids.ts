@@ -1,6 +1,7 @@
+import { randomBytes } from "node:crypto";
+
 import { ID_PREFIXES } from "@vows/contracts";
 import type { IdKind } from "@vows/contracts";
-import { randomBytes } from "node:crypto";
 
 const ALPHABET = "0123456789abcdefghjkmnpqrstvwxyz";
 const LENGTH = 16;

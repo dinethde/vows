@@ -1,8 +1,9 @@
-import { enquiry } from "@vows/db";
 import { like, sql } from "drizzle-orm";
 import request from "supertest";
 import type { App } from "supertest/types";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+
+import { enquiry } from "@vows/db";
 
 import { signVisitor } from "../src/modules/enquiry/visitor";
 import { hasDatabase, startApp } from "./harness";

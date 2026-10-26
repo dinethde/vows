@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
+
 import { COVER_POSITION, GALLERY_SIZE } from "@vows/contracts";
 import type { Photo, StudioAlbum } from "@vows/contracts";
-
 import { PHOTO_POLL_MS, studioKeys } from "@/components/studio/query-keys";
 import { useApi } from "@/components/studio/shell/api-context";
 import { useAlbumUploads, useUploadQueue } from "@/components/studio/shell/upload-context";

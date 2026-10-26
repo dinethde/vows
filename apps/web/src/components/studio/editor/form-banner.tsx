@@ -1,8 +1,8 @@
 "use client";
 
-import { Banner } from "@vows/ui";
-
 import type { ReactElement } from "react";
+
+import { Banner } from "@vows/ui";
 
 import { useEditor } from "./editor-context";
 

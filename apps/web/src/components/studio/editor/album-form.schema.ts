@@ -1,6 +1,6 @@
-import type { StudioAlbum, UpdateAlbum } from "@vows/contracts";
 import { z } from "zod";
 
+import type { StudioAlbum, UpdateAlbum } from "@vows/contracts";
 import { formatDateText, parseDateText } from "@/components/shared/date/date-text";
 
 const text = (max: number, what: string): z.ZodString =>
