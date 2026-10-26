@@ -1,9 +1,9 @@
-import type { StudioAlbumSummary } from "@vows/contracts";
-import { PhotoSlot, StatusPill, cn } from "@vows/ui";
 import Link from "next/link";
 
 import type { ReactElement } from "react";
 
+import type { StudioAlbumSummary } from "@vows/contracts";
+import { PhotoSlot, StatusPill, cn } from "@vows/ui";
 import { focusRing } from "@/components/shared/focus";
 import { thumbFor } from "@/components/studio/photo-thumb";
 import { isLive, pillFor } from "@/components/studio/stage";

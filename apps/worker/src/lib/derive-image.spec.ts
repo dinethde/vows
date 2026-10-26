@@ -1,6 +1,7 @@
-import { PermanentJobError } from "@vows/server";
 import sharp from "sharp";
 import { describe, expect, it } from "vitest";
+
+import { PermanentJobError } from "@vows/server";
 
 import { SHARE_CARD, deriveImage } from "./derive-image";
 

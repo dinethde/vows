@@ -1,8 +1,9 @@
-import { DERIVATIVE_WIDTHS } from "@vows/contracts";
-import { PermanentJobError } from "@vows/server";
 import sharp from "sharp";
 import type { Sharp } from "sharp";
 import { rgbaToThumbHash } from "thumbhash";
+
+import { DERIVATIVE_WIDTHS } from "@vows/contracts";
+import { PermanentJobError } from "@vows/server";
 
 /** Chapter 10's table: smaller files get a little less quality, larger a little more. */
 const QUALITY: Record<number, { avif: number; webp: number }> = {

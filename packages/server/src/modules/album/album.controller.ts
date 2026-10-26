@@ -1,4 +1,5 @@
 import { Body, Controller, Get, HttpCode, Param, Patch, Post } from "@nestjs/common";
+
 import { albumId, slug, updateAlbum } from "@vows/contracts";
 import type {
   Album,

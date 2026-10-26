@@ -1,8 +1,7 @@
-import type { Album } from "@vows/contracts";
-import { AlbumBottomBar } from "@vows/ui";
-
 import type { ReactElement } from "react";
 
+import type { Album } from "@vows/contracts";
+import { AlbumBottomBar } from "@vows/ui";
 import { Photo } from "@/components/site/photo/photo";
 import { fullDate } from "@/lib/format/dates";
 

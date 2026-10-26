@@ -1,11 +1,11 @@
 "use client";
 
-import { CtaButton, DialogClose, DialogDescription, DialogTitle } from "@vows/ui";
 import Image from "next/image";
 import Link from "next/link";
 
 import type { ReactElement } from "react";
 
+import { CtaButton, DialogClose, DialogDescription, DialogTitle } from "@vows/ui";
 import { routes } from "@/config/site";
 
 import { EnquiryFieldList } from "./enquiry-fields";

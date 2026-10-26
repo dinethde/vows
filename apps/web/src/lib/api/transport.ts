@@ -1,6 +1,6 @@
-import { errorEnvelope } from "@vows/contracts";
 import type { ZodType, ZodTypeDef } from "zod";
 
+import { errorEnvelope } from "@vows/contracts";
 import { env } from "@/config/env";
 
 import { ApiError } from "./errors";

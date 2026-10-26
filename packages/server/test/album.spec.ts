@@ -1,8 +1,9 @@
-import { album, auditLog, newId, photo, slugRedirect } from "@vows/db";
 import { eq, sql } from "drizzle-orm";
 import request from "supertest";
 import type { App } from "supertest/types";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+
+import { album, auditLog, newId, photo, slugRedirect } from "@vows/db";
 
 import { hasDatabase, startApp } from "./harness";
 import type { Harness } from "./harness";

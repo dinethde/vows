@@ -1,6 +1,7 @@
 import "reflect-metadata";
 
 import { NestFactory } from "@nestjs/core";
+
 import { AppModule, LOGGER, configure } from "@vows/server";
 import type { Logger } from "@vows/server";
 

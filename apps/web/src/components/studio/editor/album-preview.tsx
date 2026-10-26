@@ -1,11 +1,11 @@
 "use client";
 
-import { COVER_POSITION } from "@vows/contracts";
-import { AlbumBottomBar } from "@vows/ui";
 import { useWatch } from "react-hook-form";
 
 import type { ReactElement } from "react";
 
+import { COVER_POSITION } from "@vows/contracts";
+import { AlbumBottomBar } from "@vows/ui";
 import { formatDateText, parseDateText } from "@/components/shared/date/date-text";
 
 import { useEditor } from "./editor-context";

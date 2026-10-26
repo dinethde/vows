@@ -1,5 +1,9 @@
 "use client";
 
+import dynamic from "next/dynamic";
+
+import type { ReactElement } from "react";
+
 import {
   CtaButton,
   Dialog,
@@ -8,9 +12,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@vows/ui";
-import dynamic from "next/dynamic";
-
-import type { ReactElement } from "react";
 
 /** Shown for the moment it takes the form's code to arrive, so the dialog is never unnamed. */
 function Loading(): ReactElement {

@@ -1,8 +1,9 @@
 import { Inject, Injectable } from "@nestjs/common";
+import { and, desc, eq, gte, lt, or, sql } from "drizzle-orm";
+
 import type { EnquiryStatus } from "@vows/contracts";
 import { enquiry, newId } from "@vows/db";
 import type { Db, DbOrTx } from "@vows/db";
-import { and, desc, eq, gte, lt, or, sql } from "drizzle-orm";
 
 import type { Cursor } from "../../common/cursor";
 import { DB } from "../../database/database.module";

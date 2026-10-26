@@ -1,7 +1,8 @@
 import { Body, Container, Head, Html, Preview, Text } from "@react-email/components";
-import { resolved } from "@vows/tokens";
 
 import type { CSSProperties, ReactElement, ReactNode } from "react";
+
+import { resolved } from "@vows/tokens";
 
 const site = resolved.site;
 const serif = 'Georgia, "Times New Roman", serif';

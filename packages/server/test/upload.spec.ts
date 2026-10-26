@@ -1,11 +1,12 @@
-import type { Photo, UploadTicket } from "@vows/contracts";
-import { album, auditLog, photo } from "@vows/db";
 import { eq, sql } from "drizzle-orm";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import request from "supertest";
 import type { App } from "supertest/types";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+
+import type { Photo, UploadTicket } from "@vows/contracts";
+import { album, auditLog, photo } from "@vows/db";
 
 import { hasDatabase, startApp } from "./harness";
 import type { Harness } from "./harness";

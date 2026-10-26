@@ -1,7 +1,8 @@
 import type { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
-import type { Db } from "@vows/db";
 import { SignJWT, createLocalJWKSet, exportJWK, generateKeyPair } from "jose";
+
+import type { Db } from "@vows/db";
 
 import { AppModule } from "../src/app.module";
 import { configure } from "../src/bootstrap";

@@ -1,9 +1,8 @@
 "use client";
 
-import { cn } from "@vows/ui";
-
 import type { KeyboardEvent, ReactElement } from "react";
 
+import { cn } from "@vows/ui";
 import { focusRing } from "@/components/shared/focus";
 import { fullDate } from "@/lib/format/dates";
 

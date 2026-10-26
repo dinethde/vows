@@ -1,9 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
+import { eq, inArray } from "drizzle-orm";
+
 import { enquiry, setting } from "@vows/db";
 import type { Db } from "@vows/db";
 import { createMailer, renderEnquiryNotify, renderEnquiryReceived } from "@vows/mail";
 import type { Mailer } from "@vows/mail";
-import { eq, inArray } from "drizzle-orm";
 
 import { colomboTime, fullDate } from "../../common/dates";
 import { ENV } from "../../config/env";

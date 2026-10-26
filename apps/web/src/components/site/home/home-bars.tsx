@@ -1,10 +1,9 @@
 "use client";
 
-import { BottomBar } from "@vows/ui";
-
 import { useSyncExternalStore } from "react";
 import type { ReactElement } from "react";
 
+import { BottomBar } from "@vows/ui";
 import { site } from "@/config/site";
 
 import { barsShown, barsShownOnServer, subscribeToBars } from "./bars-store";

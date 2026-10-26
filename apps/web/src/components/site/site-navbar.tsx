@@ -1,10 +1,10 @@
 "use client";
 
-import { Navbar, Player } from "@vows/ui";
 import Link from "next/link";
 
 import type { ReactElement } from "react";
 
+import { Navbar, Player } from "@vows/ui";
 import { routes, site } from "@/config/site";
 
 import { useMusic } from "./music/music-provider";

@@ -1,7 +1,8 @@
-import { cn } from "@vows/ui";
 import Link from "next/link";
 
 import type { ReactElement } from "react";
+
+import { cn } from "@vows/ui";
 
 import { FILTERS, FILTER_LABELS, dashboardHref } from "./view";
 import type { DashboardView } from "./view";

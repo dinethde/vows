@@ -1,9 +1,9 @@
 "use client";
 
+import type { ReactElement } from "react";
+
 import { COVER_POSITION, GALLERY_SIZE } from "@vows/contracts";
 import { cn } from "@vows/ui";
-
-import type { ReactElement } from "react";
 
 import { PhotoNotices } from "./photo-notices";
 import { SlotCard } from "./slot-card";

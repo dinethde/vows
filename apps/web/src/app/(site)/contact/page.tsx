@@ -1,9 +1,9 @@
-import { Chip } from "@vows/ui";
 import type { Metadata } from "next";
 import Image from "next/image";
 
 import type { ReactElement, ReactNode } from "react";
 
+import { Chip } from "@vows/ui";
 import { EnquiryDialog } from "@/components/site/contact/enquiry-dialog";
 import { EmailLink } from "@/components/site/email-link";
 import { SiteFooter } from "@/components/site/footer/site-footer";

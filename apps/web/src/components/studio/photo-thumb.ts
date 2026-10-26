@@ -1,5 +1,6 @@
-import type { Photo } from "@vows/contracts";
 import { thumbHashToDataURL } from "thumbhash";
+
+import type { Photo } from "@vows/contracts";
 
 export interface Thumb {
   /** A small derivative, never the original. Undefined until the worker has made one. */

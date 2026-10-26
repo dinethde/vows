@@ -1,8 +1,8 @@
 "use client";
 
-import type { StudioAlbum } from "@vows/contracts";
-
 import type { ReactElement } from "react";
+
+import type { StudioAlbum } from "@vows/contracts";
 
 import { AlbumPreview } from "./album-preview";
 import { DetailsForm } from "./details-form";

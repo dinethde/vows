@@ -1,6 +1,5 @@
 import { COVER_POSITION, GALLERY_SIZE } from "@vows/contracts";
 import type { Photo } from "@vows/contracts";
-
 import { parseDateText } from "@/components/shared/date/date-text";
 
 /**

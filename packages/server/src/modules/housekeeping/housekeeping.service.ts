@@ -1,7 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
+import { lt } from "drizzle-orm";
+
 import { enquiry, photoDerivative } from "@vows/db";
 import type { Db } from "@vows/db";
-import { lt } from "drizzle-orm";
 
 import { LOGGER } from "../../common/logger";
 import type { Logger } from "../../common/logger";

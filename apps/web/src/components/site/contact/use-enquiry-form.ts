@@ -1,11 +1,12 @@
 "use client";
 
-import { sendEnquiry } from "@/app/(site)/contact/actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { UseFormReturn } from "react-hook-form";
 
 import { useState } from "react";
+
+import { sendEnquiry } from "@/app/(site)/contact/actions";
 
 import { EMPTY, enquiryFields } from "./enquiry-form.schema";
 import type { EnquiryFields } from "./enquiry-form.schema";

@@ -1,5 +1,6 @@
-import { albumId, photoId } from "@vows/contracts";
 import { describe, expect, it } from "vitest";
+
+import { albumId, photoId } from "@vows/contracts";
 
 import { newId } from "./ids";
 

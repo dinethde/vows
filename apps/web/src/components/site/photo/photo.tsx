@@ -1,6 +1,6 @@
-import type { Photo as PhotoData } from "@vows/contracts";
-
 import type { CSSProperties, ReactElement } from "react";
+
+import type { Photo as PhotoData } from "@vows/contracts";
 
 import { placeholderFor, sourcesFor } from "./sources";
 

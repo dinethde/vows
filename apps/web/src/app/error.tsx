@@ -1,10 +1,9 @@
 "use client";
 
-import { Navbar } from "@vows/ui";
-
 import { useState } from "react";
 import type { ReactElement } from "react";
 
+import { Navbar } from "@vows/ui";
 import { ServerErrorScreen } from "@/components/site/error-pages";
 import { routes } from "@/config/site";
 

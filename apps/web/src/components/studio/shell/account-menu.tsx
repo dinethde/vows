@@ -1,11 +1,11 @@
 "use client";
 
 import { useClerk } from "@clerk/nextjs";
-import { cn } from "@vows/ui";
 
 import { useId, useRef } from "react";
 import type { ReactElement } from "react";
 
+import { cn } from "@vows/ui";
 import { focusRing } from "@/components/shared/focus";
 import { useDismiss } from "@/components/shared/use-dismiss";
 import { SIGN_IN_PATH } from "@/lib/auth/constants";

@@ -1,6 +1,6 @@
-import type { StudioAlbumList } from "@vows/contracts";
-
 import type { ReactElement } from "react";
+
+import type { StudioAlbumList } from "@vows/contracts";
 
 export interface AlbumStatsProps {
   /** From the API, worked out by the same query as the cards. Never counted here. */

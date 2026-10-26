@@ -1,9 +1,10 @@
 import "reflect-metadata";
 
 import { NestFactory } from "@nestjs/core";
-import { AlbumService, AppModule, PhotoService, QueueService } from "@vows/server";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+
+import { AlbumService, AppModule, PhotoService, QueueService } from "@vows/server";
 
 /**
  * Fills the first album with the nineteen photographs from the Figma album

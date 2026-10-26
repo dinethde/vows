@@ -1,12 +1,11 @@
 "use client";
 
-import { COVER_POSITION, GALLERY_SIZE } from "@vows/contracts";
-import { PhotoSlot, cn } from "@vows/ui";
-import type { PhotoSlotProps } from "@vows/ui";
-
 import { useId, useRef } from "react";
 import type { ReactElement } from "react";
 
+import { COVER_POSITION, GALLERY_SIZE } from "@vows/contracts";
+import { PhotoSlot, cn } from "@vows/ui";
+import type { PhotoSlotProps } from "@vows/ui";
 import { thumbFor } from "@/components/studio/photo-thumb";
 import { UPLOAD_ACCEPT } from "@/lib/upload/validate";
 
