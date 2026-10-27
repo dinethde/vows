@@ -77,7 +77,7 @@ export function AlbumPreview(): ReactElement {
   return (
     <section
       aria-label="Photographs, laid out as on the album page"
-      className="gap-space-3 @container flex min-w-0 flex-1 flex-col"
+      className="gap-space-3 @container desktop:relative desktop:max-h-full desktop:overflow-y-auto flex min-w-0 flex-1 flex-col"
     >
       <PhotoNotices />
       <PreviewCover />

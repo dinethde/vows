@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { StudioAlbumSummary } from "@vows/contracts";
 import type { UploadItem } from "@/lib/upload/queue";
 
-import { dashboardHref, parseView, visibleAlbums } from "./dashboard/view";
+import { dashboardHref, parseView, typedQuery, viewSearch, visibleAlbums } from "./dashboard/view";
 import { toChanges, toFormValues } from "./editor/album-form.schema";
 import { blockedNote, findProblems, problemSummary, slotProblems } from "./editor/publish-problems";
 import { movePhoto } from "./editor/reorder";
@@ -48,6 +48,15 @@ describe("the dashboard’s view", () => {
     expect(dashboardHref({ filter: "published", query: "galle fort" })).toBe(
       "/studio?q=galle+fort&stage=published",
     );
+    expect(viewSearch({ filter: "draft", query: "" })).toBe("?stage=draft");
+    expect(viewSearch({ filter: "all", query: "" })).toBe("");
+  });
+
+  it("searches while typing only from the third character", () => {
+    expect(typedQuery("be")).toBe("");
+    expect(typedQuery(" be ")).toBe("");
+    expect(typedQuery("ben")).toBe("ben");
+    expect(typedQuery("  benali ")).toBe("benali");
   });
 
   it("filters by stage, listing archived albums with the drafts", () => {

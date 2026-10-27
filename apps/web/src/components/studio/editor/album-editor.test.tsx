@@ -63,13 +63,13 @@ function stubWidth(desktop: boolean): void {
   }));
 }
 
-function open(album: StudioAlbum): void {
+function open(album: StudioAlbum, backHref = "/studio"): void {
   listed.photos = album.cover ? [album.cover, ...album.photos] : album.photos;
   const client = new QueryClient({ defaultOptions: { queries: { staleTime: Infinity } } });
   render(
     <QueryClientProvider client={client}>
       <UploadProvider>
-        <AlbumEditor album={album} />
+        <AlbumEditor album={album} backHref={backHref} />
       </UploadProvider>
     </QueryClientProvider>,
   );
@@ -264,14 +264,14 @@ describe("Draft and Cancel", () => {
   });
 
   it("asks before throwing edits away, and leaves at once when there are none", async () => {
-    open(albumWith([]));
+    open(albumWith([]), "/studio?stage=draft");
     await userEvent.type(field("Wedding time"), "Morning");
     await userEvent.click(screen.getAllByRole("button", { name: "Cancel" })[0]!);
 
     const modal = await screen.findByRole("alertdialog", { name: "Discard your changes?" });
     expect(router.push).not.toHaveBeenCalled();
     await userEvent.click(within(modal).getByRole("button", { name: "Discard changes" }));
-    expect(router.push).toHaveBeenCalledWith("/studio");
+    expect(router.push).toHaveBeenCalledWith("/studio?stage=draft");
   });
 });
 

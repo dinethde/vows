@@ -5,6 +5,7 @@ import type { ReactElement } from "react";
 import { AlbumGrid } from "@/components/studio/dashboard/album-grid";
 import { AlbumStats } from "@/components/studio/dashboard/album-stats";
 import { CollectionToolbar } from "@/components/studio/dashboard/collection-toolbar";
+import { DashboardNavigationProvider } from "@/components/studio/dashboard/dashboard-navigation";
 import { parseView, visibleAlbums } from "@/components/studio/dashboard/view";
 import { serverApi } from "@/lib/auth/server";
 
@@ -17,7 +18,8 @@ export interface DashboardPageProps {
 /**
  * All 22 albums at a glance. The counts and the cards come from one request,
  * so they cannot disagree. The search and the filter are read from the
- * address, which is why this page needs no script to work.
+ * address, which is why this page needs no script to work. With one, they
+ * change through a transition, so only the grid waits for the new list.
  */
 export default async function DashboardPage({
   searchParams,
@@ -26,7 +28,7 @@ export default async function DashboardPage({
   const list = await serverApi().albums.listForStudio();
 
   return (
-    <div className="gap-space-8 px-space-5 py-space-8 tablet:px-space-7 desktop:px-[clamp(32px,14vw,200px)] flex flex-col">
+    <div className="gap-space-6 px-space-5 py-space-8 tablet:px-space-7 desktop:px-[clamp(32px,14vw,200px)] flex flex-col">
       <section className="gap-space-6 flex flex-col">
         <div className="gap-space-1 flex flex-col">
           <p className="type-studio-overline text-muted">VOWS</p>
@@ -37,10 +39,12 @@ export default async function DashboardPage({
         </div>
         <AlbumStats counts={list.counts} />
       </section>
-      <section className="gap-space-6 flex flex-col">
-        <CollectionToolbar view={view} total={list.counts.all} />
-        <AlbumGrid albums={visibleAlbums(list.data, view)} view={view} />
-      </section>
+      <DashboardNavigationProvider>
+        <section className="flex flex-col">
+          <CollectionToolbar view={view} total={list.counts.all} />
+          <AlbumGrid albums={visibleAlbums(list.data, view)} view={view} />
+        </section>
+      </DashboardNavigationProvider>
     </div>
   );
 }

@@ -10,6 +10,9 @@ import type { EditorRequests, EditorRequestsInput } from "./use-editor-requests"
 
 export type EditorModal = Exclude<ConfirmationKind, "deletePhoto">;
 
+/** The two buttons that do their work without a confirmation in front of them. */
+export type EditorButton = "publish" | "draft";
+
 export interface EditorActionsInput extends EditorRequestsInput {
   /** Everything the browser can already see is stopping the album going out. */
   problems: Problems;
@@ -19,6 +22,8 @@ export interface EditorActions {
   modal: EditorModal | null;
   modalError: string | undefined;
   pending: boolean;
+  /** The button whose work is running while no confirmation is open, so it alone spins. */
+  busy: EditorButton | null;
   pressPublish: () => void;
   pressDraft: () => void;
   /** Cancel, and the "All albums" link: both leave, and both ask first if there are edits. */
@@ -61,18 +66,20 @@ export function useEditorActions(input: EditorActionsInput): EditorActions {
   const [modal, setModal] = useState<EditorModal | null>(null);
   const [modalError, setModalError] = useState<string>();
   const [pending, startTransition] = useTransition();
+  const [pressed, setPressed] = useState<EditorButton | null>(null);
   const { isDirty } = form.formState;
 
   const open = (kind: EditorModal): void => {
     setModalError(undefined);
     setModal(kind);
   };
-  const run = (work: () => Promise<void>): void => {
+  const run = (button: EditorButton | null, work: () => Promise<void>): void => {
     input.onFailure(null);
+    setPressed(button);
     startTransition(work);
   };
   const confirm = (kind: EditorModal): void => {
-    run(async () => {
+    run(null, async () => {
       const refusal = await agreed(requests)[kind]();
       if (refusal === null) setModal(null);
       else setModalError(refusal);
@@ -83,11 +90,12 @@ export function useEditorActions(input: EditorActionsInput): EditorActions {
     modal,
     modalError,
     pending,
+    busy: pending && modal === null ? pressed : null,
     closeModal: () => {
       setModal(null);
     },
     pressPublish: () => {
-      run(async () => {
+      run("publish", async () => {
         input.onReveal({});
         if (!(await fieldsValid(form))) return;
         const first = firstProblem(form, problems);
@@ -96,7 +104,7 @@ export function useEditorActions(input: EditorActionsInput): EditorActions {
       });
     },
     pressDraft: () => {
-      run(async () => {
+      run("draft", async () => {
         if (!(await fieldsValid(form))) return;
         if (album.stage === "published") open("moveToDraft");
         else await requests.saveDraft();

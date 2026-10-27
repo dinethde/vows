@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useWatch } from "react-hook-form";
 
 import type { ReactElement } from "react";
@@ -9,6 +10,35 @@ import { focusRing } from "@/components/shared/focus";
 import { env } from "@/config/env";
 
 import { useEditor } from "./editor-context";
+import type { BackToAlbumsProps } from "./editor-head.types";
+
+/**
+ * The way back to the dashboard, with the search and filter it was left with.
+ * It is a real link, so a middle click or a modified click opens the dashboard
+ * in a new tab. A plain click asks first if there are edits, as Cancel does.
+ */
+export function BackToAlbums({ className }: BackToAlbumsProps): ReactElement {
+  const { backHref, actions } = useEditor();
+
+  return (
+    <Link
+      href={backHref}
+      className={cn(
+        "type-studio-body-s text-placeholder relative before:absolute before:-inset-x-2 before:-inset-y-[14px]",
+        focusRing,
+        className,
+      )}
+      onClick={(event) => {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+          return;
+        event.preventDefault();
+        actions.pressLeave();
+      }}
+    >
+      <span aria-hidden="true">← </span>All albums
+    </Link>
+  );
+}
 
 /**
  * The top of the edit-first layout, below the desktop width: the way back, the
@@ -16,22 +46,13 @@ import { useEditor } from "./editor-context";
  * so a live album gets a Preview link to its real page instead.
  */
 export function EditorHead(): ReactElement {
-  const { album, form, pill, actions } = useEditor();
+  const { album, form, pill } = useEditor();
   const names = useWatch({ control: form.control, name: "coupleNames" });
   const live = album.stage === "published";
 
   return (
     <div className="flex flex-col items-start gap-[6px]">
-      <button
-        type="button"
-        className={cn(
-          "type-studio-body-s text-placeholder relative cursor-pointer before:absolute before:-inset-x-2 before:-inset-y-[14px]",
-          focusRing,
-        )}
-        onClick={actions.pressLeave}
-      >
-        <span aria-hidden="true">← </span>All albums
-      </button>
+      <BackToAlbums />
       <div className="flex flex-wrap items-center gap-[10px]">
         <h1 className="type-studio-subheading tablet:type-studio-heading text-heading">
           {names.trim() === "" ? album.title : names.trim()}

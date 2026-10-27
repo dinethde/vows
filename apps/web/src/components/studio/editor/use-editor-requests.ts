@@ -5,7 +5,6 @@ import type { StudioAlbum, UpdateAlbum } from "@vows/contracts";
 import { publishAlbum, saveAlbum, unpublishAlbum } from "@/app/studio/actions";
 import type { ActionFailure } from "@/components/studio/action-result";
 import { studioKeys } from "@/components/studio/query-keys";
-import { STUDIO_HOME } from "@/lib/auth/constants";
 
 import { toChanges, toFormValues } from "./album-form.schema";
 import { applyFieldErrors, focusProblem } from "./editor-problems";
@@ -15,6 +14,8 @@ import type { Problems } from "./publish-problems";
 export interface EditorRequestsInput {
   album: StudioAlbum;
   form: AlbumForm;
+  /** The dashboard, with the search and filter it had when the album was opened. */
+  backHref: string;
   onAlbum: (album: StudioAlbum) => void;
   /** Turns the red marks on, with the API's own list when it sent one. */
   onReveal: (fromServer: Problems) => void;
@@ -54,7 +55,7 @@ export function useEditorRequests(input: EditorRequestsInput): EditorRequests {
   const changes = (): UpdateAlbum | null => toChanges(form.getValues(), dirtyFields);
 
   const leave = (): void => {
-    router.push(STUDIO_HOME);
+    router.push(input.backHref);
     router.refresh();
   };
 

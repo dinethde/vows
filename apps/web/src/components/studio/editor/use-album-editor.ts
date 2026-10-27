@@ -28,6 +28,8 @@ export interface EditorBanner {
 
 export interface AlbumEditorState {
   album: StudioAlbum;
+  /** Where every way out of the editor goes: the dashboard as it was left. */
+  backHref: string;
   form: AlbumForm;
   photos: AlbumPhotos;
   mutations: PhotoMutations;
@@ -98,7 +100,7 @@ function useLocalProblems(form: AlbumForm, photos: AlbumPhotos): Problems {
  * stopping the album being published, and which strip to show. The components
  * under it only draw.
  */
-export function useAlbumEditor(initial: StudioAlbum): AlbumEditorState {
+export function useAlbumEditor(initial: StudioAlbum, backHref: string): AlbumEditorState {
   const [album, setAlbum] = useState(initial);
   const [revealed, setRevealed] = useState(false);
   const [fromServer, setFromServer] = useState<Problems>({});
@@ -119,6 +121,7 @@ export function useAlbumEditor(initial: StudioAlbum): AlbumEditorState {
   const actions = useEditorActions({
     album,
     form,
+    backHref,
     problems: local,
     onAlbum: setAlbum,
     onReveal: (server) => {
@@ -135,6 +138,7 @@ export function useAlbumEditor(initial: StudioAlbum): AlbumEditorState {
 
   return {
     album,
+    backHref,
     form,
     photos,
     mutations,

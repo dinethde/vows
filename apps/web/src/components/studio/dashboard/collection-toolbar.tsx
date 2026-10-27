@@ -1,9 +1,9 @@
-import Link from "next/link";
-
 import type { ReactElement } from "react";
 
 import { cn } from "@vows/ui";
 
+import { FilterLink } from "./filter-link";
+import { SearchInput } from "./search-input";
 import { FILTERS, FILTER_LABELS, dashboardHref } from "./view";
 import type { DashboardView } from "./view";
 
@@ -48,7 +48,10 @@ function SearchGlyph(): ReactElement {
   );
 }
 
-/** A plain GET form: the search is in the address, and it works with no script. */
+/**
+ * A plain GET form: the search is in the address, and it works with no
+ * script. With one, the field inside searches as it is typed into.
+ */
 function Search({ view }: ToolbarPartProps): ReactElement {
   return (
     <form
@@ -57,15 +60,7 @@ function Search({ view }: ToolbarPartProps): ReactElement {
       className="border-card gap-space-2 focus-within:border-focus-ring tablet:w-[190px] desktop:h-[35px] flex h-[44px] w-full items-center border-b px-[10px]"
     >
       <SearchGlyph />
-      <input
-        type="search"
-        name="q"
-        defaultValue={view.query}
-        aria-label="Search albums"
-        placeholder="Search albums"
-        enterKeyHint="search"
-        className="type-studio-body-s text-primary placeholder:text-primary h-full min-w-0 flex-1 bg-transparent px-[11px] outline-none"
-      />
+      <SearchInput view={view} />
       {view.filter === "all" ? null : <input type="hidden" name="stage" value={view.filter} />}
     </form>
   );
@@ -87,24 +82,31 @@ function Filters({ view }: ToolbarPartProps): ReactElement {
       {FILTERS.map((filter) => {
         const current = filter === view.filter;
         return (
-          <Link
+          <FilterLink
             key={filter}
             href={dashboardHref({ ...view, filter })}
-            aria-current={current ? "true" : undefined}
+            current={current}
             className={cn(chip, current ? "bg-surface text-primary shadow-card" : "text-muted")}
           >
             {FILTER_LABELS[filter]}
-          </Link>
+          </FilterLink>
         );
       })}
     </nav>
   );
 }
 
-/** The heading over the cards, with the search box and the filter beside it. */
+/**
+ * The heading over the cards, with the search box and the filter beside it.
+ * Once the counts above have scrolled away it stays under the Studio's bar,
+ * and the cards pass beneath it.
+ */
 export function CollectionToolbar({ view, total }: CollectionToolbarProps): ReactElement {
   return (
-    <div className="gap-space-3 tablet:flex-row tablet:items-end tablet:justify-between flex flex-col">
+    <div
+      data-held-toolbar
+      className="gap-space-3 pt-space-4 pb-space-6 tablet:flex-row tablet:items-end tablet:justify-between bg-page sticky top-[var(--studio-bar)] z-20 flex flex-col"
+    >
       <div className="flex items-end gap-[11px]">
         <h2 className="type-studio-heading text-heading">Your collection</h2>
         <p className="type-studio-caption text-placeholder pb-[7px]">

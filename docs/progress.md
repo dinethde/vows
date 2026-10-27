@@ -390,6 +390,31 @@ Studio screens (design page):
   content ground) use the nearest token. The 4 px outer frame is not drawn.
   The calendar and menu use `shadow-card`, not Figma's 0 8 24 −4.
 
+Studio behaviour Dineth authorised on 2026-10-26 that the design file does not
+draw (branch `fix/improve-ui/ux-in-studio`):
+
+- **Dashboard search.** Figma draws the field and no behaviour. Built: it
+  searches as it is typed into, from the third character, 300 ms after the
+  last key. Fewer than three characters shows every album. Each search adds
+  one history entry on its first change and replaces it after that, so Back
+  goes to the previous search, not the previous keystroke. Focusing the box
+  again or pressing Enter starts a new search.
+- **Studio bar.** Figma draws it at the top of each frame. Built: it stays at
+  the top of the window while the page scrolls.
+- **Waiting.** Figma draws no loading state but the button spinner. Built: the
+  full-page spinner only for a page load. A search, a filter or a refresh after
+  "Move to draft" fades the grid and puts "Updating the albums…" over it. Draft
+  and Publish each spin for their own work only.
+- **Collection toolbar.** Figma draws it in the page's flow. Built: once the
+  counts have scrolled away it stays under the bar at every width, and the
+  cards pass beneath it.
+- **Album editor on a desktop.** Figma draws one frame taller than the window.
+  Built: the editor fills the window under the bar, and the details column and
+  the preview each scroll on their own.
+- **"All albums" on a desktop.** Built above the details column as well as in
+  the tablet and phone head, and it is a link that returns to the dashboard
+  with the search and filter it was left with.
+
 ## What the component library reported
 
 From the subagent that built `packages/ui`. These are for the design pass.
